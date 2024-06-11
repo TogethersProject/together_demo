@@ -18,10 +18,10 @@ const HomePage: React.FC = () => {
                 <Image src="/images/image-22.png" width={500} height={300} alt="My Image" />
             </div>
             <div className="image-wrapper">
-                <Image src="/images/image-6.png" alt="" />
+                <Image src="/images/image-6.png" width={500} height={300} alt="" />
             </div>
             <div className="image-wrapper">
-                <Image src="/images/image-2.png" alt="" />
+                <Image src="/images/image-2.png" width={500} height={300} alt="" />
             </div>
             <Link href="/First">Go to First Page</Link>
         </div>
