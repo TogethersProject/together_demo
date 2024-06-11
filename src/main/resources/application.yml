@@ -30,3 +30,6 @@ spring:
 mybatis:
   mapper-locations: classpath:/mapper/*.xml
   type-aliases-package: com.together.mapper
+
+jwt:
+  secret-key =7jx'3jizwPp`.qxJq+,@>a6{r5FZZ_JspF'{}^De}+AS6/NJ<4{zmMxXHJX@SA+:

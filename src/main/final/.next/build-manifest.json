@@ -17,25 +17,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/index.js"
     ],
-    "/Detail": [
+    "/Be": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Detail.js"
-    ],
-    "/FindVolunteer": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/FindVolunteer.js"
+      "static/chunks/pages/Be.js"
     ],
     "/First": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/First.js"
     ],
-    "/Login": [
+    "/Mentor": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Login.js"
+      "static/chunks/pages/Mentor.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
