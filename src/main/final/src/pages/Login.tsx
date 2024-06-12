@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import axios from "axios";
 
 interface HtmlProps {
     active: boolean;
@@ -140,6 +141,52 @@ const Login: React.FC = () => {
         router.push('/Join');
     };
 
+    // id, pw 담기
+    const [signInDTO, setSignInDTO] = useState({});
+
+    //로그인 시 id, pw 일치하는 지 확인 후 토큰 전달 url
+    const signInMemberURL = "http://localhost:9000/member/loginCheck"
+    //DB에 로그인 유저 정보(id, pw)전달.
+    const onSingnIn = (e) => {
+        e.preventDefault()
+
+
+        fetch(signInMemberURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(signInDTO)
+        })
+            .then(response => response.json())
+            .then(data => {
+                const { accessToken, grantType, refreshToken } = data;
+
+                console.log("accessToken: " + accessToken);
+                console.log("grantType: " + grantType);
+                console.log("refreshToken: " + refreshToken);
+
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('grantType', grantType);
+                localStorage.setItem('refreshToken', refreshToken);
+
+                alert('로그인 성공!');
+            })
+            .catch(error => {
+                alert("로그인 실패!!");
+                console.log(error);
+            });
+
+    }//submit signIn
+
+    const onSignInDTO = (e) => {
+        const {name, value} = e.target;
+
+        setSignInDTO(preData => ({
+            ...preData
+            ,[name] : value
+        }))
+    }
     return (
         <BodyWrapper>
             <LoginWrap>
@@ -165,21 +212,15 @@ const Login: React.FC = () => {
                     <LoginForm>
                         <SignInHtml active={tab === 'sign-in'}>
                             <Group>
-                                <Label htmlFor="user-signin">이름</Label>
-                                <Input id="user-signin" type="text" className="input" />
+                                <Label htmlFor="user-signin">아이디</Label>
+                                <Input id="user-signin" type="text" className="input" name="member_id" onChange={onSignInDTO}/>
                             </Group>
                             <Group>
                                 <Label htmlFor="pass-signin">비밀번호</Label>
-                                <Input id="pass-signin" type="password" className="input" data-type="password" />
+                                <Input id="pass-signin" type="password" className="input" data-type="password" name="member_pwd" onChange={onSignInDTO}/>
                             </Group>
                             <Group>
-                                <Check id="check" type="checkbox" className="check" defaultChecked />
-                                <Label htmlFor="check">
-                                    <span className="icon"></span> 정보 수집 동의
-                                </Label>
-                            </Group>
-                            <Group>
-                                <Button type="submit" className="button" value="Sign In" />
+                                <Button type="submit" className="button" value="Sign In" onClick={onSingnIn}/>
                             </Group>
                             <Hr />
                             <FootLnk>
@@ -198,6 +239,12 @@ const Login: React.FC = () => {
                             <Group>
                                 <Label htmlFor="pass-confirm">비밀번호 확인</Label>
                                 <Input id="pass-confirm" type="password" className="input" data-type="password" />
+                            </Group>
+                            <Group>
+                                <Check id="check" type="checkbox" className="check" defaultChecked />
+                                <Label htmlFor="check">
+                                    <span className="icon"></span> 정보 수집 동의
+                                </Label>
                             </Group>
                             <Group>
                                 <Button type="button" className="button" value="Sign Up" onClick={handleSignUpClick} />

@@ -5,6 +5,7 @@ import com.together.board.bean.BoardDTO;
 import com.together.board.service.BoardService;
 import com.together.board.service.FileUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 //포트 번호가 달라서(front는 3000, back은 8080) 생기는 연결 거부 문제 해결
-@CrossOrigin
+@CrossOrigin("*")
 //직접적인 페이지 연결은 프론트에서 함으로 벡에서는 정보 전달을 위한 작업만 수행함.
 @RestController
 //접근경로
 @RequestMapping(
         path = {"board"}
 )
+@RequiredArgsConstructor
 public class BoardController {
     private static final Logger log = LoggerFactory.getLogger(BoardController.class);
     @Autowired
@@ -58,13 +60,9 @@ public class BoardController {
     //게시글 작성. 작성 시 이미지를 temp -> test 폴더로 이동, 글 내용의 img 태그의 src를 갱신한다
     @Secured("ROLE_USER")
     @PostMapping(path = {"writeBoard"})
-    public void writeBoard(@RequestBody BoardDTO boardDTO, Authentication authentication) {
+    public void writeBoard(@RequestBody BoardDTO boardDTO) {
         System.out.println("글작성 컨트롤러 진입: " +boardDTO);
-        if(authentication.isAuthenticated()){
-            System.out.println("권한을 확인하겠습니다.: " + authentication);
-        }else{
-            System.out.println("권한이 없습니다.");
-        }
+
         FileUtils fileUtils = new FileUtils();
         try {
             //이미지를 임시폴더에서 영구폴더로 옮기고

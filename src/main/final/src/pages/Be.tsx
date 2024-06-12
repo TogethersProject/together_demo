@@ -2,14 +2,34 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/Be.module.css';
 
+//ckeditor
+//import { CKEditor } from '@ckeditor/ckeditor5-react';
+//import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+import axios from "axios";
+const CustomEditor = dynamic( () => {
+    return import( '../components/CustomEditor' );
+}, { ssr: false,suspense: true } );
+
+
 const Be = () => {
+    useEffect(() => {
+        // CustomEditor 컴포넌트 가져오기
+        const loadCustomEditor = async () => {
+            const CustomEditor = await import('../components/CustomEditor');
+            // 필요한 작업 수행
+        };
+        loadCustomEditor();
+    }, []);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [bio, setBio] = useState('');
     const [photo, setPhoto] = useState<File | null>(null);
     const [showModal, setShowModal] = useState(false);
     const router = useRouter();
-
+    const [isClient, setIsClient] = useState(false);
+    const [board, setBoard] = useState({title:'멘토입니당'});
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const reader = new FileReader();
@@ -68,11 +88,55 @@ const Be = () => {
         router.push('/Menu');
     };
 
+    const onContent = (editor) => {
+        const data = editor.getData();
+        setBoard(prevData => ({
+            ...prevData,
+            name:name,
+            email:email,
+            id: 'hong',
+            title:'멘토입니당',
+            content: data
+        }));
+        console.log('content: ', board);
+    };
+
+    const boardSubmitURL = 'http://localhost:9000/board/writeBoard'
+    const onSubmit = (e) => {
+        e.preventDefault();
+        //console.log("보드제출~!")
+
+        const bearer: string | null = localStorage.getItem('grantType');
+        const accessToken: string | null = localStorage.getItem('accessToken');
+        //console.log(bearer)
+        //console.log(accessToken)
+        let headers: { [key: string]: string } = {};
+        if (bearer !== null && accessToken !== null) {
+            headers = { Authorization: `${bearer}${accessToken}` };
+        }
+        //console.log(headers)
+
+        axios.post(boardSubmitURL, board    ,{headers:headers}
+        ).then(res => {
+            console.log(res);
+                alert('등록 완료!');
+            // Show modal and redirect to First.tsx
+            setShowModal(true);
+            setTimeout(() => {
+                router.push('/Find');
+            }, 1000); // Adjust the duration as needed
+        }).catch(err => {
+            console.log(err);
+            alert('에러!!!')
+        });
+        console.log('Submit: ', board);
+    };
     return (
         <div className={styles.container}>
             <div className={styles.mainScreen}>
                 <h1 className={styles.title}>멘토 등록</h1>
-                <form className={styles.form} onSubmit={handleSubmit}>
+                {/*<form className={styles.form} onSubmit={handleSubmit}>*/}
+                <form className={styles.form} onSubmit={onSubmit}>
                     <div className={styles.formGroup}>
                         <label className={styles.label} htmlFor="name">이름:</label>
                         <input
@@ -95,25 +159,13 @@ const Be = () => {
                             required
                         />
                     </div>
+
                     <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="bio">소개:</label>
-                        <textarea
-                            className={styles.textarea}
-                            id="bio"
-                            value={bio}
-                            onChange={(e) => setBio(e.target.value)}
-                            required
-                        ></textarea>
-                    </div>
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="photo">사진:</label>
-                        <input
-                            className={styles.input}
-                            type="file"
-                            id="photo"
-                            accept="image/*"
-                            onChange={handlePhotoChange}
-                        />
+                        <Suspense fallback={<div>Loading editor...</div>}>
+                            <CustomEditor onContent={onContent}
+                                //initialData='<h1>Hello from CKEditor in Next.js!</h1>'
+                            />
+                        </Suspense>
                     </div>
                     <button className={styles.button} type="submit">등록하기</button>
                     <button className={styles.goBackButton} onClick={handleGoBack}>뒤로가기</button>

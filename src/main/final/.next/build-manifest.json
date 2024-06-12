@@ -12,25 +12,15 @@
   ],
   "rootMainFiles": [],
   "pages": {
-    "/": [
+    "/Be": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/index.js"
+      "static/chunks/pages/Be.js"
     ],
-    "/Detail": [
+    "/Find": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Detail.js"
-    ],
-    "/FindVolunteer": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/FindVolunteer.js"
-    ],
-    "/First": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/First.js"
+      "static/chunks/pages/Find.js"
     ],
     "/Login": [
       "static/chunks/webpack.js",

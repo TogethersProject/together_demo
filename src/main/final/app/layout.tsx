@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import './src/styles/First.css';
+import '../src/styles/First.css';
 
 const First: React.FC = () => {
     const router = useRouter();
