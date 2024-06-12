@@ -40,9 +40,10 @@ public class MemberController {
         log.info("테스트4임당 " + str);
         return "test4 " + str;
     }
+
     @PostMapping(path={"loginCheck"})
     public ResponseEntity<JwtToken>  loginCheck(@RequestBody AuthenticationRequest request){
-        System.out.println("login controller: " + request);
+        log.info("login controller: " + request);
 
         ResponseEntity<JwtToken>  jwtToken = memberInfoService.loginCheck(request);
         //System.out.println("MemberController - JwtToken: " + jwtToken);

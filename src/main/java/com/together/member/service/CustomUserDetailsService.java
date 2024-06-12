@@ -3,6 +3,8 @@ package com.together.member.service;
 import com.together.member.DAO.MemberDAO;
 import com.together.member.bean.MemberDTO;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+    private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
     @Autowired
     private MemberDAO memberDAO;
     private final PasswordEncoder passwordEncoder;
@@ -31,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다."));
 
-        System.out.println("customUserDetailsService - loadUser: " + userDetails);
+        log.info("customUserDetailsService - loadUser: " + userDetails);
         return userDetails;
     }
 
@@ -44,7 +47,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .roles(member.getMember_role())//ROLE_USER
                 //.roles(member.getRoles().toArray(new String[0]))
                 .build();
-        System.out.println("customUserDetailsService - createDetails: " + userDetails);
+        log.info("customUserDetailsService - createDetails: " + userDetails);
         return userDetails;
     }
 }

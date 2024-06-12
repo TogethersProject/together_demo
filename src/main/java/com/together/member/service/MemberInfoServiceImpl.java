@@ -1,6 +1,6 @@
 package com.together.member.service;
 
-import com.together.common.utils.jwt.JwtTokenProvider;
+import com.together.common.utils.jwt.service.JwtTokenProvider;
 import com.together.common.utils.jwt.bean.AuthenticationRequest;
 import com.together.common.utils.jwt.bean.JwtToken;
 import com.together.member.DAO.MemberDAO;

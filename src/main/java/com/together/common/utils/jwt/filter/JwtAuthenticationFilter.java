@@ -1,6 +1,6 @@
 package com.together.common.utils.jwt.filter;
 
-import com.together.common.utils.jwt.JwtTokenProvider;
+import com.together.common.utils.jwt.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;

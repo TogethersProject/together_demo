@@ -29,7 +29,7 @@ const Be = () => {
     const [showModal, setShowModal] = useState(false);
     const router = useRouter();
     const [isClient, setIsClient] = useState(false);
-    const [board, setBoard] = useState({});
+    const [board, setBoard] = useState({title:'멘토입니당'});
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const reader = new FileReader();
@@ -92,22 +92,31 @@ const Be = () => {
         const data = editor.getData();
         setBoard(prevData => ({
             ...prevData,
+            name:name,
+            email:email,
+            id: 'hong',
+            title:'멘토입니당',
             content: data
         }));
         console.log('content: ', board);
     };
-    const boardSubmitURL = 'http://localhost:9000/board/writeBoard'
-    const onSubmit = () => {
-        //console.log(isLogin)
-        //console.log(accessToken)
-        setBoard(preData => ({
-            ...preData
-            ,name: name
-            ,email: email
-            ,id: 'hong'
-        }))
 
-        axios.post(boardSubmitURL, board    //,{headers:{Authorization:bearer+accessToken}}
+    const boardSubmitURL = 'http://localhost:9000/board/writeBoard'
+    const onSubmit = (e) => {
+        e.preventDefault();
+        //console.log("보드제출~!")
+
+        const bearer: string | null = localStorage.getItem('grantType');
+        const accessToken: string | null = localStorage.getItem('accessToken');
+        //console.log(bearer)
+        //console.log(accessToken)
+        let headers: { [key: string]: string } = {};
+        if (bearer !== null && accessToken !== null) {
+            headers = { Authorization: `${bearer}${accessToken}` };
+        }
+        //console.log(headers)
+
+        axios.post(boardSubmitURL, board    ,{headers:headers}
         ).then(res => {
             console.log(res);
                 alert('등록 완료!');

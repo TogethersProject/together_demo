@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 @Entity
-@Table( name = "board2" )
+@Table( name = "board" )
 @Getter
 @Setter
 @ToString

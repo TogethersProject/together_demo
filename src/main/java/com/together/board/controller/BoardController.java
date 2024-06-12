@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 //포트 번호가 달라서(front는 3000, back은 8080) 생기는 연결 거부 문제 해결
-@CrossOrigin
+@CrossOrigin("*")
 //직접적인 페이지 연결은 프론트에서 함으로 벡에서는 정보 전달을 위한 작업만 수행함.
 @RestController
 //접근경로
