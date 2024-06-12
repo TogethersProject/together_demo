@@ -17,16 +17,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/Be.js"
     ],
-    "/Find": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/Find.js"
-    ],
-    "/Login": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/Login.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

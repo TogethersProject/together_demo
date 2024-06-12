@@ -20,8 +20,9 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("content-type", "authorization");
-
+                        .allowedHeaders("content-type", "authorization")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
 
 
             }

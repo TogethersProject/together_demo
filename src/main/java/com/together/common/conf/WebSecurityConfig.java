@@ -54,6 +54,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/member/decodingToken").permitAll()//토큰이 유효한 토큰인지 확인
                                 .requestMatchers("/board/getWriteList").permitAll()//글목록확인
                                 .requestMatchers("/board/writeImage").permitAll()//이미지 임시 업로드. 권한 확인하려면 csrf 토큰 처리 필요.
+                                .requestMatchers("/common/reissueRefreshToken").permitAll()//유효기간이 다 된 accessToken 재발급 요청.
 
                                 //user권한이 있어야 요청 가능
                                 .requestMatchers("/member/updateMember").hasRole("USER")

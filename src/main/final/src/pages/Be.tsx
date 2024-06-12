@@ -131,6 +131,16 @@ const Be = () => {
         });
         console.log('Submit: ', board);
     };
+    const reissueAccessURL = "http://localhost:9000/common/reissueRefreshToken"
+    const onButton = (e) => {
+        e.preventDefault();
+        console.log("버튼눌럿다");
+        const refreshToken = localStorage.getItem('refreshToken')
+        axios.post(reissueAccessURL,null,{headers:{RefreshToken:refreshToken}}
+        ).then(res => (
+            console.log("accessToken: " + res.data)
+        )).catch(err => console.log(err))
+    }
     return (
         <div className={styles.container}>
             <div className={styles.mainScreen}>
@@ -178,6 +188,7 @@ const Be = () => {
                     </div>
                 </div>
             )}
+            <button onClick ={onButton}>엑세스내놔</button>
         </div>
     );
 };

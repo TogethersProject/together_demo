@@ -1,7 +1,10 @@
 package com.together.common.utils.jwt.service;
 
-import com.together.common.utils.jwt.bean.JwtConfiguration;
+import com.together.common.conf.JwtConfiguration;
 import com.together.common.utils.jwt.bean.JwtToken;
+import com.together.common.utils.jwt.bean.RefreshToken;
+import com.together.common.utils.jwt.repository.RefreshTokenRepo;
+import com.together.member.DAO.MemberDAO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
@@ -14,22 +17,29 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@Service
+@Transactional
 public class JwtTokenProviderImpl implements JwtTokenProvider {
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProviderImpl.class);
+    private final RefreshTokenRepo refreshTokenRepo;
+    @Autowired
+    private MemberDAO memberDAO;
     private JwtConfiguration jwtProp;
     private final Key key;
 
-    @Autowired
-        //secret key 값 저장. constructort. application.properties에 있음.
-    public JwtTokenProviderImpl(JwtConfiguration jwtProp){
+    //secret key 값 저장. constructort. application.properties에 있음.
+    public JwtTokenProviderImpl(JwtConfiguration jwtProp, RefreshTokenRepo refreshTokenRepo, MemberDAO memberDAO){
         log.info("시크릿 키 저장");
         if (jwtProp == null) {
             throw new IllegalArgumentException("JwtConfiguration cannot be null");
@@ -37,11 +47,13 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
         byte[] signingKey = jwtProp.getSecretKey().getBytes();
         log.info("JWTTOkenProvider - constructor의 key: " + signingKey);
         this.key= Keys.hmacShaKeyFor(signingKey);
+        this.refreshTokenRepo = refreshTokenRepo;
+        this.memberDAO = memberDAO;
     }
 
     //access, refresh 토큰 생성.
     @Override
-    public JwtToken generateToken(Authentication authentication){
+    public JwtToken generateToken(Authentication authentication ,String member_id){
         log.info("토큰 생성");
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
@@ -49,22 +61,12 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
                 .collect(Collectors.joining(","));
 
         //accessToken 생성
-        String accessToken = Jwts.builder()
-                .setSubject("유저 권한 부여")
-                //관리자 id로 로그인 시 admin 권한 부여, 그 외에는 user 권한 부여.
-                .claim("rol", authorities)
-                .setIssuedAt(new Date())
-                .setExpiration((new Date(System.currentTimeMillis() + 1000*60*60)))//1hours
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
+        String accessToken = createAccessToken(authorities, member_id);
 
         //refreshToken 생성
-        String refreshToken = Jwts.builder()
-                                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24*7))//유효기간 7일
-                                .signWith(key, SignatureAlgorithm.HS512)
-                                .compact();
+        String refreshToken = createRefreshToken();
 
-        JwtToken returnToken =JwtToken.builder()
+        JwtToken returnToken = JwtToken.builder()
                 .grantType("Bearer ")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -74,6 +76,26 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
         return returnToken;
     }
 
+    private String createAccessToken(String role, String member_id){
+        String accessToken = Jwts.builder()
+                .setSubject(member_id+"의 토큰")
+                //관리자 id로 로그인 시 admin 권한 부여, 그 외에는 user 권한 부여.
+                .claim("rol", role)
+                .claim("id", member_id)
+                .setIssuedAt(new Date())
+                .setExpiration((new Date(System.currentTimeMillis() + 1000*60*60)))//1hours
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+        return accessToken;
+    }
+    private String createRefreshToken(){
+        //uuid로 발급해도 됨. 사용자 정보가 필수는 아니니까.
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24*7))//유효기간 7일
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+        return refreshToken;
+    }
     //토큰 복호화
     @Override
     public Authentication getAuthentication(String accessToken) {
@@ -96,7 +118,8 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
     }
 
     //토큰 유효기간 검증
-    private Claims parseClaims(String token){
+    @Override
+    public Claims parseClaims(String token){
         log.info("토큰 유효기간검증");
         try{
             return Jwts.parser()
@@ -110,7 +133,7 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
         }
     }
 
-    //토큰 정보 검증
+    //토큰 정보 검증. access와 refresh 둘 다 가능
     @Override
     public boolean validateToken(String token) {
         log.info("토큰 유효성 검사");
@@ -119,6 +142,7 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
+
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token " + e);
@@ -131,4 +155,22 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
         }
         return false;
     }
+
+    @Override
+    public String reissueAccessToken(RefreshToken refreshToken){
+        //유효한 refresh Token 인가?
+        if(!validateToken(refreshToken.getRefreshToken())){
+            System.out.println("이상한 refreshToken인데요.");
+            return "";
+        }
+
+        //refresh 토큰 -> accessToken 발급
+        Optional<RefreshToken> refreshToken1 = refreshTokenRepo.findById(refreshToken.getRefreshToken());
+        String accessToken = createAccessToken("USER", refreshToken1.get().getMember_id());
+
+        System.out.println("재발급한 accessToken: " + accessToken);
+        return accessToken;
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package com.together.member.service;
 
+import com.together.common.utils.jwt.bean.RefreshToken;
+import com.together.common.utils.jwt.repository.RefreshTokenRepo;
 import com.together.common.utils.jwt.service.JwtTokenProvider;
 import com.together.common.utils.jwt.bean.AuthenticationRequest;
 import com.together.common.utils.jwt.bean.JwtToken;
@@ -35,6 +37,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RefreshTokenRepo refreshTokenRepo;
 
     //constructort. jwtTokenProvider 초기화.
     public MemberInfoServiceImpl(JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder,AuthenticationManager authenticationManager) {
@@ -90,9 +94,13 @@ public class MemberInfoServiceImpl implements MemberInfoService {
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
-            JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+            JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, member_id);
             System.out.println("MemberService - loginCheck의 jwtToken: " + jwtToken);
-    
+
+            // 4. refresh 토큰을 DB에 저장(Redis를 사용하는 경우가 많음)
+            String refreshToken = jwtToken.getRefreshToken();
+            RefreshToken redis = new RefreshToken(refreshToken, member_id);
+            refreshTokenRepo.save(redis);
 
             //HttpHeaders 객체 생성 및 토큰 추가
             HttpHeaders httpHeaders = new HttpHeaders();

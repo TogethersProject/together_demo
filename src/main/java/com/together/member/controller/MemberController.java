@@ -1,7 +1,7 @@
 package com.together.member.controller;
 
 import com.together.common.utils.jwt.bean.AuthenticationRequest;
-import com.together.common.utils.jwt.bean.JwtConfiguration;
+import com.together.common.conf.JwtConfiguration;
 import com.together.common.utils.jwt.bean.JwtToken;
 import com.together.member.bean.MemberDTO;
 import com.together.member.service.MemberInfoService;
@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 //포트 번호가 달라서(front는 3000, back은 8080) 생기는 연결 거부 문제 해결
@@ -26,20 +25,6 @@ public class MemberController {
     private JwtConfiguration jwtProp;
     @Autowired
     private MemberInfoService memberInfoService;
-
-    @Secured("ROLE_USER")
-    @GetMapping(path="test")
-    public String test(){
-        System.out.println("테스트");
-        log.info("테스트임당");
-        return "test";
-    }
-    @PostMapping(path="test4")
-    public String test4(@RequestParam("str") String str){
-        System.out.println("테스트4 " + str);
-        log.info("테스트4임당 " + str);
-        return "test4 " + str;
-    }
 
     @PostMapping(path={"loginCheck"})
     public ResponseEntity<JwtToken>  loginCheck(@RequestBody AuthenticationRequest request){

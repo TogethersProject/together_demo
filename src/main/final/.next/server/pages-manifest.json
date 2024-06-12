@@ -2,8 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/Mentor": "pages/Mentor.js",
-  "/Be": "pages/Be.js",
-  "/Login": "pages/Login.js",
-  "/Find": "pages/Find.js"
+  "/Be": "pages/Be.js"
 }
