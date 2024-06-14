@@ -11,19 +11,19 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 
-@MapperScan(basePackages = "com/example/demo/mapper")//@MapperScan(basePackages = "com.example.demo.mapper")
+@MapperScan(basePackages = "com.example.demo.mapper")
 @SpringBootApplication
 @ComponentScan(
-        basePackages = {"com.together.board.*"
-                        ,"com.together.common.conf" // naver.properties set (objectStorage)
-                        ,"com.together.common.utils" // 암호화, 임시 폴더 자동 삭제
-                        ,"com.together.member.*"
+        basePackages = {"com.example.demo.together.board.*"
+                        ,"com.example.demo.together.common.conf" // naver.properties set (objectStorage)
+                        ,"com.example.demo.together.common.utils" // 암호화, 임시 폴더 자동 삭제
+                        ,"com.example.demo.together.member.*"
         }
 )
-@EnableJpaRepositories({"com.together.board.DAO"
-        ,"com.together.member.DAO"})
-@EntityScan({"com.together.board.bean"
-        ,"com.together.member.bean"})
+@EnableJpaRepositories({"com.example.demo.together.board.DAO"
+        ,"com.example.demo.together.member.DAO"})
+@EntityScan({"com.example.demo.together.board.bean"
+        ,"com.example.demo.together.member.bean"})
 @EnableScheduling   //일정 시간이 지나면 임시 이미지 저장 폴더 자동 삭제를 위함
 //@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class DemoApplication {

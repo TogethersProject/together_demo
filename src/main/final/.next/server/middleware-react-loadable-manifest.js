@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{\"pages\\\\Be.tsx -> ../components/CustomEditor\":{\"id\":\"pages\\\\Be.tsx -> ../components/CustomEditor\",\"files\":[\"static/chunks/src_components_CustomEditor_tsx.js\"]}}"
+self.__REACT_LOADABLE_MANIFEST="{}"
