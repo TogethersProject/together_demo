@@ -68,7 +68,7 @@ const InteractiveChatBot: React.FC = () => {
                     setInputText('');
                 }
             }, 1000);
-        }, 12000);
+        }, 15000);
     };
 
 
