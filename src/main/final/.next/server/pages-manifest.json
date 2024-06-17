@@ -1,8 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/First": "pages/First.js",
-  "/Login": "pages/Login.js"
-}
+{"/_app":"pages/_app.js","/_error":"pages/_error.js","/Be":"pages/Be.html","/Calendar":"pages/Calendar.html","/Club":"pages/Club.html","/Find":"pages/Find.html","/Detail":"pages/Detail.html","/FindVolunteer":"pages/FindVolunteer.html","/First":"pages/First.html","/Join":"pages/Join.html","/Login":"pages/Login.html","/Mentor":"pages/Mentor.html","/Market":"pages/Market.html","/":"pages/index.html","/shrimp":"pages/shrimp.html","/My":"pages/My.html","/Mypage":"pages/Mypage.html","/Register":"pages/Register.html","/_document":"pages/_document.js","/404":"pages/404.html"}

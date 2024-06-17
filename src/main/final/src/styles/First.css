@@ -24,10 +24,12 @@ body {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .header {
-    width: 320px;
+    width: 100%;
     height: 60px;
     background-color: #ffffff;
     display: flex;
@@ -42,12 +44,6 @@ body {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    width: 80%;
-}
-
-.center-image {
-    max-width: 100px;
-    max-height: 50px;
 }
 
 .alert-icon {
@@ -57,12 +53,13 @@ body {
 
 .content {
     flex-grow: 1;
-    width: 300px;
+    width: 100%;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    overflow-y: auto;
 }
 
 .intro {
@@ -82,9 +79,9 @@ body {
 }
 
 .activity-card {
-    width: 100%;
+    width:280px;
     max-width: 280px;
-    background-color: #ffffff;
+    background-color: peachpuff;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -105,11 +102,11 @@ body {
 
 .activity-card p {
     font-size: 13px;
-    color: #666666;
+    color: snow;
 }
 
 .footer {
-    width: 320px;
+    width: 100%;
     height: 60px;
     background-color: #ffffff;
     display: flex;
@@ -124,3 +121,34 @@ body {
     cursor: pointer;
 }
 
+.sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background-color: #ffffff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    z-index: 10;
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
+}
+
+.sidebar-link {
+    padding: 10px 0;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.sidebar-link:hover {
+    background-color: #f0f0f0;
+}
+
+.main-screen.sidebar-open .sidebar {
+    transform: translateX(0);
+}
