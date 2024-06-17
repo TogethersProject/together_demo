@@ -21,7 +21,7 @@ class UploadAdapter {
 
     _initRequest() {
         const xhr = this.xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:9000/board/writeImage', true);
+        xhr.open('POST', 'http://localhost:9000/mentor/writeImage', true);
         xhr.responseType = 'json';
     }
 

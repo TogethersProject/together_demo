@@ -59,8 +59,14 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-    //Spring security
+    // Spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // sns 가입을 위한 oauth
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // 자동 이메일 전송
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'}

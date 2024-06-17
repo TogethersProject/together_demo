@@ -11,13 +11,13 @@ const Main: React.FC = () => {
     return (
         <div className="container" onClick={handleClick}>
             <div className="image-wrapper">
-                <Image src="/images/image-22.png" alt="" />
+                {/*<Image src="/images/image-22.png" alt="" />*/}
             </div>
             <div className="image-wrapper">
-                <Image src="/images/image-6.png" alt="" />
+                {/*<Image src="/images/image-6.png" alt="" />*/}
             </div>
             <div className="image-wrapper">
-                <Image src="/images/image-2.png" alt="" />
+                {/*<Image src="/images/image-2.png" alt="" />*/}
             </div>
             <Link href="/First">Go to First Page</Link>
         </div>

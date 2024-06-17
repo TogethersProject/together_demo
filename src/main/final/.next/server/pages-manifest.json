@@ -2,5 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/Be": "pages/Be.js"
+  "/Mypage": "pages/Mypage.js",
+  "/Login": "pages/Login.js",
+  "/First": "pages/First.js",
+  "/FindVolunteer": "pages/FindVolunteer.js",
+  "/register": "pages/register.js"
 }

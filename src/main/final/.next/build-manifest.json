@@ -10,12 +10,30 @@
     "static/development/_buildManifest.js",
     "static/development/_ssgManifest.js"
   ],
-  "rootMainFiles": [],
+  "rootMainFiles": [
+    "static/chunks/webpack.js",
+    "static/chunks/main-app.js"
+  ],
   "pages": {
-    "/Be": [
+    "/FindVolunteer": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Be.js"
+      "static/chunks/pages/FindVolunteer.js"
+    ],
+    "/First": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/First.js"
+    ],
+    "/Login": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Login.js"
+    ],
+    "/Mypage": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Mypage.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
@@ -26,6 +44,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
+    ],
+    "/register": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/register.js"
     ]
   },
   "ampFirstPages": []
