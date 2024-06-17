@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import DaumPostcode from 'react-daum-postcode';
 import { useRouter } from 'next/router';
 import '../styles/Login.css';
-import axios from "axios";
-import {useNavigate} from "react-router"; // Import CSS file for styles
+import axios from "axios"; // Import CSS file for styles
 
 const Login: React.FC = () => {
+    const signInMemberURL = "http://localhost:9000/member/loginCheck"
+    const signUpURL = "http://loclahost:9000/member/writeMember"
+
     const [tab, setTab] = useState<'sign-in' | 'sign-up'>('sign-in');
     const [address, setAddress] = useState('');
     const [detailAddress, setDetailAddress] = useState('');
@@ -14,8 +16,11 @@ const Login: React.FC = () => {
     const sidebarRef = useRef<HTMLDivElement>(null);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const router = useRouter();
-    //로그인 시 id, pw 일치하는 지 확인 후 토큰 전달 url
-    const signInMemberURL = "http://localhost:9000/member/loginCheck"
+    const [codeStatus, setCodeStatus] = useState(false); // null, 'correct', or 'incorrect'
+
+    // State for email verification
+    const [isVerified, setIsVerified] = useState(false);
+    const [verificationCode, setVerificationCode] = useState('');
 
     useEffect(() => {
         const storedLoginStatus = localStorage.getItem('isLoggedIn');
@@ -102,12 +107,34 @@ const Login: React.FC = () => {
         }
     };
 
+    //회원가입 제출 - 바로 로그인 되도록
     const handleSignUpSubmit = () => {
-        const username = (document.getElementById('name') as HTMLInputElement).value;
-        setIsLoggedIn(true);
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('username', username); // Save username
-        router.push('/dashboard');
+        const member_id = document.getElementById('id');
+        const member_name = document.getElementById('name')
+        const member_pwd = document.getElementById('pass-signup')
+        const member_email = document.getElementById('email-signup');
+        const member_address = address;
+        const member_addressDetail = detailAddress;
+        const member = {member_id, member_pwd, member_name, member_email, member_address, member_addressDetail};
+
+        const member_pwdChk = document.getElementById('pass-confirm');
+        const member_emailChk = document.getElementById('verification-code');
+        if((member_email === member_emailChk ) && (member_pwd === member_emailChk)){
+            console.log(member_email + " = " + member_emailChk +" / " + member_pwd +" = " )
+
+            axios.post(signUpURL, member)
+                .then( (res) => {
+                    console.log(res.data)
+
+                    const username = (document.getElementById('name') as HTMLInputElement).value;
+                    setIsLoggedIn(true);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username); // Save username
+
+                    router.push('/First');
+                }).catch(err => console.log(err))
+        }
+
     };
 
     const naverURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=cr9KdwLzvG1E2Y2rcKtf&state=test&redirect_uri=http://localhost:9000/member/snsLogin";
@@ -120,6 +147,27 @@ const Login: React.FC = () => {
                 localStorage.set("username", "뭐야");
             }).catch(err => console.log(err))
     }
+
+    // Handle email verification
+    const handleVerifyClick = () => {
+        // Logic to send verification code to the email
+        setIsVerified(true);
+    };
+
+    const handleCodeChange = (e) => {
+        setVerificationCode(e.target.value);
+    };
+    const handleCodeSubmit = () => {
+        // 백엔드와 통신하여 입력한 인증 번호가 맞는지 확인
+        const isCodeCorrect = verificationCode === '123456'; // 백엔드에서 받은 코드와 비교
+
+        if (isCodeCorrect) {
+            setCodeStatus(true);
+        } else {
+            setCodeStatus(false);
+        }
+    };
+
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
             <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
@@ -154,7 +202,8 @@ const Login: React.FC = () => {
                             회원가입
                         </label>
                         <div className="login-form">
-                            <div className="sign-in-html" style={{ transform: tab === 'sign-in' ? 'rotateY(0deg)' : 'rotateY(-180deg)' }}>
+                            <div className="sign-in-html"
+                                 style={{transform: tab === 'sign-in' ? 'rotateY(0deg)' : 'rotateY(-180deg)'}}>
                                 <div className="group">
                                     <label htmlFor="user-signin" className="label">
                                         아이디
@@ -171,6 +220,8 @@ const Login: React.FC = () => {
                                         className="input"
                                         data-type="password"
                                     />
+                                </div>
+                                <div className="group">
                                     <input
                                         type="button"
                                         className="button"
@@ -179,16 +230,25 @@ const Login: React.FC = () => {
                                     />
                                 </div>
                                 <div className="hr"></div>
-                                <div className="sns-login">
-                                    <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=cr9KdwLzvG1E2Y2rcKtf&state=test&redirect_uri=http://localhost:9000/member/snsLogin">네이버로그인</a>
-                                    <p>카카오</p>
-                                    <p>구글</p>
-                                </div>
                                 <div className="foot-lnk">
                                     <a href="#">비밀번호 찾기</a>
                                 </div>
+
+                                <div className="social-login">
+                                    <a className="social-btn" href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=cr9KdwLzvG1E2Y2rcKtf&state=test&redirect_uri=http://localhost:9000/member/snsLogin">
+                                        <img src="/images/naver-logo.webp" alt="네이버 로그인" className="social-logo"/>
+                                    </a>
+                                    <a href="#" className="social-btn">
+                                        <img src="/images/kakao-logo.webp" alt="카카오 로그인" className="social-logo"/>
+                                    </a>
+                                    <a href="#" className="social-btn">
+                                        <img src="/images/google-logo.png" alt="구글 로그인" className="social-logo"/>
+                                    </a>
+                                </div>
                             </div>
-                            <div className="sign-up-html" style={{ transform: tab === 'sign-up' ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
+
+                            <div className="sign-up-html"
+                                 style={{transform: tab === 'sign-up' ? 'rotateY(0deg)' : 'rotateY(180deg)'}}>
                                 <div className="group">
                                     <label htmlFor="user-signup" className="label">
                                         아이디
@@ -200,6 +260,28 @@ const Login: React.FC = () => {
                                         이메일
                                     </label>
                                     <input id="email-signup" type="email" className="input"/>
+                                    <button type="button" onClick={handleVerifyClick}>
+                                        인증하기
+                                    </button>
+                                    {isVerified && (
+                                        <div className="verification-group">
+                                            <label htmlFor="verification-code" className="label">
+                                                인증번호를 입력하세요
+                                            </label>
+                                            <input
+                                                id="verification-code"
+                                                type="text"
+                                                className="input"
+                                                value={verificationCode}
+                                                onChange={handleCodeChange}
+                                            />
+                                            <button type="button" onClick={handleCodeSubmit}>
+                                                확인
+                                            </button>
+                                            {codeStatus === true && <span className="correct">✔️</span>}
+                                            {codeStatus === false && <span className="incorrect">❌</span>}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="group">
                                     <label htmlFor="pass-signup" className="label">
