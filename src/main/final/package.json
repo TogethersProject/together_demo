@@ -11,6 +11,7 @@
         "clean": "rimraf .next"
     },
     "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^41.4.2",
         "@ckeditor/ckeditor5-react": "^7.0.0",
         "@lottiefiles/react-lottie-player": "^3.5.4",
         "@react-three/drei": "^9.106.0",
@@ -19,6 +20,7 @@
         "@testing-library/user-event": "^13.5.0",
         "@types/styled-components": "^5.1.34",
         "axios": "^1.7.2",
+        "buffer": "^6.0.3",
         "ckeditor5-custom-build": "file:./ckeditor5",
         "http-proxy-middleware": "^3.0.0",
         "next": "14.2.3",

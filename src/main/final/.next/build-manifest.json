@@ -20,6 +20,7 @@
       "static/chunks/main.js",
       "static/chunks/pages/index.js"
     ],
+<<<<<<< HEAD
     "/FindVolunteer": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -28,6 +29,11 @@
     "/First": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
+=======
+    "/First": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
       "static/chunks/pages/First.js"
     ],
     "/Login": [

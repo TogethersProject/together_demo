@@ -11,6 +11,7 @@ public interface MemberInfoService {
 
     String writeMember(MemberDTO memberDTO);
 
+<<<<<<< HEAD
     boolean isExistId(String checkId);
 
     boolean decodingToken(JwtToken jwtToken);
@@ -20,4 +21,9 @@ public interface MemberInfoService {
     Boolean isEmail(String email, String authMem);
 
     String sendEmailForm(String email)throws Exception;
+=======
+    boolean decodingToken(JwtToken jwtToken);
+
+    String isExist(String memberId);
+>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
 }

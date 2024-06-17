@@ -43,6 +43,9 @@ public class MemberDTO implements UserDetails {
     @Column( name="member_address")
     private String member_address;
 
+    @Column( name="member_addressDetail")
+    private String member_addressDetail;
+
     @Column( name="member_role"
             , nullable = false)
     private String member_role ="USER";//default user.

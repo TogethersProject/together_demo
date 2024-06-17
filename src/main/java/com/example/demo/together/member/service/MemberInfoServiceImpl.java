@@ -1,5 +1,6 @@
 package com.example.demo.together.member.service;
 
+<<<<<<< HEAD
 import com.example.demo.together.common.conf.MailCofig;
 import com.example.demo.together.common.utils.jwt.bean.AuthenticationRequest;
 import com.example.demo.together.common.utils.jwt.bean.JwtToken;
@@ -12,6 +13,13 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+=======
+import com.example.demo.together.common.utils.jwt.service.JwtTokenProvider;
+import com.example.demo.together.common.utils.jwt.bean.AuthenticationRequest;
+import com.example.demo.together.common.utils.jwt.bean.JwtToken;
+import com.example.demo.together.member.DAO.MemberDAO;
+import com.example.demo.together.member.bean.MemberDTO;
+>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.HashOperations;
