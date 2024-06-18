@@ -89,10 +89,6 @@ const Mypage: React.FC = () => {
                     <h2>월별 봉사 캘린더</h2>
                     <p>봉사 일정을 확인하세요.</p>
                 </div>
-                <div className="activity-card" id="Club" onClick={handleClubClick}>
-                    <h2>봉사 소속 모임</h2>
-                    <p>가입된 모임을 확인하세요.</p>
-                </div>
             </div>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>
