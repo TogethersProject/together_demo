@@ -1,19 +1,11 @@
-<<<<<<<< HEAD:src/main/java/com/example/demo/together/common/utils/board/NCPObjectStorageService.java
 package com.example.demo.together.common.utils.board;
-========
-package com.example.demo.together.board.service;
->>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090:src/main/java/com/example/demo/together/board/service/NCPObjectStorageService.java
 
 import java.io.InputStream;
 import java.util.UUID;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.model.*;
-<<<<<<<< HEAD:src/main/java/com/example/demo/together/common/utils/board/NCPObjectStorageService.java
 import com.example.demo.together.common.conf.NcpConfiguration;
-========
-import com.example.demo.together.common.conf.NaverConfiguration;
->>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090:src/main/java/com/example/demo/together/board/service/NCPObjectStorageService.java
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

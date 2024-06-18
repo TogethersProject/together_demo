@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:src/main/java/com/example/demo/together/common/utils/board/FileUtils.java
 package com.example.demo.together.common.utils.board;
-========
-package com.example.demo.together.board.service;
->>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090:src/main/java/com/example/demo/together/board/service/FileUtils.java
 
 import org.springframework.stereotype.Component;
 //import jakarta.servlet.ServletContext;

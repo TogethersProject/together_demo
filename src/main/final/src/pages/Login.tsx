@@ -148,24 +148,51 @@ const Login: React.FC = () => {
             }).catch(err => console.log(err))
     }
 
+    const sendEmailURL = "http://localhost:9000/member/sendEmail"
     // Handle email verification
     const handleVerifyClick = () => {
         // Logic to send verification code to the email
+        const email = (document.getElementById('email-signup') as HTMLInputElement).value;
+        console.log("이메일: " + email);
+        const encodedEmail = encodeURIComponent(email);
+
+        axios.post(sendEmailURL, encodedEmail)
+            .then(res => console.log(res.data))
+            .catch(err => console.log(err))
+
         setIsVerified(true);
     };
 
     const handleCodeChange = (e) => {
         setVerificationCode(e.target.value);
     };
+    const mailCodeSubmit = "http://localhost:9000/member/isEmail"
     const handleCodeSubmit = () => {
         // 백엔드와 통신하여 입력한 인증 번호가 맞는지 확인
-        const isCodeCorrect = verificationCode === '123456'; // 백엔드에서 받은 코드와 비교
+        const email = (document.getElementById('email-signup') as HTMLInputElement).value;
+        const encodedEmail = encodeURIComponent(email);
+        const authcode = (document.getElementById('verification-code') as HTMLInputElement).value;
+        const encodedAuthcode = encodeURIComponent(authcode);
+        axios.get(mailCodeSubmit, {
+            params: {
+                encodedEmail,
+                encodedAuthcode
+            }
+        })
+            .then(res => {
+                console.log(res.data)
+                res.data && setCodeStatus(true);
+                res.data || setCodeStatus(false);
+            })
+            .catch(err => console.log(err));
 
-        if (isCodeCorrect) {
-            setCodeStatus(true);
-        } else {
-            setCodeStatus(false);
-        }
+        // const isCodeCorrect = verificationCode === '123456'; // 백엔드에서 받은 코드와 비교
+        //
+        // if (isCodeCorrect) {
+        //     setCodeStatus(true);
+        // } else {
+        //     setCodeStatus(false);
+        // }
     };
 
     return (

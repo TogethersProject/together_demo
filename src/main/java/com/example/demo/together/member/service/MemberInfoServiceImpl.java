@@ -1,6 +1,4 @@
 package com.example.demo.together.member.service;
-
-<<<<<<< HEAD
 import com.example.demo.together.common.conf.MailCofig;
 import com.example.demo.together.common.utils.jwt.bean.AuthenticationRequest;
 import com.example.demo.together.common.utils.jwt.bean.JwtToken;
@@ -11,15 +9,10 @@ import com.example.demo.together.member.bean.MemberDTO;
 import com.example.demo.together.member.DAO.MemberDAO;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import jakarta.mail.Message;
+import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-=======
-import com.example.demo.together.common.utils.jwt.service.JwtTokenProvider;
-import com.example.demo.together.common.utils.jwt.bean.AuthenticationRequest;
-import com.example.demo.together.common.utils.jwt.bean.JwtToken;
-import com.example.demo.together.member.DAO.MemberDAO;
-import com.example.demo.together.member.bean.MemberDTO;
->>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.HashOperations;
@@ -63,6 +56,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     private JavaMailSender javaMailSender;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private MailCofig mailCofig;
+
     private static final long AUTH_CODE_EXPIRATION_HOURS = 1;
     private static final String EMAIL_AUTH_HASH = "email_auth_hash";
 
@@ -165,7 +161,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     public Boolean isEmail(String email, String authMem) {
         //인증 코드 DB에서 꺼내기
         HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
-        String authDB = hashOps.get(EMAIL_AUTH_HASH, email);
+        String authDB = hashOps.get(EMAIL_AUTH_HASH, email);//HGET email_auth_hash "lamp0525@naver.com"
 
         //유저가 입력한 인증 코드와 DB에서 꺼낸 코드 비교하여 T/F
         if(authDB.equals(authMem)){
@@ -175,14 +171,41 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         return false;
     }
 
+
+    private boolean isValidEmail(String email) {
+        System.out.println("유효 이메일?: " + email);
+        if (email == null) {
+            System.out.println("빔");
+            return false;
+        }
+
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+            System.out.println("유효");
+        } catch (AddressException ex) {
+            System.out.println("예외");
+            return false;
+        }
+        return true;
+    }
     //유저에게 본인확인용 이메일 전송
     @Override
     public String sendEmailForm(String email) throws Exception{
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("이메일 주소가 유효하지 않습니다.");
+        }
+
+        if (!isValidEmail(email)) {
+            throw new IllegalArgumentException("이메일 주소 형식이 올바르지 않습니다.");
+        }
+
         //인증 코드 생성 및 DB 저장 -> redis(dbgyrlrks, hash map: "유저 email - 유저 인증 코드").
+        System.out.println(email + "로 보낼게 ");
         String code = String.valueOf(UUID.randomUUID());
         System.out.println("인증코드: " +code);
-        MailCofig mailCofig = new MailCofig();
         String emailFrom = mailCofig.getEmailAddress();
+        System.out.println("보내는 사람: " + emailFrom);
 
         //1시간 후 만료, 해시맵 형태의 redis. email - code 관계
         HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
@@ -196,7 +219,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         message.setSubject("[together] 인증 번호 안내");
         message.setText("이메일 인증 코드: " + code);
         message.setFrom(new InternetAddress(emailFrom));
-
+        System.out.println("이메일 내용: " + message);
         //이메일 전송
         try{
             javaMailSender.send(message);

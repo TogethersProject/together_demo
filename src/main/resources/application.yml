@@ -73,7 +73,6 @@ com:
         port: 6379
 
 naver:
-
   client:
     id: cr9KdwLzvG1E2Y2rcKtf
     secret: BeGvNSefdt
@@ -95,3 +94,8 @@ google:
     secret: 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
   redirect:
     url: http://localhost:9000/member/googleLogin
+
+email:
+  naver:
+    emailAddress: loginapitest@naver.com
+    emailPwd: loginapitest1234

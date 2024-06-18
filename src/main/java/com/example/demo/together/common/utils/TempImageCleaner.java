@@ -1,10 +1,7 @@
 package com.example.demo.together.common.utils;
 
-<<<<<<< HEAD
 import com.example.demo.together.common.utils.board.ObjectStorageService;
-=======
-import com.example.demo.together.board.service.ObjectStorageService;
->>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

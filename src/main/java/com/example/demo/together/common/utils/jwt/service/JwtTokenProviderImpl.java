@@ -1,15 +1,11 @@
 package com.example.demo.together.common.utils.jwt.service;
 
-<<<<<<< HEAD
 import com.example.demo.together.common.utils.jwt.bean.RefreshToken;
 import com.example.demo.together.common.utils.jwt.repository.RefreshTokenRepo;
 import com.example.demo.together.common.conf.JwtConfiguration;
 import com.example.demo.together.common.utils.jwt.bean.JwtToken;
 import com.example.demo.together.member.DAO.MemberDAO;
-=======
-import com.example.demo.together.common.utils.jwt.bean.JwtConfiguration;
-import com.example.demo.together.common.utils.jwt.bean.JwtToken;
->>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;

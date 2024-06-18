@@ -2,6 +2,7 @@ package com.example.demo.together.common.conf;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +13,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:/naver.properties")
-@ConfigurationProperties(prefix = "naver.email")
 @Getter
 @Setter
+@ConfigurationProperties("email.naver")
+
 public class MailCofig {
     private String emailAddress;
     private String emailPwd;
@@ -29,7 +30,7 @@ public class MailCofig {
         // 발송 이메일 주소
         javaMailSender.setUsername(emailAddress);
         // 발송 이메일 계정 비밀번호
-        javaMailSender.setPassword(emailAddress);
+        javaMailSender.setPassword(emailPwd);
 
         // 네이버 메일 환경설정과 동일하게.
         javaMailSender.setPort(465);

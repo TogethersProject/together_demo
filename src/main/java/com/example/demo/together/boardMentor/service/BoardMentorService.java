@@ -1,12 +1,6 @@
-<<<<<<<< HEAD:src/main/java/com/example/demo/together/boardMentor/service/BoardMentorService.java
 package com.example.demo.together.boardMentor.service;
 
 import com.example.demo.together.boardMentor.bean.BoardMentorDTO;
-========
-package com.example.demo.together.board.service;
-
-import com.example.demo.together.board.bean.BoardDTO;
->>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090:src/main/java/com/example/demo/together/board/service/BoardService.java
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,12 +1,6 @@
-<<<<<<<< HEAD:src/main/java/com/example/demo/together/boardMentor/DAO/BoardMentorDAO.java
 package com.example.demo.together.boardMentor.DAO;
 
 import com.example.demo.together.boardMentor.bean.BoardMentorDTO;
-========
-package com.example.demo.together.board.DAO;
-
-import com.example.demo.together.board.bean.BoardDTO;
->>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090:src/main/java/com/example/demo/together/board/DAO/BoardDAO.java
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

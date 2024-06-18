@@ -1,4 +1,3 @@
-<<<<<<<< HEAD:src/main/java/com/example/demo/together/boardMentor/service/BoardMentorServiceImpl.java
 package com.example.demo.together.boardMentor.service;
 
 
@@ -8,13 +7,6 @@ import com.example.demo.together.common.utils.board.FileUtils;
 import com.example.demo.together.common.utils.board.ObjectStorageService;
 import com.example.demo.together.member.DAO.MemberDAO;
 import com.example.demo.together.member.bean.MemberDTO;
-========
-package com.example.demo.together.board.service;
-
-
-import com.example.demo.together.board.bean.BoardDTO;
-import com.example.demo.together.board.DAO.BoardDAO;
->>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090:src/main/java/com/example/demo/together/board/service/BoardServiceImpl.java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

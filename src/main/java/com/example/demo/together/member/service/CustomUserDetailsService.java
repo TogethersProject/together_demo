@@ -1,12 +1,8 @@
 package com.example.demo.together.member.service;
 
-<<<<<<< HEAD
 import com.example.demo.together.member.bean.MemberDTO;
 import com.example.demo.together.member.DAO.MemberDAO;
-=======
-import com.example.demo.together.member.DAO.MemberDAO;
-import com.example.demo.together.member.bean.MemberDTO;
->>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

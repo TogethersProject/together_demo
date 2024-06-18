@@ -1,18 +1,9 @@
-<<<<<<<< HEAD:src/main/java/com/example/demo/together/boardMentor/controller/BoardMentorController.java
 package com.example.demo.together.boardMentor.controller;
 
 import com.example.demo.together.boardMentor.bean.BoardMentorDTO;
 import com.example.demo.together.common.utils.board.FileUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.demo.together.boardMentor.service.BoardMentorService;
-========
-package com.example.demo.together.board.controller;
-
-import com.example.demo.together.board.bean.BoardDTO;
-import com.example.demo.together.board.service.BoardService;
-import com.example.demo.together.board.service.FileUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
->>>>>>>> c876f3d9032582c0e225ea346c52713414c7d090:src/main/java/com/example/demo/together/board/controller/BoardController.java
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
