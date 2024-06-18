@@ -9,6 +9,7 @@ import com.example.demo.together.member.bean.MemberDTO;
 import com.example.demo.together.member.DAO.MemberDAO;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -17,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -32,6 +31,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 @Service
 public class MemberInfoServiceImpl implements MemberInfoService {
     @Autowired
@@ -61,6 +63,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
     private static final long AUTH_CODE_EXPIRATION_HOURS = 1;
     private static final String EMAIL_AUTH_HASH = "email_auth_hash";
+    private static final String EMAIL_PASS_HASH = "email_pass_hash";
+    @Autowired
+    private CustomOauth2UserService customOauth2UserService;
 
     //constructort. jwtTokenProvider 초기화.
     public MemberInfoServiceImpl(JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder,AuthenticationManager authenticationManager) {
@@ -74,6 +79,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     @Override
     public String writeMember(MemberDTO memberDTO) {
         //isExist로 검사해서 검사 필수 아님. DB 접근이 잦아서 성능 저하가 우려 된다면 뺄 것.
+        System.out.println("회원가입: " + memberDTO);
         if(isExistId(memberDTO.getMember_id())){
             throw new DuplicateKeyException("이미 존재하는 회원입니다.");
         }else{
@@ -190,44 +196,132 @@ public class MemberInfoServiceImpl implements MemberInfoService {
         return true;
     }
     //유저에게 본인확인용 이메일 전송
+
     @Override
-    public String sendEmailForm(String email) throws Exception{
+    public String sendEmailIsMe(String email) {
+        try{
+            String code = String.valueOf(UUID.randomUUID());
+
+            //1시간 후 만료, 해시맵 형태의 redis. email - code 관계
+            HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+            hashOps.put(EMAIL_AUTH_HASH, email, code);
+            redisTemplate.expire(EMAIL_AUTH_HASH, AUTH_CODE_EXPIRATION_HOURS, TimeUnit.HOURS);
+
+            String title ="[together] 인증 번호 안내";
+            String content = "이메일 인증 코드: " + code;
+
+            return sendEmailForm(email, title, content);
+        }catch(Exception e){
+            System.out.println(e);
+            return "false";
+        }
+    }
+
+    private String sendEmailForm(String email, String title, String content) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("이메일 주소가 유효하지 않습니다.");
-        }
-
-        if (!isValidEmail(email)) {
+        }if (!isValidEmail(email)) {
             throw new IllegalArgumentException("이메일 주소 형식이 올바르지 않습니다.");
         }
 
         //인증 코드 생성 및 DB 저장 -> redis(dbgyrlrks, hash map: "유저 email - 유저 인증 코드").
-        System.out.println(email + "로 보낼게 ");
-        String code = String.valueOf(UUID.randomUUID());
-        System.out.println("인증코드: " +code);
         String emailFrom = mailCofig.getEmailAddress();
         System.out.println("보내는 사람: " + emailFrom);
 
-        //1시간 후 만료, 해시맵 형태의 redis. email - code 관계
-        HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
-        hashOps.put(EMAIL_AUTH_HASH, email, code);
-        redisTemplate.expire(EMAIL_AUTH_HASH, AUTH_CODE_EXPIRATION_HOURS, TimeUnit.HOURS);
-
-
         //이메일 내용 작성
         MimeMessage message = javaMailSender.createMimeMessage();
-        message.addRecipients(Message.RecipientType.TO, email);
-        message.setSubject("[together] 인증 번호 안내");
-        message.setText("이메일 인증 코드: " + code);
-        message.setFrom(new InternetAddress(emailFrom));
-        System.out.println("이메일 내용: " + message);
-        //이메일 전송
         try{
+            //이메일 내용 작성: MessagingException
+            message.addRecipients(Message.RecipientType.TO, email);
+            message.setSubject(title);
+            message.setText(content);
+            message.setFrom(new InternetAddress(emailFrom));
+            System.out.println("이메일 내용: " + message);
+
+            //이메일 전송: MailException
             javaMailSender.send(message);
-        }catch(MailException mailException){
+        }catch(MailException | MessagingException mailException){
             mailException.printStackTrace();
-            throw  new IllegalAccessException();
+            throw new IllegalArgumentException("이메일 내용 작성 중, 혹은 이메일 전송 중 문제가 발생했습니다.");
+        }
+        return "true";
+    }
+
+    //비밀번호 찾기
+    @Override
+    public String findPassword(String email, String code) {
+        //code가 없는 경우 = 이메일 전송
+        if(code ==null){
+            String createCode = String.valueOf(UUID.randomUUID());
+
+            //1시간 후 만료, 해시맵 형태의 redis. email - code 관계
+            HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+            hashOps.put(EMAIL_PASS_HASH, email, createCode);
+            redisTemplate.expire(EMAIL_PASS_HASH, AUTH_CODE_EXPIRATION_HOURS, TimeUnit.HOURS);
+
+            String title ="[together] 비밀번호 찾기 안내";
+            String content = "이메일 인증 코드: " + createCode + "을 입력하세요."
+                            +"\n 새로운 비밀번호 생성을 도와드리겠습니다." ;
+            return sendEmailForm(email, title, content);
+        }else{//code가 있는 경우 = redis 내부에서 코드를 찾아 대조.
+            //인증 코드 DB에서 꺼내기
+            HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+            String authDB = hashOps.get(EMAIL_PASS_HASH, email);//HGET email_pass_hash "lamp0525@naver.com"
+
+            //유저가 입력한 인증 코드와 DB에서 꺼낸 코드 비교하여 T/F
+            if(authDB.equals(code)){
+                System.out.println("DB: " + authDB + " / Code: " + code);
+                return "true";
+            }
+            return "false";
+        }
+    }//비번찾기 findPassword
+    
+    //회원 탈퇴
+    @Override
+    public void deleteMember(String member_id, String accessToken) {
+        System.out.println("삭제");
+        Optional<MemberDTO> memberDTO = memberDAO.findById(member_id);
+        if(memberDTO.isPresent()){
+            String provider = memberDTO.get().getProvider();
+            if ((provider != null)) {
+                snsDelete(member_id, accessToken);   //sns가입 유저면 가입 유저라는 정보가 sns상에도 남아있으니 양쪽에서 삭제해주어야한다.
+            }
+            memberDAO.deleteById(member_id);
         }
 
-        return code;
+    }
+    //sns가입 유저 회원 탈퇴
+    private void snsDelete(String memberId, String accessToken){
+        Optional<MemberDTO> memberDTO = memberDAO.findById(memberId);
+        String type = memberDTO.get().getProvider();
+        customOauth2UserService.deleteMember(accessToken, type);
+    }
+
+    //특정 유저 1명의 정보 전달
+    @Override
+    public MemberDTO getMember(String member_id) {
+        Optional<MemberDTO> memberDTO = memberDAO.findById(member_id);
+        System.out.println("getMember - Service: " + memberDTO.get());
+        return memberDTO.get();
+    }
+
+    //회원 정보 수정
+    @Override
+    public void updateMember(MemberDTO memberDTO) {
+        //provider가 존재해도(sns 가입 유저여도) id 및 email 제외 모든 정보 수정 가능하도록.
+        String member_id= memberDTO.getMember_id();
+        System.out.println(member_id + "의 정보를 수정합니다(service)");
+        String member_name = memberDTO.getMember_name();
+        String member_pwd = memberDTO.getMember_pwd();
+        String member_address = memberDTO.getMember_address();
+        String member_addressDetail = memberDTO.getMember_addressDetail();
+        memberDAO.updateById(
+                member_name,
+                member_pwd,
+                member_address,
+                member_addressDetail,
+                member_id
+        );
     }
 }

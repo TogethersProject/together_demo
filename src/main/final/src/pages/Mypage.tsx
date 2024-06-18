@@ -9,6 +9,7 @@ const Mypage: React.FC = () => {
     const [username, setUsername] = useState('');
 
     useEffect(() => {
+        //localStorage에서 accessKey(header), member_id(body) -> username = member_name
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
             setUsername(storedUsername);

@@ -73,7 +73,7 @@ public class MemberController {
         System.out.println("isEmail Controller: " + email +" / " + authCode);
         return memberInfoService.isEmail(email, authCode);
     }
-    //https://velog.io/@leesomyoung/SpringBoot-SMTP-%EC%9D%B4%EB%A9%94%EC%9D%BC-%EC%9D%B8%EC%A6%9D-%EB%84%A4%EC%9D%B4%EB%B2%84
+
     //인증번호를 담은 이메일 전송
     @PostMapping("/sendEmail")
     public String sendEmail(@RequestBody String encodedEmail) throws Exception{
@@ -81,7 +81,7 @@ public class MemberController {
         email = email.replaceAll("=$", "");
 
         System.out.println("이메일 전송 컨트롤러: " + email);
-        return memberInfoService.sendEmailForm(email);
+        return memberInfoService.sendEmailIsMe(email);
     }
 
     //sns 로그인 및 회원가입
@@ -89,23 +89,53 @@ public class MemberController {
     public String signup(@RequestParam(name = "code")String code, @RequestParam("state")String state){
         System.out.println("code: " + code + " / state: " + state);
         OauthResponseDTO oauthResponseDTO = customOauth2UserService.signUp(code, "naver");
-        //return ResponseEntity.ok(oauthResponseDTO);
+        System.out.println("oauthDTO: " + oauthResponseDTO);
         String member_id = oauthResponseDTO.getMember_id();
+        String accessToken = oauthResponseDTO.getAccessToken();
         Optional<MemberDTO> memberDTO = memberDAO.findById(member_id);
         String member_name = memberDTO.get().getMember_name();
         StringBuilder htmlBuilder = new StringBuilder();
         htmlBuilder.append("<p style='color:red; name='").append(member_id).append("'>");
         htmlBuilder.append(member_name+"님 안녕하세요");
         htmlBuilder.append("</p>");
-        htmlBuilder.append("<button onclick=\"location.href='http://localhost:3000/Mypage?id=hong'\"> 버튼 </button>");
+        htmlBuilder.append("<script>");
+        htmlBuilder.append("function saveIdAndTokenToLocalStorageAndRedirect(memberId, accessToken, redirectUrl) {");
+        htmlBuilder.append("  localStorage.setItem('member_id', memberId);");
+        htmlBuilder.append("  localStorage.setItem('access_token', accessToken);");
+        htmlBuilder.append("  window.location.href = redirectUrl;");
+        htmlBuilder.append("}");
+        htmlBuilder.append("</script>");
+        htmlBuilder.append("<button onclick=\"window.location.href='http://localhost:3000/Mypage?id="+member_id+"&accessToken="+accessToken+"'\"> 버튼 </button>");
 
         //localStorage에 member_id 저장
         return htmlBuilder.toString();
     }
+
+
     @GetMapping("/kakaoLogin")
-    public ResponseEntity<OauthResponseDTO> signupKakao(@RequestParam(name = "code")String code, @RequestParam("state")String state){
+    public String signupKakao(@RequestParam(name = "code")String code, @RequestBody(required=false)String state, String redirectUrl){
         System.out.println("code: " + code + " / state: " + state);
-        return ResponseEntity.ok(customOauth2UserService.signUp(code, "kakao"));
+        OauthResponseDTO oauthResponseDTO = customOauth2UserService.signUp(code, "kakao");
+
+        String member_id = oauthResponseDTO.getMember_id();
+        String accessToken = oauthResponseDTO.getAccessToken();
+        Optional<MemberDTO> memberDTO = memberDAO.findById(member_id);
+        String member_name = memberDTO.get().getMember_name();
+        StringBuilder htmlBuilder = new StringBuilder();
+        htmlBuilder.append("<p style='color:red; name='").append(member_id).append("'>");
+        htmlBuilder.append(member_name+"님 안녕하세요");
+        htmlBuilder.append("</p>");
+        htmlBuilder.append("<script>");
+        htmlBuilder.append("function saveIdAndTokenToLocalStorageAndRedirect(memberId, accessToken, redirectUrl) {");
+        htmlBuilder.append("  localStorage.setItem('member_id', memberId);");
+        htmlBuilder.append("  localStorage.setItem('access_token', accessToken);");
+        htmlBuilder.append("  window.location.href = redirectUrl;");
+        htmlBuilder.append("}");
+        htmlBuilder.append("</script>");
+        htmlBuilder.append("<button onclick=\"window.location.href='http://localhost:3000/Mypage?id="+member_id+"&accessToken="+accessToken+"'\"> 버튼 </button>");
+
+        return htmlBuilder.toString();
+
     }
 
     //토큰 진위 여부
@@ -116,35 +146,50 @@ public class MemberController {
         return memberInfoService.decodingToken(jwtToken);
     }
 
-/*
-    @Secured("ROLE_USER")
-=======
+    //비밀번호 찾기 이메일 인증 요청
+    @PostMapping(path="findPassword")
+    public String findPassword(@RequestBody String encodedEmail
+            , @RequestBody(required=false) String encodedCode) throws Exception{
 
-    /*
->>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
+        System.out.println("비번찾기(encoded email/code): " + encodedEmail +" / " +encodedCode);
+        String code = encodedCode;
+        String email = URLDecoder.decode(encodedEmail, "UTF-8");
+        email = email.replaceAll("=$", "");
+        if(encodedCode != null){
+            code = URLDecoder.decode(encodedCode, "UTF-8");
+        }
+        code = code.replaceAll("=$", "");
+
+        System.out.println("비밀번호 찾기 이메일 요청: " + email + " / " + code);
+        return memberInfoService.findPassword(email, code);
+    }
+
+
+    @Secured("ROLE_USER")
     @PostMapping(path={"updateMember"})
-    public void updateMember(MemberDTO memberDTO){
+    public void updateMember(@RequestBody MemberDTO memberDTO){
+        System.out.println(memberDTO);
         memberInfoService.updateMember(memberDTO);
     }
 
-<<<<<<< HEAD
     @Secured("ROLE_USER")
-=======
->>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
-    @PostMapping(path={"deleteMamber"})
-    public void deleteMember(String member_id){
-        memberInfoService.deleteMember(member_id);
+    @PostMapping(path={"deleteMember"})
+    public void deleteMember(@RequestBody String member_id, @RequestBody String accessToken){
+        System.out.println(member_id);
+        String memberId = member_id.split("=")[0];
+        System.out.println(memberId);
+        System.out.println(accessToken);
+        memberInfoService.deleteMember(memberId, accessToken);
     }
 
     //유저 1명의 정보 DB에서 가져오기
-<<<<<<< HEAD
     @Secured("ROLE_USER")
-=======
->>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
-    @GetMapping(path={"getMemberInfo"})
-    public MemberDTO getMemberInfo(String memeber_id, ??){
-        return memberInfoService.getMemberInfo(member_id, ??);
+    @PostMapping(path={"getMemberInfo"})
+    public MemberDTO getMemberInfo(@RequestBody String member_id){
+        System.out.println(member_id);
+        String memberId = member_id.split("=")[0];
+        System.out.println(memberId);
+        return memberInfoService.getMember(memberId);
     }
-*/
     
 }

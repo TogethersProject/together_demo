@@ -6,7 +6,7 @@ import axios from "axios"; // Import CSS file for styles
 
 const Login: React.FC = () => {
     const signInMemberURL = "http://localhost:9000/member/loginCheck"
-    const signUpURL = "http://loclahost:9000/member/writeMember"
+    const signUpURL = "http://localhost:9000/member/writeMember"
 
     const [tab, setTab] = useState<'sign-in' | 'sign-up'>('sign-in');
     const [address, setAddress] = useState('');
@@ -108,19 +108,23 @@ const Login: React.FC = () => {
     };
 
     //회원가입 제출 - 바로 로그인 되도록
-    const handleSignUpSubmit = () => {
-        const member_id = document.getElementById('id');
-        const member_name = document.getElementById('name')
-        const member_pwd = document.getElementById('pass-signup')
-        const member_email = document.getElementById('email-signup');
+    const handleSignUpSubmit = (e) => {
+        //e.preventDefault();
+        console.log("클릭")
+        const member_id = (document.getElementById('user-signup') as HTMLInputElement).value;
+        const member_name = (document.getElementById('name') as HTMLInputElement).value
+        const member_pwd = (document.getElementById('pass-signup') as HTMLInputElement).value
+        const member_email = (document.getElementById('email-signup') as HTMLInputElement).value;
         const member_address = address;
         const member_addressDetail = detailAddress;
-        const member = {member_id, member_pwd, member_name, member_email, member_address, member_addressDetail};
 
-        const member_pwdChk = document.getElementById('pass-confirm');
-        const member_emailChk = document.getElementById('verification-code');
-        if((member_email === member_emailChk ) && (member_pwd === member_emailChk)){
+
+        const member_pwdChk = (document.getElementById('pass-confirm')as HTMLInputElement).value;
+        const member_emailChk = (document.getElementById('verification-code')as HTMLInputElement).value;
+        if(codeStatus && (member_pwd === member_pwdChk)){
             console.log(member_email + " = " + member_emailChk +" / " + member_pwd +" = " )
+            const member = {member_id, member_pwd, member_name, member_email, member_address, member_addressDetail};
+            console.log(member)
 
             axios.post(signUpURL, member)
                 .then( (res) => {
@@ -185,15 +189,26 @@ const Login: React.FC = () => {
                 res.data || setCodeStatus(false);
             })
             .catch(err => console.log(err));
-
-        // const isCodeCorrect = verificationCode === '123456'; // 백엔드에서 받은 코드와 비교
-        //
-        // if (isCodeCorrect) {
-        //     setCodeStatus(true);
-        // } else {
-        //     setCodeStatus(false);
-        // }
     };
+
+    // 클릭 이벤트 핸들러
+    async function handleNaverLogin() {
+        try {
+            // Naver OAuth2 인증 URL 생성
+            const clientId = 'cr9KdwLzvG1E2Y2rcKtf';
+            const redirectUri = 'http://localhost:9000/member/snsLogin';
+            const state = 'test';
+            const authUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&state=${state}&redirect_uri=${redirectUri}`;
+
+            // Axios를 사용하여 Naver 인증 페이지로 리디렉션
+            console.log('이동합니다')
+            window.location.href = authUrl;
+            console.log('이동했습니다')
+
+        } catch (error) {
+            console.error('Naver 로그인 에러:', error);
+        }
+    }
 
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
@@ -262,13 +277,15 @@ const Login: React.FC = () => {
                                 </div>
 
                                 <div className="social-login">
-                                    <a className="social-btn" href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=cr9KdwLzvG1E2Y2rcKtf&state=test&redirect_uri=http://localhost:9000/member/snsLogin">
+                                    <a className="social-btn" onClick={handleNaverLogin}>
                                         <img src="/images/naver-logo.webp" alt="네이버 로그인" className="social-logo"/>
                                     </a>
-                                    <a href="#" className="social-btn">
+                                    <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=7c9f68f8d72d792f0afc13c42883c924&redirect_uri=http://localhost:9000/member/kakaoLogin"
+                                       className="social-btn">
                                         <img src="/images/kakao-logo.webp" alt="카카오 로그인" className="social-logo"/>
                                     </a>
-                                    <a href="#" className="social-btn">
+                                    <a href="https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=email profile&client_id=925822216111-cjal510ugpbe80pr759u75kanqgnjhom.apps.googleusercontent.com&redirect_uri=http://localhost:9000/member/googleLogin"
+                                       className="social-btn">
                                         <img src="/images/google-logo.png" alt="구글 로그인" className="social-logo"/>
                                     </a>
                                 </div>

@@ -5,6 +5,8 @@ import com.example.demo.together.common.utils.jwt.bean.JwtToken;
 import com.example.demo.together.member.bean.MemberDTO;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 public interface MemberInfoService {
 
     ResponseEntity<JwtToken> loginCheck(AuthenticationRequest request);
@@ -19,5 +21,13 @@ public interface MemberInfoService {
 
     Boolean isEmail(String email, String authMem);
 
-    String sendEmailForm(String email)throws Exception;
+    String findPassword(String email, String code);
+
+    String sendEmailIsMe(String email) throws Exception;
+
+    void deleteMember(String memberId, String accessToken);
+
+    MemberDTO getMember(String member_id);
+
+    void updateMember(MemberDTO memberDTO);
 }

@@ -9,7 +9,6 @@ import com.example.demo.together.member.bean.OauthResponseDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.demo.together.member.DAO.MemberDAO;
-import com.example.demo.together.member.bean.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,9 +85,18 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
         }
 
         //인가코드로 accessToken 요청
-        String accessTokenNaver = getAccessToken(code);
+        JsonNode jsonNode = getAccessToken(code);
+        String accessTokenSns = " ";
+        String id_token = " ";
+        if(TYPE.equals("naver")){
+            accessTokenSns = jsonNode.get("access_token").asText();
+        }else if(TYPE.equals("kakao")){
+            id_token = jsonNode.get("id_token").asText();
+            accessTokenSns = jsonNode.get("access_token").asText();
+        }
+
         //토큰으로 API 호출
-        Map map = getUserInfo(accessTokenNaver);
+        Map map = getUserInfo(accessTokenSns, id_token);
         System.out.println("map: " + map);
 
         //DB 정보 확인 , 없으면 DB에 저장
@@ -116,7 +124,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
     }
     
     // 인가 코드로 (sns)accessToken 발급
-    private String getAccessToken(String code){
+    private JsonNode getAccessToken(String code){
         //http header 작성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -125,8 +133,13 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", CLIENT_ID);
-        //if(TYPE.equals("naver")
-        body.add("client_secret", NAVER_CLIENT_SECRET);
+        if(TYPE.equals("naver")){
+            body.add("client_secret", NAVER_CLIENT_SECRET);
+        }else if(TYPE.equals("kakao")){
+            body.add("client_secret", KAKAO_CLIENT_SECRET);
+        }else if(TYPE.equals("google")){
+            body.add("client_secret", GOOGLE_CLIENT_SECRET);
+        }
         body.add("redirect_uri", REDIRECT_URI);
         body.add("code", code);
         System.out.println("body: " + body);
@@ -167,16 +180,16 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
             System.out.println("jsonNode: " + jsonNode);
-            return jsonNode.get("access_token").asText();
-        }catch (Exception e){
+            return jsonNode;
+        } catch (Exception e) {
             System.out.println("http 응답 파싱 중 에러");
-            return e.toString();
+            throw new RuntimeException("Failed to parse access token response", e);
         }
 
     }//getAccessToken
-    
+
     //sns 인가 코드를 통해 유저 정보를 map에 저장
-    private Map<String, String> getUserInfo(String accessToken){
+    private Map<String, String> getUserInfo(String accessToken, String id_token){
         //http header 작성
         HttpHeaders headers = new HttpHeaders();
         //Bearer 띄어쓰기 주의
@@ -218,17 +231,31 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
             if(TYPE.equals("naver")) {
+                //accessToken으로 정보 요청
                 System.out.println("response: " + jsonNode.get("response"));
                 map.put("email", jsonNode.get("response").get("email").asText());
                 map.put("id", jsonNode.get("response").get("id").asText());
                 map.put("name", jsonNode.get("response").get("nickname").asText());//nickname 말고 name도 가능.
             }else if(TYPE.equals("kakao")){
+                //id_token(jwt)에 있는 정보 추출.
                 System.out.println("kakao_account: " + jsonNode.get("kakao_account"));
-                //비지니스 앱이 아니라서 email을 못 가져와... 비즈앱? 신청을 해야해...
+
+                //비지니스 앱이 아니라서 email을 못 가져와... 비즈앱 신청을 해야해...
                 //map.put("email", jsonNode.get("kakao_account").get("email").asText());
                 map.put("email", String.valueOf(UUID.randomUUID()) );
-                map.put("id", jsonNode.get("kakao_account").get("id").asText());
-                map.put("name", jsonNode.get("kakao_account").get("nickname").asText());
+
+                //id_token을 decoding하여 sub 추출
+                System.out.println("id_token: " + id_token);
+                Base64.Decoder decoder = Base64.getUrlDecoder();
+                final String payload = id_token.split("\\.")[1];
+                String payloadDecode = new String(decoder.decode(payload));
+                System.out.println(payloadDecode);
+                JsonNode jsonKakao = new ObjectMapper().readTree(payloadDecode);
+                String sub = jsonKakao.get("sub").asText();
+                System.out.println("map에 저장 할 sub: " + sub);
+                map.put("id", sub);
+
+                map.put("name", jsonNode.get("kakao_account").get("profile").get("nickname").asText());
             }
             return map;
         }catch (Exception e){
@@ -254,14 +281,52 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
                     .member_role("USER")
                     .provider(TYPE)
                     .build();
-            memberDAO.save(newMemberDTO);
+            return memberDAO.save(newMemberDTO);
+        } else {
+            return memberDTO.get();
         }
-
-        return memberDTO.get();
     }//registerUserIfNeed
 
     // email(unique)로 회원 여부 판별
     private Boolean checkIsMember(MemberDTO memberDTO){
         return memberDTO.getMember_email() != null;
+    }
+
+    //sns 가입 유저 탈퇴
+    public String deleteMember(String accessToken, String type){
+        TYPE = type;
+        String CLIENT_SECRET = null;
+        if(TYPE.equals("naver")){
+            CLIENT_ID = NAVER_CLIENT_ID;
+            CLIENT_SECRET = NAVER_CLIENT_SECRET;
+        }
+        // 요청 파라미터 설정
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "delete");
+        params.add("client_id", CLIENT_ID);
+        params.add("client_secret", CLIENT_SECRET);
+        params.add("access_token", accessToken);
+
+        // HttpEntity 생성
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params);
+
+        // RestTemplate 사용하여 요청 전송
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://nid.naver.com/oauth2.0/token"
+                , HttpMethod.POST
+                ,request
+                ,String.class
+        );
+
+        // 응답 처리
+        if (response.getStatusCode().is2xxSuccessful()) {
+            // 성공 처리
+            System.out.println(response);
+            return "success";
+        } else {
+            // 오류 처리
+            return "false";
+        }
     }
 }

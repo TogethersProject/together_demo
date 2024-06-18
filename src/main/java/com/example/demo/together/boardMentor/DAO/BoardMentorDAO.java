@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
-@Transactional
+@Transactional(readOnly = false)
 @Repository
 public interface BoardMentorDAO extends JpaRepository<BoardMentorDTO, BigInteger> {
 

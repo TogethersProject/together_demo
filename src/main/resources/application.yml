@@ -24,6 +24,9 @@ spring:
     url: jdbc:mysql://db-n2ma7-kr.vpc-pub-cdb.ntruss.com:3306/together?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: possible12
     password: final12345!
+    # 읽기-쓰기 모드로 변경
+    hikari:
+      read-only: false
 
   jpa:
     hibernate:
