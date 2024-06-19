@@ -90,6 +90,8 @@ public class MemberController {
         System.out.println("code: " + code + " / state: " + state);
         OauthResponseDTO oauthResponseDTO = customOauth2UserService.signUp(code, "naver");
         System.out.println("oauthDTO: " + oauthResponseDTO);
+
+        String snsAccessToken = oauthResponseDTO.getSnsAccessToken();
         String member_id = oauthResponseDTO.getMember_id();
         String accessToken = oauthResponseDTO.getAccessToken();
         Optional<MemberDTO> memberDTO = memberDAO.findById(member_id);
@@ -105,7 +107,7 @@ public class MemberController {
         htmlBuilder.append("  window.location.href = redirectUrl;");
         htmlBuilder.append("}");
         htmlBuilder.append("</script>");
-        htmlBuilder.append("<button onclick=\"window.location.href='http://localhost:3000/Mypage?id="+member_id+"&accessToken="+accessToken+"'\"> 버튼 </button>");
+        htmlBuilder.append("<button onclick=\"window.location.href='http://localhost:3000/Mypage?id="+member_id+"&accessToken="+accessToken+"&naverAccessToken="+snsAccessToken+"&name="+member_name+"'\"> 버튼 </button>");
 
         //localStorage에 member_id 저장
         return htmlBuilder.toString();
@@ -146,7 +148,7 @@ public class MemberController {
         return memberInfoService.decodingToken(jwtToken);
     }
 
-    //비밀번호 찾기 이메일 인증 요청
+    //비밀번호 찾기 이메일 인증 요청(인증 코드 전송 이메일과 인증 코드 확인 주소 동일. encodedCode의 유무를 통해 구별.)
     @PostMapping(path="findPassword")
     public String findPassword(@RequestBody String encodedEmail
             , @RequestBody(required=false) String encodedCode) throws Exception{
@@ -174,12 +176,12 @@ public class MemberController {
 
     @Secured("ROLE_USER")
     @PostMapping(path={"deleteMember"})
-    public void deleteMember(@RequestBody String member_id, @RequestBody String accessToken){
-        System.out.println(member_id);
+    public void deleteMember(@RequestParam("member_id") String member_id, @RequestParam(name="naverAccessToken", required=false) String naverAccessToken){
+        System.out.println("deleteMember Controller - id: " + member_id);
         String memberId = member_id.split("=")[0];
         System.out.println(memberId);
-        System.out.println(accessToken);
-        memberInfoService.deleteMember(memberId, accessToken);
+        System.out.println("deleteMember Controller - naverAccess: " + naverAccessToken);
+        memberInfoService.deleteMember(memberId, naverAccessToken);
     }
 
     //유저 1명의 정보 DB에서 가져오기

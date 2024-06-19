@@ -50,7 +50,7 @@ public class WebSecurityConfig {
                             //.anyRequest().permitAll()
                                 //해당 API에 대한 모든 요청 허가
                                 .requestMatchers("/member/writeMember","/member/isEmail","/member/sendEmail").permitAll()//회원가입
-                                .requestMatchers("/member/loginCheck","/member/snsLogin","/member/kakaoLogin").permitAll()//로그인
+                                .requestMatchers("/member/loginCheck","/member/snsLogin","/member/kakaoLogin", "/member/naverLogin").permitAll()//로그인
                                 .requestMatchers("/common/reissueRefreshToken","/member/decodingToken").permitAll()//유효기간이 다 된 accessToken 재발급 요청. | 토큰이 유효한 토큰인지 확인
                                 .requestMatchers("/mentor/getWriteList","/mentor/writeImage","/volunteer/getWriteList","/volunteer/writeImage").permitAll()//글목록확인 | 이미지 임시 업로드. 권한 확인하려면 csrf 토큰 처리 필요.
                                 //.requestMatchers("/oauth2/authorization/naver").permitAll()//네이버로그인
