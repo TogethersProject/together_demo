@@ -15,10 +15,25 @@
     "static/chunks/main-app.js"
   ],
   "pages": {
+    "/Calendar": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Calendar.js"
+    ],
+    "/First": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/First.js"
+    ],
     "/Login": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/Login.js"
+    ],
+    "/Mentor": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Mentor.js"
     ],
     "/My": [
       "static/chunks/webpack.js",
