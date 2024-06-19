@@ -13,10 +13,14 @@ public class OauthResponseDTO {
     private String refreshToken;
     private Boolean isMember;
 
-    public OauthResponseDTO(String member_id, String accessToken, String refreshToken, Boolean isMember){
+    private String snsAccessToken;
+    //private String snsRefreshToken;
+
+    public OauthResponseDTO(String member_id, String accessToken, String refreshToken, Boolean isMember, String snsAccessToken){
         this.member_id = member_id;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.isMember = isMember;
+        this.snsAccessToken = snsAccessToken;
     }
 }

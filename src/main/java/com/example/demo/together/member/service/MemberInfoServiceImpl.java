@@ -280,10 +280,11 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     //회원 탈퇴
     @Override
     public void deleteMember(String member_id, String accessToken) {
-        System.out.println("삭제");
+        System.out.println("deleteMember Service");
         Optional<MemberDTO> memberDTO = memberDAO.findById(member_id);
         if(memberDTO.isPresent()){
             String provider = memberDTO.get().getProvider();
+            System.out.println("sns 유형: " + provider );
             if ((provider != null)) {
                 snsDelete(member_id, accessToken);   //sns가입 유저면 가입 유저라는 정보가 sns상에도 남아있으니 양쪽에서 삭제해주어야한다.
             }
@@ -294,7 +295,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     //sns가입 유저 회원 탈퇴
     private void snsDelete(String memberId, String accessToken){
         Optional<MemberDTO> memberDTO = memberDAO.findById(memberId);
-        String type = memberDTO.get().getProvider();
+        String type = memberDTO.get().getProvider();    //naver, kakao
+        System.out.println("delete Type: " + type);
+        System.out.println("delete accessToken: " + accessToken);
         customOauth2UserService.deleteMember(accessToken, type);
     }
 

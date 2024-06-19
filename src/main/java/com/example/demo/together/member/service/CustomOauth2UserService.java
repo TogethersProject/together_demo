@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,6 +31,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -61,11 +64,15 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
     private RefreshTokenRepo refreshTokenRepo;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private String TYPE;
     private String CLIENT_ID;
     private String REDIRECT_URI;
-
+    private final String NAVER_PASS_HASH = "naver";
+    private final String KAKAO_PASS_HASH = "kakao";
+    private final int AUTH_CODE_EXPIRATION_HOURS = 1;
 
     //회원가입, 회원이면 로그인
     public OauthResponseDTO signUp(String code, String type){
@@ -91,13 +98,14 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
         if(TYPE.equals("naver")){
             accessTokenSns = jsonNode.get("access_token").asText();
         }else if(TYPE.equals("kakao")){
-            id_token = jsonNode.get("id_token").asText();
-            accessTokenSns = jsonNode.get("access_token").asText();
+            id_token = jsonNode.get("id_token").asText();//kakao는 id_token - accessToken
         }
 
         //토큰으로 API 호출
         Map map = getUserInfo(accessTokenSns, id_token);
         System.out.println("map: " + map);
+        String snsAccessToken = (String) map.get("snsAccessToken");
+//        String snsRefreshToken = (String) map.get("snsRefreshToken");
 
         //DB 정보 확인 , 없으면 DB에 저장
         MemberDTO memberDTO = registerUserIfNeed(map);
@@ -120,7 +128,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
 
         //회원 여부 email로 확인
         Boolean isMember = checkIsMember(memberDTO);
-        return new OauthResponseDTO(memberDTO.getMember_id(), accessToken, refreshToken, isMember);
+        return new OauthResponseDTO(memberDTO.getMember_id(), accessToken, refreshToken, isMember, snsAccessToken);
     }
     
     // 인가 코드로 (sns)accessToken 발급
@@ -236,6 +244,13 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
                 map.put("email", jsonNode.get("response").get("email").asText());
                 map.put("id", jsonNode.get("response").get("id").asText());
                 map.put("name", jsonNode.get("response").get("nickname").asText());//nickname 말고 name도 가능.
+                map.put("snsAccessToken", accessToken);
+                //map.put("snsRefreshToken", "나중에 추가");
+
+                //redis에 id - accessToken 저장(naver). 회원 탈퇴 시 사용. 서비스 이용에는 MySQL 내부 정보만 쓰기 때문.
+                HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+                hashOps.put(NAVER_PASS_HASH, map.get("id"), accessToken);
+                redisTemplate.expire(NAVER_PASS_HASH, AUTH_CODE_EXPIRATION_HOURS, TimeUnit.HOURS);
             }else if(TYPE.equals("kakao")){
                 //id_token(jwt)에 있는 정보 추출.
                 System.out.println("kakao_account: " + jsonNode.get("kakao_account"));
@@ -254,8 +269,14 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
                 String sub = jsonKakao.get("sub").asText();
                 System.out.println("map에 저장 할 sub: " + sub);
                 map.put("id", sub);
-
                 map.put("name", jsonNode.get("kakao_account").get("profile").get("nickname").asText());
+                map.put("snsAccessToken", accessToken);
+                //map.put("snsRefreshToken", "나중에 추가");
+
+                //redis에 id - accssToken 저장(kakao)
+                HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+                hashOps.put(KAKAO_PASS_HASH, map.get("id"), accessToken);
+                redisTemplate.expire(KAKAO_PASS_HASH, AUTH_CODE_EXPIRATION_HOURS, TimeUnit.HOURS);
             }
             return map;
         }catch (Exception e){
@@ -300,21 +321,27 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
             CLIENT_ID = NAVER_CLIENT_ID;
             CLIENT_SECRET = NAVER_CLIENT_SECRET;
         }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
         // 요청 파라미터 설정
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "delete");
-        params.add("client_id", CLIENT_ID);
-        params.add("client_secret", CLIENT_SECRET);
-        params.add("access_token", accessToken);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "delete");
+        body.add("client_id", CLIENT_ID);
+        body.add("client_secret", CLIENT_SECRET);
+        body.add("access_token", accessToken);
+        System.out.println("body: " + body);
 
         // HttpEntity 생성
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
         // RestTemplate 사용하여 요청 전송
+        // GET 예시: https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=cr9KdwLzvG1E2Y2rcKtf&client_secret=BeGvNSefdt&access_token=AAAAPNup0-jisqBC2gXt2CHHKV0GJlicTmVcnvSNjbephV3CrYV_Iy5VUd0WAQJU9ibUGu3Jg4uBGZ4w7j6ue__igns
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(
                 "https://nid.naver.com/oauth2.0/token"
-                , HttpMethod.POST
+                ,HttpMethod.POST
                 ,request
                 ,String.class
         );
@@ -323,6 +350,10 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService{
         if (response.getStatusCode().is2xxSuccessful()) {
             // 성공 처리
             System.out.println(response);
+            String responseBody = response.getBody();
+            System.out.print("respons.Body: ");
+            System.out.println(responseBody);
+
             return "success";
         } else {
             // 오류 처리

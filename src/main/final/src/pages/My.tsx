@@ -19,8 +19,8 @@ const My: React.FC = () => {
         //http header(accessToken) body(member_id) -> MemberDTO
         //const isLoggedIn = localStorage.getItem("isLoggedIn");
         const member_id = localStorage.getItem("username");
-        const bearer: string | null = localStorage.getItem('grantType');
-        const accessToken: string | null = localStorage.getItem('accessToken');
+        const bearer: string | null = localStorage.getItem("grantType");
+        const accessToken: string | null = localStorage.getItem("accessToken");
         let headers: { [key: string]: string } = {};
         if (bearer !== null && accessToken !== null) {
             headers = { Authorization: `${bearer}${accessToken}` };
@@ -79,11 +79,13 @@ const My: React.FC = () => {
     };
 
     const handleLogout = () => {
-        localStorage.setItem('isLoggedIn', 'false');
-        localStorage.removeItem('username');
-        localStorage.removeItem('email');
-        localStorage.removeItem('address');
-        localStorage.removeItem('detailAddress');
+        // localStorage.setItem('isLoggedIn', 'false');
+        // localStorage.removeItem('username');
+        // localStorage.removeItem('email');
+        // localStorage.removeItem('address');
+        // localStorage.removeItem('detailAddress');
+
+        localStorage.clear();
         router.push('/Login');
     };
 
@@ -115,6 +117,7 @@ const My: React.FC = () => {
     const handleDelete = (e) => {
         e.preventDefault();
         //const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const naverAccessToken = localStorage.getItem("naverAccessToken")
         const member_id = localStorage.getItem("username");
         const bearer: string | null = localStorage.getItem('grantType');
         const accessToken: string | null = localStorage.getItem('accessToken');
@@ -124,10 +127,15 @@ const My: React.FC = () => {
         }
         
         //회원 탈퇴.
-        axios.post(deleteURL, member_id, {headers:headers})
+        axios.post(deleteURL, null, {params: {member_id, naverAccessToken},headers:headers})
             .then(res => {
                 console.log(res.data)
                 alert("탈퇴 완")
+
+                //localStorage 내부 정보 제거.
+                localStorage.clear();
+                
+                // 페이지 이동
             })
             .catch(err => console.log(err))
         
