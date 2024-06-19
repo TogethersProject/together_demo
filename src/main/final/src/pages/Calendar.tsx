@@ -7,8 +7,6 @@ import interactionPlugin from '@fullcalendar/interaction'; // Import the Interac
 import '../styles/Calendar.css';
 import {DateSelectArg} from "@fullcalendar/core";
 import axios from "axios";
-import WriteCalendar from "./WriteCalendar";
-import UpdateDeleteCalendar from "./UpdateDeleteCalendar";
 
 const Calendar: React.FC = () => {
     const router = useRouter();
@@ -39,7 +37,7 @@ const Calendar: React.FC = () => {
     });
 
 
-        const [bearer, setBearer] = useState('')
+    const [bearer, setBearer] = useState('')
     const [accessToken, setAccessToken] = useState('')
     const [member_id, setMember_id] = useState('')
     const getCalendarURL = "http://localhost:9000/calendar/getCalendarList";
@@ -48,28 +46,6 @@ const Calendar: React.FC = () => {
 // 일정 작성 모달 표시 여부를 위한 상태. 헷갈리면 나중에 W(write) 붙이자.
     const [showModalState, setShowModalState] = useState(false);
     const [allDay, setAllDay] = useState(false);
-
-    //DB에서 캘린더 정보 가져와 events에 저장. data로 넘겨서 requestbody로 받아도 됨.
-    const getCalendar = () => {
-        console.log(date.start+"\n"+date.end+"\n"+event.calendar_memberId)
-        console.log('getCalendar - accessToken: ' + bearer + accessToken)
-
-        const startDate= date.start
-        const endDate= date.end
-
-        axios.post(getCalendarURL
-            , {
-                startDate: startDate
-                ,endDate:  endDate
-                ,memberId: member_id}
-            ,{ headers:{Authorization:bearer+accessToken}}
-        ).then(res => {
-            //console.log("캘린더 가져옴!")
-            //console.log(res.data)
-            setEvents(prevEvents => [ ...res.data]);
-        })
-            .catch(err => console.log("캘린더 못가져옴\n" + err))
-    }
 
     //맨 처음 로딩에만 토큰 정보 저장
     useEffect(() => {
@@ -83,7 +59,10 @@ const Calendar: React.FC = () => {
         }else{
             router.push('/Login');
         }
-    }, [])
+
+        if (date.start && date.end) {
+            getCalendar();
+        }    }, [])
 
     //날짜 정보가 바뀔 때마다 캘린더 정보 갱신.  date = 달력에서 보여주는 날짜.
     useEffect(()=>{
@@ -91,6 +70,28 @@ const Calendar: React.FC = () => {
             getCalendar();
         }
     },[date])
+
+    //DB에서 캘린더 정보 가져와 events에 저장. data로 넘겨서 requestbody로 받아도 됨.
+    const getCalendar = () => {
+        console.log(date.start+"\n"+date.end+"\n"+event.calendar_memberId)
+        console.log('getCalendar - accessToken: ' + bearer + accessToken)
+        const authorization = bearer + accessToken
+        const startDate= date.start
+        const endDate= date.end
+
+        axios.post(getCalendarURL
+            , {
+                startDate: startDate
+                ,endDate:  endDate
+                ,memberId: member_id}
+            ,{ headers:{Authorization:authorization}}
+        ).then(res => {
+            //console.log("캘린더 가져옴!")
+            //console.log(res.data)
+            setEvents(prevEvents => [ ...res.data]);
+        })
+            .catch(err => console.log("캘린더 못가져옴\n" + err))
+    }
 
     const handleDateClick = (info) => {
         setEvent({
@@ -292,18 +293,55 @@ const Calendar: React.FC = () => {
             ,{ headers:{Authorization:bearer+accessToken}
             }).then(res => {
             console.log('제출성공'+res)
-            getCalendar()//갱신된 일정 보여주기 위함. 나중에 수정해야...
-            setEvent((preData:Event) => ({
-                title: '',
-                content: '',
-                id: '',
-                calendar_memberId: '',
-                allDay: false,
-                backgroundColor: '',
-            }))
+            setShowModalState(false);
+            handleCancle();//리셋
+            getCalendar()//갱신된 일정
         }).catch(err => console.log('제출오류'+err))
 
         //setEvent(null)
+    }
+    const deleteCalendarURL ="http://localhost:9000/calendar/deleteCalendar"
+    const handleDelete = () => {
+        const memberId = event.id
+        console.log(memberId + "삭제하겠습니다")
+        axios.post(deleteCalendarURL
+            ,memberId
+            ,{ headers:{Authorization:bearer+accessToken}}
+        ).then(res => {
+            console.log(res.data)
+            alert('삭제완')
+            handleCancle();//리셋
+            getCalendar()
+        }).catch(err => console.log(err))
+    }
+    const handleCancle = () => {
+        setEvent( preData => ({
+            title: '',
+            content: '',
+            id: '',
+            calendar_memberId: '',
+            allDay: false,
+            backgroundColor: '',
+        }));
+
+        setShowUDModalState(false);
+    }
+    const updateCalendarURL ="http://localhost:9000/calendar/updateCalendar"
+    const handleUDSubmit = () => {
+        setEvent(preData => ({
+            ...preData
+            ,start: event.start
+            ,end: event.end
+        }));
+        axios.post(updateCalendarURL
+            ,{...event, start: event.start, end: event.end}
+            ,{ headers:{Authorization:bearer+accessToken}}
+        ).then(res => {
+            console.log(res.data)
+            alert("어어저장했다")
+            getCalendar()
+            handleCancle()
+        }).catch(err => console.log(err))
     }
     return (
         <div
@@ -332,6 +370,7 @@ const Calendar: React.FC = () => {
                         plugins={[dayGridPlugin, interactionPlugin]}
                         initialView="dayGridMonth"
                         events={events}
+
                         dateClick={handleDateClick}
                         eventClick={handleEventClick}
                         select={handleSelect} // Use handleSelect for handling select events
@@ -346,11 +385,11 @@ const Calendar: React.FC = () => {
 
                         datesSet={dateSet}//현재 보고 있는 달력의 시작 ~ 종료일
 
-                        locale='ko'//언어: 한국어
+                        //locale='ko'//언어: 한국어
                         weekends={true} // 주말 표시 여부
                         navLinks={true} // 달력의 날짜 클릭시 일간 스케줄로 이동
                         navLinkHint={"클릭시 해당 날짜로 이동합니다."} // 날짜에 호버 시 문구. 필요하면 nn일로 이동합니다. 문구를 출력할 수 있음.
-                        dayMaxEvents= {true}//하루에 너무 많은 일정이 있으면 +more로 표시. 깔끔한 캘린더 디자인을 위함.
+                        //dayMaxEvents= {true}//하루에 너무 많은 일정이 있으면 +more로 표시. 깔끔한 캘린더 디자인을 위함.
 
                         eventBackgroundColor={'yellowgreen'}//이벤트의 배경색. 디폴트 값.
                         eventBorderColor={'yellowgreen'}// 이벤트의 테두리 색. 달력 배경색과 동일하게 설정.
@@ -358,24 +397,12 @@ const Calendar: React.FC = () => {
                         height="auto"
                     />
                 </div>
-                <div className="calendar-modal">
-                    {/*<WriteCalendar show={showModalState} onClose={() => setShowModalState(false)} event={event}*/}
-                    {/*               onEvent={onEvent} getCalendar={getCalendar} setEvent={setEvent}>*/}
-                    {/*    일정 작성하는 폼 불러올게*/}
-                    {/*</WriteCalendar>*/}
-
-                    {/*<UpdateDeleteCalendar show={showUDModalState} onClose={() => setShowUDModalState(false)}*/}
-                    {/*                      event={event} onEvent={onEvent} getCalendar={getCalendar} setEvent={setEvent}>*/}
-                    {/*    일정 수정 및 삭제하는 폼 부를게*/}
-                    {/*</UpdateDeleteCalendar>*/}
-                </div>
                 {showModalState && (
                     <div className="calendar-modal" onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
                             <button onClick={() => setShowUDModalState(false)}>&times;모달닫기</button>
                         </div>
                         <div className="modal-body">
-                            칠드런<br/>
                             <p>
                                 일정 시작일: {(event.start) && new Date(event.start).toLocaleString()}
                                 시간: <input type='time' onChange={onStartTime} name='eventStartTime'/>
@@ -402,10 +429,44 @@ const Calendar: React.FC = () => {
                         </div>
                     </div>
                 )}
+                {showUDModalState && (
+                    <div className="calendar-modal" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <button onClick={() => setShowUDModalState(false)}>&times;모달닫기</button>
+                        </div>
+                        <div className="modal-body">
+                            <p>
+                                일정 시작일: {(event.start) && new Date(event.start).toLocaleString()}
+                                시간: <input type='time' onChange={onStartTime} name='eventStartTime'/>
+                            </p>
+                            <p>일정 마감일: {(event.end) && new Date(event.end).toLocaleString()} 시간:
+                                <input type='time' onChange={onEndTime} name='eventEndTime'/>
+                            </p>
+
+                            <input type='checkbox' onChange={handleAllDayChange} checked={allDay} name='allDay'/>allDay
+                            체크여부
+                            <input type='text' onChange={onEvent} name='title' value={event.title} placeholder='제목'/>
+                            <input type='text' onChange={onEvent} name='content' value={event.content} placeholder='내용'/>
+                            <input type='radio' onChange={onEvent} name='backgroundColor' value='skyblue'
+                                   checked={event.backgroundColor === 'skyblue'}/>파랑
+                            <input type='radio' onChange={onEvent} name='backgroundColor' value='orange'
+                                   checked={event.backgroundColor === 'orange'}/>오렌지
+                            <input type='text' onChange={onEvent} name='backgroundColor' value={event.backgroundColor}
+                                   placeholder='색상 알아서 잘 넣어보도록. 나중에는 체크박스나 다른 기능 필요'/>
+                        </div>
+                        <div className="modal-footer">
+                            <button type='button' onClick={handleUDSubmit}>제출하기</button>
+                            <button type='button' onClick={handleCancle}>취소하기</button>
+                            <button type='button' onClick={handleDelete}>삭제하기</button>
+                        </div>
+                    </div>
+                )};
+
+                    </div>
+                    <footer className="footer">
+                    <div className="footer-icon" onClick={handleSettingsClick}>=
             </div>
-            <footer className="footer">
-                <div className="footer-icon" onClick={handleSettingsClick}>=</div>
-                <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
+            <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
                 <div className="footer-icon" onClick={handleProfileClick}>👤</div>
             </footer>
         </div>
