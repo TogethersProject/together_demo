@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-@Transactional
+@Transactional(readOnly = false)
 public interface CalendarDAO extends JpaRepository<User_calendarDTO, Integer> {
 
     //@Query("SELECT c FROM User_calendarDTO c WHERE c.calendar_memberId = :memberId AND FUNCTION('MONTH', c.calendar_start) = :month AND FUNCTION('YEAR', c.calendar_start) = :year")
