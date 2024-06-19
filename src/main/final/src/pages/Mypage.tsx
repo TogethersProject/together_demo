@@ -9,8 +9,23 @@ const Mypage: React.FC = () => {
     const [username, setUsername] = useState('');
 
     useEffect(() => {
+        //sns 회원가입 유저의 경우
+
+        // 주소에서 id, accessToken, naverAccessToken 추출
+        const { id, accessToken, naverAccessToken, name } = router.query;
+        console.log(id + "\n" + accessToken+ "\n" + naverAccessToken+ "\n" + name)
+        // 추출한 값을 로컬 스토리지에 저장
+        if (id && accessToken && naverAccessToken && name) {
+            localStorage.setItem('grantType', "Bearer ");
+            localStorage.setItem('username', id as string);
+            localStorage.setItem('accessToken', accessToken as string);
+            localStorage.setItem('naverAccessToken', naverAccessToken as string);
+            localStorage.setItem('nickname', name as string);
+        }
+
+        // 사이트 회원가입 유저의 경우
         //localStorage에서 accessKey(header), member_id(body) -> username = member_name
-        const storedUsername = localStorage.getItem('username');
+        const storedUsername = localStorage.getItem('nickname');
         if (storedUsername) {
             setUsername(storedUsername);
         }

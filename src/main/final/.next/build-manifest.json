@@ -15,31 +15,20 @@
     "static/chunks/main-app.js"
   ],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
-<<<<<<< HEAD
-    "/FindVolunteer": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/FindVolunteer.js"
-    ],
-    "/First": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-=======
-    "/First": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
->>>>>>> c876f3d9032582c0e225ea346c52713414c7d090
-      "static/chunks/pages/First.js"
-    ],
     "/Login": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/Login.js"
+    ],
+    "/My": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/My.js"
+    ],
+    "/Mypage": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Mypage.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
