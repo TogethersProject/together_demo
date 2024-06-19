@@ -2,7 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/My": "pages/My.js",
   "/Mypage": "pages/Mypage.js",
   "/Login": "pages/Login.js",
-  "/My": "pages/My.js"
+  "/Calendar": "pages/Calendar.js",
+  "/First": "pages/First.js",
+  "/Mentor": "pages/Mentor.js"
 }

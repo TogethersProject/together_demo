@@ -74,7 +74,7 @@ public class BoardMentorController {
 
     //게시글 목록 출력. 페이지 번호에 따라 지정 개수 만큼의 게시글을 출력한다.
     // 페이징 처리 방식이 아닌 무한 스크롤의 경우 어떻게 하는 건지 공부 및 수정 필요.
-    @PostMapping(path = {"getWriteList"})
+    @PostMapping(path = {"getMentorList"})
     public Page<BoardMentorDTO> getWriteList(@PageableDefault(page = 0,size = 5,sort = {"seq"},direction = Sort.Direction.DESC) Pageable pageable) {
         //System.out.println("글 목록 출력 컨트롤러");
         //페이지 정보를 포함하여 게시글 정보를 받아온다.

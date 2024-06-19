@@ -67,11 +67,12 @@ const Login: React.FC = () => {
                 setIsLoggedIn(true);
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('username', member_id); // Save username
+                localStorage.setItem('nickname', member_id); // 나중에 아이디 말고 닉네임으로 바꿔주기.
 
-                alert('로그인 성공!');
+                //alert('로그인 성공!');
             })
             .catch(error => {
-                alert("로그인 실패!!");
+                //alert("로그인 실패!!");
                 console.log(error);
             });
 
