@@ -4,6 +4,7 @@ import com.example.demo.together.calendar.DAO.CalendarDAO;
 import com.example.demo.together.calendar.bean.User_calendarDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = false)
 @Service
 public class CalendarServiceImpl implements CalendarService{
     @Autowired
@@ -31,6 +33,7 @@ public class CalendarServiceImpl implements CalendarService{
 
     @Override
     public List<User_calendarDTO> getCalendarList(Date startDate, Date endDate, String memberId) {
+        System.out.println("calendarList Service");
         //int year = Integer.parseInt(date.substring(0, 4));
         //int month = Integer.parseInt(date.substring(4, 6));
         List<User_calendarDTO> list = calendarDAO.findByMonthAndMemberId(startDate, endDate, memberId);
@@ -48,17 +51,17 @@ public class CalendarServiceImpl implements CalendarService{
                 calendarDTO.setEnd(java.sql.Timestamp.valueOf(adjustedEnd));
             }
 
-            if(calendarDTO.getAllDay()){
-                Date start_date = calendarDTO.getStart();
-                // Date 객체를 'yyyy-MM-dd HH:mm:ss' 형식의 문자열로 포맷
-                SimpleDateFormat sdfFull = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String formattedDateFull = sdfFull.format(start_date);
-                // Date 객체를 'HH:mm' 형식의 문자열로 포맷하여 시간 부분만 추출
-                SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
-                String startTime = sdfTime.format(start_date);
-
-                calendarDTO.setTitle(calendarDTO.getTitle() + ", " + startTime);
-            }
+//            if(calendarDTO.getAllDay()){
+//                Date start_date = calendarDTO.getStart();
+//                // Date 객체를 'yyyy-MM-dd HH:mm:ss' 형식의 문자열로 포맷
+//                SimpleDateFormat sdfFull = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                String formattedDateFull = sdfFull.format(start_date);
+//                // Date 객체를 'HH:mm' 형식의 문자열로 포맷하여 시간 부분만 추출
+//                SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+//                String startTime = sdfTime.format(start_date);
+//
+//                calendarDTO.setTitle(calendarDTO.getTitle() + ", " + startTime);
+//            }
         }
         System.out.println("getCalendarList(Service): " + list);
         return list;
@@ -66,7 +69,7 @@ public class CalendarServiceImpl implements CalendarService{
 
     @Override
     public void updateCalendar(User_calendarDTO userCalendarDTO) {
-        System.out.println("업데이트해보자"+userCalendarDTO);
+        System.out.println("update Calendar: "+userCalendarDTO);
 
         Date start = userCalendarDTO.getStart();
         Date end = userCalendarDTO.getEnd();
@@ -81,7 +84,7 @@ public class CalendarServiceImpl implements CalendarService{
 
     @Override
     public Optional<User_calendarDTO> getOneCalendar(Integer id) {
-        System.out.println("캘린더1개 서비스 들어왓다");
+        System.out.println("getOneCalendar Service: ");
         System.out.println(calendarDAO);
 
         Optional<User_calendarDTO> userDTO = calendarDAO.findById(id);
@@ -95,6 +98,7 @@ public class CalendarServiceImpl implements CalendarService{
 
     @Override
     public void deleteCalendar(Integer memberId) {
+        System.out.println("delete Calendar Service");
         calendarDAO.deleteById(memberId);
     }
 }

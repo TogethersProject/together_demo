@@ -24,8 +24,9 @@ public class CalendarController {
     private CalendarService calendarService;
 
     @Secured("ROLE_USER")
-    @PostMapping("/writeCalendar")
+    @PostMapping(path={"writeCalendar"})
     public ResponseEntity<String> writeCalendar(@RequestBody User_calendarDTO user_calendarDTO) {
+        System.out.println("캘린더 작성 Controller");
         if (calendarService != null) {
             calendarService.writeCalendar(user_calendarDTO);
             return ResponseEntity.ok("Calendar created successfully");
@@ -40,23 +41,35 @@ public class CalendarController {
     @Secured("ROLE_USER")
     @PostMapping(path={"getCalendarList"})
     public List<User_calendarDTO> getCalendarList(@RequestBody GetCalendars getCalendars){
-
         System.out.println("캘린더 줄게");
         System.out.println(calendarService);
-        //System.out.println("calendarList: 이번달은 " + startDateStr +" ~ " + endDateStr + " 이고 나는 " + memberId +"입니다.");//KST: T00:00:00+09:00
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
         LocalDateTime startDateTime = LocalDateTime.parse(getCalendars.getStartDate(), formatter);
         LocalDateTime endDateTime = LocalDateTime.parse(getCalendars.getEndDate(), formatter);
 
         Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        System.out.println("calendarList: 이번달은 " + startDate +" ~ " + endDate + " 이고 나는 " + getCalendars.getMemberId() +"입니다.");//KST: T00:00:00+09:00
         return calendarService.getCalendarList(startDate, endDate, getCalendars.getMemberId());
     }
 
     @Secured("ROLE_USER")
+    @PostMapping(path={"getOneCalendar"})
+    public Optional<User_calendarDTO> getOneCalendar(@RequestBody String calendar_id) {
+        System.out.println("get Calendar Controller: " + calendar_id);
+        System.out.println(calendarService);
+
+        Integer id = Integer.parseInt(calendar_id.split("=")[0]);
+        System.out.println(id);
+        return calendarService.getOneCalendar(id);
+    }
+
+    @Secured("ROLE_USER")
     @PostMapping(path = {"updateCalendar"})
-    private void updateCalendar(@RequestBody User_calendarDTO userCalendarDTO){
-        System.out.println("updateCalendar");
+    public void updateCalendar(@RequestBody User_calendarDTO userCalendarDTO){
+        System.out.println("updateCalendar Controller");
+        System.out.println(calendarService);
 
         // start와 end 값 확인
         System.out.println("Start: " + userCalendarDTO.getStart());
@@ -66,19 +79,11 @@ public class CalendarController {
     }
 
     @Secured("ROLE_USER")
-    @PostMapping(path={"getOneCalendar"})
-    private Optional<User_calendarDTO> getOneCalendar(@RequestBody String calendar_id) {
-        //System.out.println(calendar_id);
-        Integer id = Integer.parseInt(calendar_id.split("=")[0]);
-        System.out.println(id);
-        System.out.println(calendarService);
-        return calendarService.getOneCalendar(id);
-    }
-
-    @Secured("ROLE_USER")
     @PostMapping(path={"deleteCalendar"})
-    private void deleteCalendar(@RequestBody String memberId){
-        Integer member_id = Integer.parseInt(memberId);
+    public void deleteCalendar(@RequestBody String memberId){
+        System.out.println("deleteCalendar Controller");
+        String memberTemp = memberId.split("=")[0];
+        Integer member_id = Integer.parseInt(memberTemp);
         System.out.println("delete: " + member_id);
         calendarService.deleteCalendar(member_id);
     }
