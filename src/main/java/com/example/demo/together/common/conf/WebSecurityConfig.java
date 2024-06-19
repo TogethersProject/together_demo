@@ -52,7 +52,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/member/writeMember","/member/isEmail","/member/sendEmail").permitAll()//회원가입
                                 .requestMatchers("/member/loginCheck","/member/snsLogin","/member/kakaoLogin", "/member/naverLogin").permitAll()//로그인
                                 .requestMatchers("/common/reissueRefreshToken","/member/decodingToken").permitAll()//유효기간이 다 된 accessToken 재발급 요청. | 토큰이 유효한 토큰인지 확인
-                                .requestMatchers("/mentor/getWriteList","/mentor/writeImage","/volunteer/getWriteList","/volunteer/writeImage").permitAll()//글목록확인 | 이미지 임시 업로드. 권한 확인하려면 csrf 토큰 처리 필요.
+                                .requestMatchers("/mentor/getMentorList","/mentor/writeImage","/volunteer/getWriteList","/volunteer/writeImage").permitAll()//글목록확인 | 이미지 임시 업로드. 권한 확인하려면 csrf 토큰 처리 필요.
                                 //.requestMatchers("/oauth2/authorization/naver").permitAll()//네이버로그인
 
                                 //user권한이 있어야 요청 가능
@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/mentor/writeBoard", "/mentor/getUpdateBoard","/mentor/updateBoard","/mentor/deleteBoard").hasRole("USER")//글 작성
                                 .requestMatchers("/volunteer/writeBoard", "/volunteer/getUpdateBoard","/volunteer/updateBoard","/volunteer/deleteBoard").hasRole("USER")//글 작성
                                 .requestMatchers("/calendar/getCalendarList","/calendar/getOneCalendar", "/calendar/writeCalendar", "/calendar/updateCalendar", "/calendar/deleteCalendar").hasRole("USER")
+                                .requestMatchers("/calendar/writeCalendar", "/calendar/getCalendarList", "/calendar/updateCalendar", "/calendar/getOneCalendar", "/calendar/deleteCalendar").hasRole("USER")
 
                                 //test
                                 .requestMatchers("/common/security/isUser").hasRole("USER")//post + user 확인

@@ -19,7 +19,7 @@ const Be = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
-    const [board, setBoard] = useState({title:'멘토입니당'});
+    const [board, setBoard] = useState({title:''});
 
     useEffect(() => {
         // CustomEditor 컴포넌트 가져오기
