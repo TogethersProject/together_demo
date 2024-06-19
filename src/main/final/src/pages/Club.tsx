@@ -80,21 +80,7 @@ const Club: React.FC = () => {
                 </div>
                 <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </header>
-            <div className="club-container">
-                <h1>내가 참여한 봉사활동</h1>
-                {joinedActivity ? (
-                    <div className="activity-item" onClick={handleDetailClick}>
-                        <h2>{joinedActivity.title}</h2>
-                        <p>{joinedActivity.description}</p>
-                        <p>날짜: {joinedActivity.date}</p>
-                        <p>시간: {joinedActivity.startTime} - {joinedActivity.endTime}</p>
-                        <p>장소: {joinedActivity.place}</p>
-                        <button className="detail-btn">자세히 보기</button>
-                    </div>
-                ) : (
-                    <p className="no-activity">아직 참여한 봉사활동이 없습니다.</p>
-                )}
-            </div>
+            
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>
                 <div className="footer-icon" onClick={handleHomeClick}>🏠</div>

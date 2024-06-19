@@ -1,11 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/My": "pages/My.js",
-  "/Mypage": "pages/Mypage.js",
-  "/Login": "pages/Login.js",
-  "/Calendar": "pages/Calendar.js",
-  "/First": "pages/First.js",
-  "/Mentor": "pages/Mentor.js"
-}
+{"/_app":"pages/_app.js","/Be":"pages/Be.html","/Calendar":"pages/Calendar.html","/_error":"pages/_error.js","/Detail":"pages/Detail.html","/FindVolunteer":"pages/FindVolunteer.html","/Find":"pages/Find.html","/First":"pages/First.html","/Join":"pages/Join.html","/Mentor":"pages/Mentor.html","/My":"pages/My.html","/":"pages/index.html","/Chat":"pages/Chat.html","/Mypage":"pages/Mypage.html","/Club":"pages/Club.html","/Login":"pages/Login.html","/shrimp":"pages/shrimp.html","/register":"pages/register.html","/_document":"pages/_document.js","/404":"pages/404.html"}

@@ -7,9 +7,6 @@ import interactionPlugin from '@fullcalendar/interaction'; // Import the Interac
 import '../styles/Calendar.css';
 import {DateSelectArg} from "@fullcalendar/core";
 import axios from "axios";
-import WriteCalendar from "./WriteCalendar";
-import UpdateDeleteCalendar from "./UpdateDeleteCalendar";
-
 const Calendar: React.FC = () => {
     const router = useRouter();
     const [isSidebarOpen, setSidebarOpen] = useState(false);

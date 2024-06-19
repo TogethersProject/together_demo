@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST='{"pages/Be.tsx -> ../components/CustomEditor":{"id":6121,"files":["static/chunks/813.f0fa3b6ae7c5f17f.js","static/chunks/398.ac865b630681260c.js","static/chunks/121.966fd736cda87145.js"]},"pages/register.tsx -> ../components/CustomEditor2":{"id":6715,"files":["static/chunks/813.f0fa3b6ae7c5f17f.js","static/chunks/398.ac865b630681260c.js","static/chunks/715.9934f2755eba0b9b.js"]}}';
