@@ -161,6 +161,8 @@ public class BoardMentorServiceImpl implements BoardMentorService {
         System.out.println("이미지 안쓸거니까 이제 없애고 수정한 글 저장한다 updateBoard(Service)");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         //이미지는 가장 최근에 갱신된 날짜 폴더에 모두 저장되어 있음. 갱신한 적이 없으면 첫 글 작성 날짜 폴더, 갱신한 적이 있으면 마지막으로 갱신한 날짜 폴더에서 이미지를 찾음.
+        System.out.println("boardDTO: " + boardDTO);
+        System.out.println("시간: " + boardDTO.getBoard_lastTime());
         String boardTime= dateFormat.format( boardDTO.getBoard_lastTime() == null ? boardDTO.getBoard_time() : boardDTO.getBoard_lastTime());
         String boardTimeNew =  dateFormat.format(new Date());//오늘 날짜 yyyyMMdd
 

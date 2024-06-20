@@ -2,7 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/FindVolunteer": "pages/FindVolunteer.js",
-  "/Find": "pages/Find.js",
-  "/Mentor": "pages/Mentor.js"
+  "/Mypage": "pages/Mypage.js",
+  "/My": "pages/My.js",
+  "/Login": "pages/Login.js",
+  "/First": "pages/First.js",
+  "/Mentor": "pages/Mentor.js",
+  "/Find": "pages/Find.js"
 }
