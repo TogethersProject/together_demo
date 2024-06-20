@@ -10,6 +10,13 @@ const CustomEditor = dynamic( () => {
     return import( '../components/CustomEditor' );
 }, { ssr: false,suspense: true } );
 
+interface Board {
+    title: string;
+    content: string;
+    id?: string | null;
+    board_time?: Date | null;
+    seq?: string | null;
+}
 const Be = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -19,7 +26,13 @@ const Be = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
-    const [board, setBoard] = useState({title:''});
+    const [bearer, setBearer] = useState('')
+    const [accessToken, setAccessToken] = useState('')
+    const [member_id, setMember_id] = useState('')
+    const [board, setBoard] = useState<Board>({
+        title: ''
+        ,content: ''
+    });
 
     useEffect(() => {
         // CustomEditor 컴포넌트 가져오기
@@ -28,6 +41,16 @@ const Be = () => {
             // 필요한 작업 수행
         };
         loadCustomEditor();
+
+        const grantType = localStorage.getItem("grantType");
+        const access_token = localStorage.getItem("accessToken");
+        const member_id= localStorage.getItem("username");
+        if (grantType  && access_token && member_id) {
+            setBearer(grantType);
+            setAccessToken(access_token);
+            setMember_id(member_id)
+
+        }
     }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -108,9 +131,16 @@ const Be = () => {
     };
     const onContent = (editor) => {
         //const data = editor.getData();
-        setBio(editor.getData());
+        //setBio(editor.getData());
+        setBoard((prevBoard) => ({
+            ...prevBoard,
+            content: editor.getData(),
+            title: name,
+            id: member_id
+        }));
         //console.log('content: ', board);
     };
+
     const boardSubmitURL = 'http://localhost:9000/mentor/writeBoard'
     const onSubmit = (e) => {
         e.preventDefault();
@@ -126,10 +156,10 @@ const Be = () => {
         }
         //console.log(headers)
 
-        const id = localStorage.getItem("username");
-        const title = name
-        const content = bio
-        const board = {id, title, content}
+        // const id = localStorage.getItem("username");
+        // const title = name
+        // const content = bio
+        // const board = {id, title, content}
         axios.post(boardSubmitURL, board    ,{headers:headers}
         ).then(res => {
             console.log(res);
@@ -189,7 +219,7 @@ const Be = () => {
                         </div>
                         <div className="formGroup">
                             <Suspense fallback={<div>Loading editor...</div>}>
-                                <CustomEditor onContent={onContent} content={bio}
+                                <CustomEditor onContent={onContent} oldContent={bio}
                                     //initialData='<h1>Hello from CKEditor in Next.js!</h1>'
                                 />
                             </Suspense>

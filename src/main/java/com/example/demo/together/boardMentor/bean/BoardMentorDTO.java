@@ -31,9 +31,7 @@ public class BoardMentorDTO {
     //글 작성자 아이디이자 member 테이블과 연결하는 fk
     @Column(
             name = "member_id",
-            nullable = false,
-            length = 30
-    )
+            nullable = false)
     private String id;
 
     @Column(name="member_email")

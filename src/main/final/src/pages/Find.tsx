@@ -149,7 +149,9 @@ const Find = () => {
     };
 
     const handleUpdateMentor = (seq) => {
+        console.log("U가자")
         router.push(`/UDMentor?seq=${seq}`);
+        console.log("갓다")
     }
 
     const handleSettingsClick = () => {

@@ -78,31 +78,38 @@ function MyCustomUploadAdapterPlugin(editor) {
         return new UploadAdapter(loader)
     }
 }
-function CustomEditor( props ) {
-    const {onContent, content} = props;
-    const editorRef:any = useRef(null);
+function CustomEditor(props) {
+    const { onContent, oldContent } = props;
+    const editorRef: any = useRef(null);
+
     useEffect(() => {
+        console.log("old: " + oldContent)
         if (editorRef.current) {
-            editorRef.current.setData(content);
+            const editor = editorRef.current;
+            editor.setData(oldContent);
+            editor.focus();
         }
-    }, [content]);
+    }, [oldContent]);
+
+
     return (
         <CKEditor
-            editor={ Editor }
-            config={{placeholder: "내용입력해",
+            editor={Editor}
+            config={{
+                placeholder: "내용입력해",
                 language: 'ko',
-                initialData: content,
-                extraPlugins: [MyCustomUploadAdapterPlugin]}}
-            onChange={ (event, editor ) => {
+                initialData: oldContent,
+                extraPlugins: [MyCustomUploadAdapterPlugin],
+            }}
+            onChange={(event, editor) => {
                 onContent(editor);
-                //console.log( { event, editor } );
-            } }
+            }}
             onReady={(editor) => {
                 editorRef.current = editor;
-                editor.setData(content);
+                editor.setData(oldContent);
             }}
         />
-    )
+    );
 }
 
 export default CustomEditor;

@@ -36,6 +36,7 @@ const UdMentor = () => {
     const boardGetURL = 'http://localhost:9000/mentor/getUpdateBoard';
 
     useEffect(() => {
+        console.log("UDMentor 시작: " + seq)
         // CustomEditor 컴포넌트 가져오기
         const loadCustomEditor = async () => {
             const CustomEditor = await import('../components/CustomEditor');
@@ -43,6 +44,7 @@ const UdMentor = () => {
         };
         loadCustomEditor();
 
+        console.log("로컬 ㅅ저장소에서 내놔")
         const grantType = localStorage.getItem("grantType");
         const access_token = localStorage.getItem("accessToken");
         const member_id= localStorage.getItem("username");
@@ -72,6 +74,7 @@ const UdMentor = () => {
 
                 setName(res.data.boardDTO.title);
                 setBio(res.data.boardDTO.content);
+                console.log("biod에 넣음:" + res.data.boardDTO.content)
                 setImageNamesBefore(res.data.imageList);
             }).catch(err => console.log(err));
         }
@@ -99,11 +102,11 @@ const UdMentor = () => {
     };
 
     const onContent = (editor) => {
-        setBio(editor.getData());
+        //setBio(editor.getData());
         console.log(editor.getData())
         setBoard((prevBoard) => ({
             ...prevBoard,
-            content: bio,
+            content: editor.getData(),
         }));
     };
 
@@ -206,7 +209,7 @@ const UdMentor = () => {
                     </div>
                     <div className="formGroup">
                         <Suspense fallback={<div>Loading editor...</div>}>
-                            <CustomEditor onContent={onContent} content={bio}/>
+                            <CustomEditor onContent={onContent} oldContent={bio}/>
                         </Suspense>
                     </div>
                 </form>
