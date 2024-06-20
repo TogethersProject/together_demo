@@ -7,7 +7,6 @@ import com.example.demo.together.member.DAO.MemberDAO;
 import com.example.demo.together.member.bean.MemberDTO;
 import com.example.demo.together.member.bean.OauthResponseDTO;
 import com.example.demo.together.member.service.MemberInfoService;
-import com.example.demo.together.member.bean.*;
 import com.example.demo.together.member.service.CustomOauth2UserService;
 
 import org.slf4j.Logger;

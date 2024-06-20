@@ -5,8 +5,11 @@ import FullCalendar from '@fullcalendar/react'; // Import FullCalendar and DateS
 import dayGridPlugin from '@fullcalendar/daygrid'; // Import the DayGrid plugin
 import interactionPlugin from '@fullcalendar/interaction'; // Import the Interaction plugin
 import '../styles/Calendar.css';
-import {DateSelectArg} from "@fullcalendar/core";
+import timeGridPlugin from "@fullcalendar/timegrid";
+//import momentPlugin from '@fullcalendar/moment';
+//import {DateSelectArg} from "@fullcalendar/core";
 import axios from "axios";
+import { formatDate } from '@fullcalendar/core'
 
 const Calendar: React.FC = () => {
     const router = useRouter();
@@ -88,6 +91,7 @@ const Calendar: React.FC = () => {
         ).then(res => {
             //console.log("캘린더 가져옴!")
             //console.log(res.data)
+            // 날짜 형식 변경
             setEvents(prevEvents => [ ...res.data]);
         })
             .catch(err => console.log("캘린더 못가져옴\n" + err))
@@ -114,6 +118,7 @@ const Calendar: React.FC = () => {
     const handleEventClick = (info) => {
         console.log("드래그")
         console.log(info)
+
         goUDModal(info)
         setShowUDModalState(true)
 
@@ -224,7 +229,6 @@ const Calendar: React.FC = () => {
         const kstNewEndDate = new Date(utcNewEndDate.getTime() - (9 * 60 * 60 * 1000)); // 9시간을 -
 
         console.log("토큰줄게 일정 하나만 줘:" +bearer+accessToken)
-        alert(bearer+accessToken)
         axios.post(
             getOneCalendarURL
             ,calendar_id
@@ -234,14 +238,17 @@ const Calendar: React.FC = () => {
             const eventData = {
                 ...res.data
                 ,id: calendar_id
-                ,start: new Date(res.data.start)//KST
-                ,newStart: kstNewStartDate  //새로 바꿀 시작일 정보. UTC --(-9h)--> KST
+                ,start: kstNewStartDate//KST
+                //,newStart: kstNewStartDate  //새로 바꿀 시작일 정보. UTC --(-9h)--> KST
                 //end 데이터가 있는 경우에만 값을 넣음
-                ,...(res.data.end != null && { end: new Date(res.data.end) })
-                ,...(res.data.end != null && { newEnd: kstNewEndDate })
+                ,...(res.data.end != null && { end: kstNewEndDate })
+                //,...(res.data.end != null && { newEnd: kstNewEndDate })
             };
             setEvent(eventData)//console.log(res.data
+            getCalendar();
         }).catch(err=> console.log(err))
+
+
     }
 
     // 일정 내역을 저장.
@@ -309,7 +316,6 @@ const Calendar: React.FC = () => {
             ,{ headers:{Authorization:bearer+accessToken}}
         ).then(res => {
             console.log(res.data)
-            alert('삭제완')
             handleCancle();//리셋
             getCalendar()
         }).catch(err => console.log(err))
@@ -338,7 +344,6 @@ const Calendar: React.FC = () => {
             ,{ headers:{Authorization:bearer+accessToken}}
         ).then(res => {
             console.log(res.data)
-            alert("어어저장했다")
             getCalendar()
             handleCancle()
         }).catch(err => console.log(err))
@@ -367,10 +372,25 @@ const Calendar: React.FC = () => {
                 </div>
                 <div className="calendar-container">
                     <FullCalendar
-                        plugins={[dayGridPlugin, interactionPlugin]}
+                        plugins={[dayGridPlugin, interactionPlugin,timeGridPlugin]}
                         initialView="dayGridMonth"
+                        titleFormat={{
+                            year: "2-digit",         //numeric, 2-digit
+                            month: "short",       //2글자. long, short, narrow,
+                        }}
+                        headerToolbar={{
+                            center: 'title'
+                            ,start: 'today'
+                            ,end: 'prev,next'
+                        }}
+                        footerToolbar={{
+                            center:'dayGridMonth,timeGridDay'
+                        }}
+                        eventTimeFormat={{
+                            meridiem:false,     //am, pm 표시 비활성화
+                            hour: "2-digit"     //시간만 2글자 표시. year, month, day, minute 비활성화
+                        }}
                         events={events}
-
                         dateClick={handleDateClick}
                         eventClick={handleEventClick}
                         select={handleSelect} // Use handleSelect for handling select events
@@ -388,8 +408,8 @@ const Calendar: React.FC = () => {
                         //locale='ko'//언어: 한국어
                         weekends={true} // 주말 표시 여부
                         navLinks={true} // 달력의 날짜 클릭시 일간 스케줄로 이동
-                        navLinkHint={"클릭시 해당 날짜로 이동합니다."} // 날짜에 호버 시 문구. 필요하면 nn일로 이동합니다. 문구를 출력할 수 있음.
-                        //dayMaxEvents= {true}//하루에 너무 많은 일정이 있으면 +more로 표시. 깔끔한 캘린더 디자인을 위함.
+                        navLinkHint={"이 날의 일정을 더 자세히 보기"} // 날짜에 호버 시 문구. 필요하면 nn일로 이동합니다. 문구를 출력할 수 있음.
+                        dayMaxEvents= {2}//하루에 너무 많은 일정이 있으면 +more로 표시. 깔끔한 캘린더 디자인을 위함.
 
                         eventBackgroundColor={'yellowgreen'}//이벤트의 배경색. 디폴트 값.
                         eventBorderColor={'yellowgreen'}// 이벤트의 테두리 색. 달력 배경색과 동일하게 설정.

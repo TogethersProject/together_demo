@@ -10,17 +10,20 @@
     "static/development/_buildManifest.js",
     "static/development/_ssgManifest.js"
   ],
-  "rootMainFiles": [],
+  "rootMainFiles": [
+    "static/chunks/webpack.js",
+    "static/chunks/main-app.js"
+  ],
   "pages": {
-    "/Calendar": [
+    "/Find": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Calendar.js"
+      "static/chunks/pages/Find.js"
     ],
-    "/Mypage": [
+    "/Mentor": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Mypage.js"
+      "static/chunks/pages/Mentor.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",

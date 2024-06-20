@@ -61,6 +61,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/volunteer/writeBoard", "/volunteer/getUpdateBoard","/volunteer/updateBoard","/volunteer/deleteBoard").hasRole("USER")//글 작성
                                 .requestMatchers("/calendar/getCalendarList","/calendar/getOneCalendar", "/calendar/writeCalendar", "/calendar/updateCalendar", "/calendar/deleteCalendar").hasRole("USER")
                                 .requestMatchers("/calendar/writeCalendar", "/calendar/getCalendarList", "/calendar/updateCalendar", "/calendar/getOneCalendar", "/calendar/deleteCalendar").hasRole("USER")
+                                .requestMatchers("/comment/writeComment", "/comment/getCommentList", "/comment/getOneComment", "/comment/updateComment", "deleteComment").hasRole("USER")
 
                                 //test
                                 .requestMatchers("/common/security/isUser").hasRole("USER")//post + user 확인
