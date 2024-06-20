@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -28,6 +27,8 @@ public class CalendarServiceImpl implements CalendarService{
         }
         calendarDTO.setBorderColor(calendarDTO.getBackgroundColor());
         System.out.println("캘린더 저장합니다: "+calendarDTO);
+        System.out.println("startTime: " + calendarDTO.getStart());
+        System.out.println("endTime: " + calendarDTO.getEnd());
         calendarDAO.save(calendarDTO);
     }
 
@@ -42,6 +43,7 @@ public class CalendarServiceImpl implements CalendarService{
                     .atZone(ZoneId.of("UTC")).plusHours(9) // UTC에서 KST(UTC+9)로 조정
                     .toLocalDateTime();
             calendarDTO.setStart(java.sql.Timestamp.valueOf(adjustedStart)); // 조정된 시간을 다시 설정
+            System.out.println("startTime: " + adjustedStart);
 
             if (calendarDTO.getEnd() != null) {
                 LocalDateTime adjustedEnd = calendarDTO.getEnd().toInstant()
@@ -49,6 +51,7 @@ public class CalendarServiceImpl implements CalendarService{
                         .toLocalDateTime()
                         .plusHours(9); // UTC에서 KST로 조정
                 calendarDTO.setEnd(java.sql.Timestamp.valueOf(adjustedEnd));
+                System.out.println("endTime: " + adjustedEnd);
             }
 
 //            if(calendarDTO.getAllDay()){
