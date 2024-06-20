@@ -112,7 +112,7 @@ const Be = () => {
     };
 
     const handleProfileClick = () => {
-        router.push('/Profile');
+        router.push('/Mypage');
     };
 
     const handleSettingsClick = () => {
@@ -129,6 +129,7 @@ const Be = () => {
             setSidebarOpen(false);
         }
     };
+
     const onContent = (editor) => {
         //const data = editor.getData();
         //setBio(editor.getData());

@@ -72,6 +72,12 @@ const Mypage: React.FC = () => {
             setSidebarOpen(false);
         }
     };
+    const handleMarketClick = () => {
+        router.push('Market');
+    }
+    function handleFirstImageClick() {
+        router.push('/First');
+    }
 
     return (
         <div
@@ -85,11 +91,12 @@ const Mypage: React.FC = () => {
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
             <header className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container">
-                    <Image src="/images/first.png" alt="First Image" width={120} height={45} />
+                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                <div className="center-image-container" onClick={handleFirstImageClick}
+                     style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
+                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </header>
             <div className="content">
                 <div className="intro">
@@ -103,6 +110,10 @@ const Mypage: React.FC = () => {
                 <div className="activity-card" id="Calendar" onClick={handleCalendarClick}>
                     <h2>월별 봉사 캘린더</h2>
                     <p>봉사 일정을 확인하세요.</p>
+                </div>
+                <div className="activity-card" id="Calendar" onClick={handleMarketClick}>
+                    <h2>우리 지역을 즐겨요</h2>
+                    <p>저렴하게 즐겨보세요.</p>
                 </div>
             </div>
             <footer className="footer">

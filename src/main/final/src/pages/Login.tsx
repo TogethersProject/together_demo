@@ -22,6 +22,9 @@ const Login: React.FC = () => {
     const [isVerified, setIsVerified] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
 
+    const [username, setUsername] = useState<string>('');
+    const [isDuplicate, setIsDuplicate] = useState<boolean | null>(null);
+
     useEffect(() => {
         const storedLoginStatus = localStorage.getItem('isLoggedIn');
         if (storedLoginStatus === 'true') {
@@ -106,6 +109,17 @@ const Login: React.FC = () => {
         if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
             setSidebarOpen(false);
         }
+    };
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+    };
+
+    const checkDuplicate = async () => {
+        // 여기에 중복 확인 로직을 추가하세요.
+        // 예를 들어, API 호출을 통해 중복 여부를 확인할 수 있습니다.
+        // 예시로 랜덤하게 true 또는 false를 반환합니다.
+        const duplicate = Math.random() < 0.5; // 랜덤하게 중복 여부 결정
+        setIsDuplicate(duplicate);
     };
 
     //회원가입 제출 - 바로 로그인 되도록
@@ -274,7 +288,7 @@ const Login: React.FC = () => {
                                 </div>
                                 <div className="hr"></div>
                                 <div className="foot-lnk">
-                                    <a href="#">비밀번호 찾기</a>
+                                    <a href="/Password">비밀번호 찾기</a>
                                 </div>
 
                                 <div className="social-login">
@@ -298,7 +312,21 @@ const Login: React.FC = () => {
                                     <label htmlFor="user-signup" className="label">
                                         아이디
                                     </label>
-                                    <input id="user-signup" type="id" className="input"/>
+                                    <input
+                                        id="user-signup"
+                                        type="text"
+                                        className="input"
+                                        value={username}
+                                        onChange={handleInputChange}
+                                    />
+                                    <button onClick={checkDuplicate} className="check-duplicate-button">
+                                        중복 확인
+                                    </button>
+                                    {isDuplicate !== null && (
+                                        <div className="duplicate-check-result">
+                                            {isDuplicate ? '아이디가 중복됩니다.' : '아이디를 사용할 수 있습니다.'}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="group">
                                     <label htmlFor="email-signup" className="label">

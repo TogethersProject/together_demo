@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import '../styles/My.css';
+import DaumPostcode from 'react-daum-postcode';
 import axios from "axios";
 
 const My: React.FC = () => {
@@ -13,7 +14,7 @@ const My: React.FC = () => {
     const [address, setAddress] = useState('');
     const [detailAddress, setDetailAddress] = useState('');
     const [showModal, setShowModal] = useState(false);
-
+    const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
     const getUserURL = "http://localhost:9000/member/getMemberInfo";
     useEffect(() => {
         //http header(accessToken) body(member_id) -> MemberDTO
@@ -112,6 +113,13 @@ const My: React.FC = () => {
             setSidebarOpen(false);
         }
     };
+    const handleAddressSearch = (data: any) => {
+        setAddress(data.address);
+        setIsPostcodeOpen(false);
+    };
+    const togglePostcode = () => {
+        setIsPostcodeOpen(!isPostcodeOpen);
+    };
 
     const deleteURL = "http://localhost:9000/member/deleteMember";
     const handleDelete = (e) => {
@@ -197,6 +205,14 @@ const My: React.FC = () => {
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                     />
+                    <button type="button" className="postcode-button" onClick={togglePostcode}>
+                        주소 검색
+                    </button>
+                    {isPostcodeOpen && (
+                        <div className="postcode-wrapper">
+                            <DaumPostcode onComplete={handleAddressSearch}/>
+                        </div>
+                    )}
                 </div>
                 <div className="form-group">
                     <label htmlFor="detailAddress">상세 주소</label>
