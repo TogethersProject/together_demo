@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
@@ -18,6 +19,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Transactional(readOnly = false)
 @Service
 public class BoardMentorServiceImpl implements BoardMentorService {
     @Autowired
@@ -38,8 +40,8 @@ public class BoardMentorServiceImpl implements BoardMentorService {
     @Override
     public void writeBoard(BoardMentorDTO boardDTO) {
         System.out.println("글작성 서비스 진입");
-        String tempDir = "temp";
-        String testDir = "test";
+        String tempDir = "mentor/temp";
+        String testDir = "mentor/board";
         //img 태그 내 폴더 temp -> test로 바꾸어 경로 변경
         String content = boardDTO.getContent();
         boardDTO.setContent(fUtils.urlDirectoryChange(tempDir, testDir, content));
