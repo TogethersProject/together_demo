@@ -116,6 +116,9 @@ public class BoardMentorController {
 
         List<String> imageNamesBefore = (List<String>) requestData.get("imageNamesBefore");
         BoardMentorDTO boardDTO = new ObjectMapper().convertValue(requestData.get("board"), BoardMentorDTO.class);
+        System.out.println("updateController - boardDTO: " + boardDTO);
+        boardDTO.setId((String) requestData.get("id"));
+        System.out.println("updateController - boardDTO: " + boardDTO);
 
         boardService.updateBoard(imageNamesBefore, boardDTO);
     }

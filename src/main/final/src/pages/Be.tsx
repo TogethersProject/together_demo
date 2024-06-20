@@ -189,7 +189,7 @@ const Be = () => {
                         </div>
                         <div className="formGroup">
                             <Suspense fallback={<div>Loading editor...</div>}>
-                                <CustomEditor onContent={onContent}
+                                <CustomEditor onContent={onContent} content={bio}
                                     //initialData='<h1>Hello from CKEditor in Next.js!</h1>'
                                 />
                             </Suspense>
