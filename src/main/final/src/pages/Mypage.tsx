@@ -76,6 +76,10 @@ const Mypage: React.FC = () => {
         }
     };
 
+    const handleMarketClick = () => {
+        router.push('Market');
+    }
+
     return (
         <div
             className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
@@ -107,6 +111,10 @@ const Mypage: React.FC = () => {
                 <div className="activity-card" id="Calendar" onClick={handleCalendarClick}>
                     <h2>월별 봉사 캘린더</h2>
                     <p>봉사 일정을 확인하세요.</p>
+                </div>
+                <div className="activity-card" id="Calendar" onClick={handleMarketClick}>
+                    <h2>우리 지역을 즐겨요</h2>
+                    <p>저렴하게 즐겨보세요.</p>
                 </div>
             </div>
             <footer className="footer">

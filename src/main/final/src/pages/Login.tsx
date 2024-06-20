@@ -293,11 +293,11 @@ const Login: React.FC = () => {
                                 </div>
                                 <div className="hr"></div>
                                 <div className="foot-lnk">
-                                    <a href="#">비밀번호 찾기</a>
+                                    <a href="/Password">비밀번호 찾기</a>
                                 </div>
 
                                 <div className="social-login">
-                                    <a className="social-btn" onClick={handleNaverLogin}>
+                                    <a className="social-bt=n" onClick={handleNaverLogin}>
                                         <img src="/images/naver-logo.webp" alt="네이버 로그인" className="social-logo"/>
                                     </a>
                                     <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=7c9f68f8d72d792f0afc13c42883c924&redirect_uri=http://localhost:9000/member/kakaoLogin"
