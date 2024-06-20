@@ -27,7 +27,7 @@ body {
     justify-content: flex-start;
     align-items: center;
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .header {
@@ -114,7 +114,7 @@ button:hover {
 
 
 .footer {
-    width: 320px;
+    width: 360px;
     height: 60px;
     background-color: #ffffff;
     display: flex;
@@ -131,6 +131,12 @@ button:hover {
     cursor: pointer;
 
 
+}
+
+
+.footer-icon {
+    font-size: 24px;
+    cursor: pointer;
 }
 
 

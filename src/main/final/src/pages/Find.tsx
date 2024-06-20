@@ -186,7 +186,7 @@ const Find = () => {
             </div>
             <div className="container">
                 <h1 className="title">등록된 멘토 정보</h1>
-                {boardDTOList.map((item:any, index) => (
+                {boardDTOList.map((item: any, index) => (
                     <div key={index} className="info">
                         <p><strong>제목:</strong>{item.title}</p>
                         <p><strong>이름:</strong> {item.name}</p>
@@ -207,8 +207,8 @@ const Find = () => {
                             />
                             <button onClick={() => handleAddComment(item.seq)}>댓글 달기</button>
                         </div>
-                        { (item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
-                        { (item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
+                        {(item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
+                        {(item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
                     </div>
                 ))}
                 {/*<p>멘토</p>*/}
@@ -242,15 +242,15 @@ const Find = () => {
                 {/*                <button onClick={() => handleDeleteMentor(index)}>글 삭제</button>*/}
                 {/*            </div>*/}
                 {/*        ))}*/}
-                    </div>
-                    <footer className="footer">
-                    <div className="footer-icon" onClick={handleSettingsClick}>=
+                <footer className="footer">
+                    <div className="footer-icon" onClick={handleSettingsClick}>=</div>
+                    <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
+                    <div className="footer-icon" onClick={handleProfileClick}>👤</div>
+                </footer>
             </div>
-            <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
-            <div className="footer-icon" onClick={handleProfileClick}>👤</div>
-        </footer>
-</div>
-);
+
+        </div>
+    );
 };
 
 export default Find;
