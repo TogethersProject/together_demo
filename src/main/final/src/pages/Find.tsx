@@ -148,8 +148,8 @@ const Find = () => {
         router.push('/Mypage');
     };
 
-    const handleUpdateMentor = (item) => {
-        //router.push('/UDMentor'+(item));
+    const handleUpdateMentor = (seq) => {
+        router.push(`/UDMentor?seq=${seq}`);
     }
 
     const handleSettingsClick = () => {
@@ -206,7 +206,7 @@ const Find = () => {
                             <button onClick={() => handleAddComment(item.seq)}>댓글 달기</button>
                         </div>
                         { (item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
-                        { (item.id === member_id) && <button onClick={() => handleUpdateMentor(item)}>글 수정</button>}
+                        { (item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
                     </div>
                 ))}
                 {/*<p>멘토</p>*/}
