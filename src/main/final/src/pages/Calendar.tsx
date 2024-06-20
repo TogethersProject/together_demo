@@ -175,6 +175,9 @@ const Calendar: React.FC = () => {
             setSidebarOpen(false);
         }
     };
+    function handleFirstImageClick() {
+        router.push('/First');
+    }
 
     //작성되어있는 이벤트를 드래그를 통해 이동 시키거나 클릭한 경우
     const onDragEvent = (info) => {
@@ -314,11 +317,12 @@ const Calendar: React.FC = () => {
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
             <header className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container">
-                    <Image src="/images/first.png" alt="First Image" width={120} height={45} />
+                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                <div className="center-image-container" onClick={handleFirstImageClick}
+                     style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
+                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </header>
             <div className="content">
                 <div className="intro">

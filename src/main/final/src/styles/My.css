@@ -173,6 +173,18 @@ button:hover {
     cursor: pointer;
 }
 
+
+.postcode-button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
 /* Responsive adjustments for iPhone 12 */
 @media (max-width: 390px) {
     .main-screen {

@@ -99,6 +99,10 @@ const First: React.FC = () => {
         router.push('/Find');
     }
 
+    function handleFirstImageClick() {
+        router.push('/First');
+    }
+
     return (
         <div
             className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
@@ -111,11 +115,12 @@ const First: React.FC = () => {
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
             <header className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container">
-                    <Image src="/images/first.png" alt="First Image" width={120} height={45} />
+                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                <div className="center-image-container" onClick={handleFirstImageClick}
+                     style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
+                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </header>
             <div className="content">
                 <div className="intro">
@@ -123,7 +128,7 @@ const First: React.FC = () => {
                     <p>멘토가 되어주세요</p>
                 </div>
                 <div className="activity-card" id="Be" onClick={handleBeClick}>
-                    <h2>BE A MENTOR</h2>
+                <h2>BE A MENTOR</h2>
                     <p>우리의 희망에게 멘토가 되어주세요.</p>
                 </div>
                 <div className="activity-card" id="Mentor" onClick={handleFindClick}>

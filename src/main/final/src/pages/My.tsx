@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import '../styles/My.css';
+import DaumPostcode from 'react-daum-postcode';
 import axios from "axios";
 
 const My: React.FC = () => {
@@ -13,7 +14,7 @@ const My: React.FC = () => {
     const [address, setAddress] = useState('');
     const [detailAddress, setDetailAddress] = useState('');
     const [showModal, setShowModal] = useState(false);
-
+    const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
     const getUserURL = "http://localhost:9000/member/getMemberInfo";
     useEffect(() => {
         //http header(accessToken) body(member_id) -> MemberDTO
@@ -88,7 +89,15 @@ const My: React.FC = () => {
         localStorage.clear();
         router.push('/Login');
     };
+    const handleAddressSearch = (data: any) => {
+        setAddress(data.address);
+        setIsPostcodeOpen(false);
+    };
 
+
+    const togglePostcode = () => {
+        setIsPostcodeOpen(!isPostcodeOpen);
+    };
     const handleHomeClick = () => {
         router.push('/First');
     };
@@ -105,6 +114,9 @@ const My: React.FC = () => {
         setSidebarOpen(false);
         router.push(path);
     };
+    function handleFirstImageClick() {
+        router.push('/First');
+    }
 
     const handleOutsideClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         const sidebar = document.querySelector('.sidebar');
@@ -152,11 +164,12 @@ const My: React.FC = () => {
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
             <header className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container">
-                    <Image src="/images/first.png" alt="First Image" width={120} height={45} />
+                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                <div className="center-image-container" onClick={handleFirstImageClick}
+                     style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
+                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </header>
             <div className="content">
                 <div className="intro">
@@ -197,6 +210,14 @@ const My: React.FC = () => {
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                     />
+                    <button type="button" className="postcode-button" onClick={togglePostcode}>
+                        주소 검색
+                    </button>
+                    {isPostcodeOpen && (
+                        <div className="postcode-wrapper">
+                            <DaumPostcode onComplete={handleAddressSearch}/>
+                        </div>
+                    )}
                 </div>
                 <div className="form-group">
                     <label htmlFor="detailAddress">상세 주소</label>
