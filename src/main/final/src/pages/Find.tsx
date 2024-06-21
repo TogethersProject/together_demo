@@ -83,19 +83,19 @@ const Find = () => {
                 member_id: member_id,
             },
         })
-            .then((res) => {
-                console.log(res);
-                if (res.data === '글을 삭제하였습니다.') {
-                    alert('삭제 완료!');
-                    setBoardDTOList((prevBoardDTOList) => prevBoardDTOList.filter((item) => item.seq !== index));
-                } else {
-                    alert('삭제 실패' + res.data);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                alert('에러!!!');
-            });
+    //         .then((res) => {
+    //             console.log(res);
+    //             if (res.data === '글을 삭제하였습니다.') {
+    //                 alert('삭제 완료!');
+    //                 setBoardDTOList((prevBoardDTOList) => prevBoardDTOList.filter((item) => item.seq !== index));
+    //             } else {
+    //                 alert('삭제 실패' + res.data);
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //             alert('에러!!!');
+    //         });
     };
 
     const handleAddComment = (seq: number) => {

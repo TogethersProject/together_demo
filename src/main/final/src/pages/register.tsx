@@ -202,9 +202,6 @@ const Be = () => {
                                 required
                             />
                         </div>
-                        <div className="buttonContainer">
-                            <button className="button" type="submit">등록하기</button>
-                        </div>
                     </form>
                 </main>
                 <footer className="footer">
