@@ -9,8 +9,8 @@ const Market: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [username, setUsername] = useState('');
     const [marketEntries, setMarketEntries] = useState([
-        { id: 1, name: 'Store A', phone: '123-456-7890', address: '123 Market St' },
-        { id: 2, name: 'Store B', phone: '987-654-3210', address: '456 Market St' },
+        { id: 1, region: 'Store A', shopname: '123-456-7890', business: '123 Market St', phone: '01000000000', address: '111', discount: '10%', dismember: '10'},
+        { id: 2,region: 'Store A', shopname: '123-456-7890', business: '123 Market St', phone: '01000000000', address: '111', discount: '10%', dismember: '10' },
         // Add more entries as needed
     ]);
     const [expandedEntryId, setExpandedEntryId] = useState<number | null>(null);
@@ -101,24 +101,26 @@ const Market: React.FC = () => {
                 <table className="market-table">
                     <thead>
                     <tr>
-                        <th>상점 이름</th>
-                        <th>전화번호</th>
-                        <th>주소</th>
+                        <th>동 주소</th>
+                        <th>상점이름</th>
+                        <th>업종</th>
                     </tr>
                     </thead>
                     <tbody>
                     {marketEntries.map(entry => (
                         <React.Fragment key={entry.id}>
                             <tr className="market-entry" onClick={() => handleExpandEntry(entry.id)}>
-                                <td>{entry.name}</td>
-                                <td>{entry.phone}</td>
-                                <td>{entry.address}</td>
+                                <td>{entry.region}</td>
+                                <td>{entry.shopname}</td>
+                                <td>{entry.business}</td>
                             </tr>
                             {expandedEntryId === entry.id && (
                                 <tr className="expanded-details">
                                     <td colSpan={3}>
                                         <p>전화번호: {entry.phone}</p>
                                         <p>주소: {entry.address}</p>
+                                        <p>할인율: {entry.discount}</p>
+                                        <p>할인대상: {entry.dismember}</p>
                                         {/* Add more details as needed */}
                                     </td>
                                 </tr>
