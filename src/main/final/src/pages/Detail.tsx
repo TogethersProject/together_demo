@@ -11,7 +11,7 @@ const Detail: React.FC = () => {
     const { isLoggedIn } = useAuth(); // 인증 정보를 다루는 커스텀 훅을 사용하여 로그인 상태를 확인합니다.
     const [isSidebarOpen, setSidebarOpen] = useState(false); // 사이드바 열림 상태를 관리할 상태 변수
     const sidebarRef = useRef<HTMLDivElement>(null); // 사이드바 요소를 참조할 useRef 객체
-
+    const [showModal, setShowModal] = useState(false);
     // 활동 id에 따라 활동 정보를 가져오는 함수
     useEffect(() => {
         const getActivityById = async (id: string | string[] | undefined) => {
@@ -87,13 +87,6 @@ const Detail: React.FC = () => {
     }, [id]);
 
     // 참여하기 버튼 클릭 시 처리하는 함수
-    const handleParticipate = () => {
-        if (isLoggedIn()) {
-            router.push('/mypage'); // 로그인 되어 있으면 마이페이지로 이동
-        } else {
-            router.push('/Login'); // 로그인 되어 있지 않으면 로그인 페이지로 이동
-        }
-    };
 
     // 첫 번째 이미지 클릭 시 처리하는 함수
     const handleFirstImageClick = () => {
@@ -134,6 +127,17 @@ const Detail: React.FC = () => {
         return <div>봉사활동을 찾을 수 없습니다.</div>;
     }
 
+    const handleParticipate = () => {
+        // Show the modal
+        setShowModal(true);
+
+        // Hide the modal after 3 seconds and navigate to /FindVolunteer
+        setTimeout(() => {
+            setShowModal(false);
+            window.location.href = '/FindVolunteer';
+        }, 2000);
+    };
+
     // 활동 정보가 있는 경우, 화면에 렌더링
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
@@ -152,7 +156,7 @@ const Detail: React.FC = () => {
             </div>
             <div className="content">
                 <h1>{activity.title}</h1>
-                <Image src={activity.image} alt={activity.title} width={300} height={300} />
+                <Image src={activity.image} alt={activity.title} width={300} height={300}/>
                 <p>{activity.description}</p>
                 <p>{activity.detail}</p>
                 {activity.detail2 && <p>{activity.detail2}</p>}
@@ -165,7 +169,14 @@ const Detail: React.FC = () => {
                 <p>{activity.people}</p>
                 <p>{activity.type}</p>
                 {activity.auth && <p>{activity.auth}</p>}
-                <button className="participate-button" onClick={handleParticipate}>참여하기</button>
+                <div>
+                    <button className="participate-button" onClick={handleParticipate}>참여하기</button>
+                    {showModal && (
+                        <div className="modal">
+                            together@together.com 신청서 내주시면 됩니다
+                        </div>
+                    )}
+                </div>
             </div>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>

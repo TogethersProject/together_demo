@@ -4,17 +4,15 @@ body, html {
     width: 100%;
     height: 100%;
     font-family: Arial, sans-serif;
-    overflow-x: hidden; /* 수평 스크롤 제거 */
 }
 
 body {
+    overflow: hidden;
     background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* 화면 전체 높이 */
 }
-
 
 .main-screen {
     width: 360px;
@@ -41,11 +39,28 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.center-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
 .alert-icon {
     width: 50px;
     height: 50px;
 }
 
+.container {
+    flex-grow: 1;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+}
 .title {
     font-size: 24px;
     text-align: center;
@@ -84,7 +99,7 @@ body {
 }
 
 input[type="text"] {
-    width: 100%;
+    width: 300px;
     padding: 8px;
     margin-top: 5px;
     border: 1px solid #ccc;
@@ -114,25 +129,20 @@ button:hover {
 
 
 .footer {
-    width: 320px;
-    height: 60px;
+    width: 100%;
+    height: 80px;
     background-color: #ffffff;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: absolute; /* Add position absolute */
-    bottom: 1px; /* Adjust bottom position */
 }
 
 .footer-icon {
     font-size: 24px;
     cursor: pointer;
-
-
 }
-
 
 .sidebar {
     position: absolute;
@@ -164,12 +174,4 @@ button:hover {
 
 .main-screen.sidebar-open .sidebar {
     transform: translateX(0);
-}
-
-.mentor-content {
-    min-width: 100px;
-    max-width: 320px;
-}
-figure{
-    margin-left:0
 }

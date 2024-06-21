@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image'; // Import Image.tsx component from next/image
-import '../styles/Main.css';
+import '../../../../../../together_demo_1/src/main/final/src/styles/Main.css';
 
 const Main: React.FC = () => {
     const handleClick = () => {

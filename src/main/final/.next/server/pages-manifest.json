@@ -1,1 +1,23 @@
-{"/_app":"pages/_app.js","/_error":"pages/_error.js","/Be":"pages/Be.html","/Calendar":"pages/Calendar.html","/Detail":"pages/Detail.html","/Find":"pages/Find.html","/FindVolunteer":"pages/FindVolunteer.html","/First":"pages/First.html","/Join":"pages/Join.html","/Login":"pages/Login.html","/Mentor":"pages/Mentor.html","/My":"pages/My.html","/Mypage":"pages/Mypage.html","/UDMentor":"pages/UDMentor.html","/":"pages/index.html","/register":"pages/register.html","/shrimp":"pages/shrimp.html","/_document":"pages/_document.js","/404":"pages/404.html"}
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/Be": "pages/Be.js",
+  "/Chat": "pages/Chat.js",
+  "/Calendar": "pages/Calendar.js",
+  "/Detail": "pages/Detail.js",
+  "/FindVolunteer": "pages/FindVolunteer.js",
+  "/First": "pages/First.js",
+  "/Join": "pages/Join.js",
+  "/Market": "pages/Market.js",
+  "/Mentor": "pages/Mentor.js",
+  "/Login": "pages/Login.js",
+  "/My": "pages/My.js",
+  "/Mypage": "pages/Mypage.js",
+  "/Password": "pages/Password.js",
+  "/UDMentor": "pages/UDMentor.js",
+  "/": "pages/index.js",
+  "/register": "pages/register.js",
+  "/shrimp": "pages/shrimp.js",
+  "/Find": "pages/Find.js",
+  "/_document": "pages/_document.js"
+}
