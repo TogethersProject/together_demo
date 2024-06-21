@@ -10,6 +10,7 @@ interface Mentor {
     bio: string;
     photo: string | null;
     comments: string[];
+    seq: number;
 }
 
 const Find = () => {
@@ -168,7 +169,7 @@ const Find = () => {
     };
 
     const renderPageNumbers = (totalComments: number) => {
-        const pageNumbers = [];
+        const pageNumbers: React.ReactElement[] = [];
         for (let i = 1; i <= Math.ceil(totalComments / commentsPerPage); i++) {
             pageNumbers.push(
                 <button key={i} onClick={() => handlePageChange(i)} disabled={i === currentPage}>
@@ -200,7 +201,7 @@ const Find = () => {
                 {boardDTOList.map((item: any, index) => {
                     const indexOfLastComment = currentPage * commentsPerPage;
                     const indexOfFirstComment = indexOfLastComment - commentsPerPage;
-                    const currentComments = item.comments.slice(indexOfFirstComment, indexOfLastComment);
+                    //const currentComments = item.comments.slice(indexOfFirstComment, indexOfLastComment);
 
                     return (
                         <div key={index} className="info">
@@ -210,11 +211,11 @@ const Find = () => {
                             <p className={"mentor-content"} id={`content-${item.seq}`}></p>
                             <div className="comments">
                                 <h3>댓글:</h3>
-                                {currentComments.map((comment: string, commentIndex: number) => (
-                                    <div key={commentIndex} className="commentContainer">
-                                        <p>{comment}</p>
-                                    </div>
-                                ))}
+                                {/*{currentComments.map((comment: string, commentIndex: number) => (*/}
+                                {/*    <div key={commentIndex} className="commentContainer">*/}
+                                {/*        <p>{comment}</p>*/}
+                                {/*    </div>*/}
+                                {/*))}*/}
                                 <input
                                     type="text"
                                     value={currentComment}
@@ -222,9 +223,9 @@ const Find = () => {
                                     placeholder="댓글을 입력하세요"
                                 />
                                 <button onClick={() => handleAddComment(item.seq)}>댓글 달기</button>
-                                <div className="pagination">
-                                    {renderPageNumbers(item.comments.length)}
-                                </div>
+                                {/*<div className="pagination">*/}
+                                {/*    {renderPageNumbers(item.comments.length)}*/}
+                                {/*</div>*/}
                             </div>
                             {(item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
                             {(item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}

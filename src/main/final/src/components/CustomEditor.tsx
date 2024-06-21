@@ -1,7 +1,8 @@
 // components/custom-editor.js
 import React, {useEffect, useRef} from 'react';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import Editor from "../../../../../../together_demo_1/src/main/final/ckeditor5";
+//import Editor from "../../../../../../together_demo_1/src/main/final/ckeditor5";
+import Editor from "ckeditor5-custom-build";
 
 class UploadAdapter {
     private loader: any;

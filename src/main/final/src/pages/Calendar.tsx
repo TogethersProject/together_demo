@@ -245,6 +245,7 @@ const Calendar: React.FC = () => {
                 //,...(res.data.end != null && { newEnd: kstNewEndDate })
             };
             setEvent(eventData)//console.log(res.data
+
             getCalendar();
         }).catch(err=> console.log(err))
 
