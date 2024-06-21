@@ -170,7 +170,8 @@ const Find = () => {
     };
 
     return (
-        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
             <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
@@ -178,11 +179,11 @@ const Find = () => {
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
             <div className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container" onClick={handleFirstImageClick} style={{ cursor: 'pointer' }}>
-                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45} />
+                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
+                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </div>
             <div className="container">
                 <h1 className="title">등록된 멘토 정보</h1>
@@ -206,6 +207,7 @@ const Find = () => {
                                 placeholder="댓글을 입력하세요"
                             />
                             <button onClick={() => handleAddComment(item.seq)}>댓글 달기</button>
+                            <br/>
                         </div>
                         {(item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
                         {(item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
@@ -242,13 +244,13 @@ const Find = () => {
                 {/*                <button onClick={() => handleDeleteMentor(index)}>글 삭제</button>*/}
                 {/*            </div>*/}
                 {/*        ))}*/}
-                <footer className="footer">
-                    <div className="footer-icon" onClick={handleSettingsClick}>=</div>
-                    <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
-                    <div className="footer-icon" onClick={handleProfileClick}>👤</div>
-                </footer>
-            </div>
 
+            </div>
+            <footer className="footer">
+                <div className="footer-icon" onClick={handleSettingsClick}>=</div>
+                <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
+                <div className="footer-icon" onClick={handleProfileClick}>👤</div>
+            </footer>
         </div>
     );
 };
