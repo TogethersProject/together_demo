@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import '../styles/Find.css';
 import axios from "axios";
-import {setMatchers} from "expect/build/jestMatchersObject";
 
 interface Mentor {
     name: string;
@@ -20,15 +19,16 @@ const Find = () => {
     const sidebarRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const getMentorListURL = 'http://localhost:9000/mentor/getMentorList';
-    const [boardDTOList, setBoardDTOList] = useState([]);
+    const [boardDTOList, setBoardDTOList] = useState<any[]>([]);
     const boardDeleteURL = 'http://localhost:9000/mentor/deleteBoard';
     const [bearer, setBearer] = useState('')
     const [accessToken, setAccessToken] = useState('')
     const [member_id, setMember_id] = useState('')
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const commentsPerPage = 5;
+
     useEffect(() => {
-        //const savedData = JSON.parse(localStorage.getItem('mentors') || '[]');
-        //setMentors(savedData);
         getBoardList();
 
         const grantType = localStorage.getItem("grantType");
@@ -58,26 +58,22 @@ const Find = () => {
                         iframe.src = embedUrl;
                         iframe.title = "video";
                         iframe.allowFullscreen = true;
-                        iframe.width = "320";
+                        iframe.width = "300";
                         iframe.height = "180";
                         oembedTag.replaceWith(iframe);
                     }
-                })
+                });
 
-                // 이미지 크기 조절 로직 추가
                 const images = doc.getElementsByTagName('img');
                 for (let i = 0; i < images.length; i++) {
                     const img = images[i];
                     const width = img.width;
                     const height = img.height;
 
-                    if (width > 320) {
-                        const min = 320/width;
-                        //console.log("min: " + min)
-                        //const ratio = Math.min(200 / width, 230 / height);
+                    if (width > 300) {
+                        const min = 300/width;
                         img.width = Math.round(width * min);
                         img.height = Math.round(height * min);
-                        //console.log("w,h: " + img.width +", " + img.height )
                     }
                 }
 
@@ -90,7 +86,6 @@ const Find = () => {
         try {
             const res = await axios.post(getMentorListURL, null, {
                 params: {
-                    //page: page
                     page: 0
                 }
             });
@@ -100,41 +95,46 @@ const Find = () => {
             console.log("에러발생" + err);
         }
     }
+
     const handleDeleteMentor = (index: number) => {
         axios.post(boardDeleteURL, null, {
             headers:{
-                Authorization:bearer+accessToken
-            },params: {
-                seq: index // 삭제할 글 번호
-                ,member_id: member_id
+                Authorization: bearer + accessToken
+            },
+            params: {
+                seq: index,
+                member_id: member_id
             }
         })
             .then(res => {
                 console.log(res);
-                if(res.data === "글을 삭제하였습니다.") {
+                if (res.data === "글을 삭제하였습니다.") {
                     alert('삭제 완료!');
-                    getBoardList(); // 리스트를 다시 불러와서 삭제된 상태를 반영
-                }else{
-                    alert('삭제 실패'+res.data)
+                    getBoardList();
+                } else {
+                    alert('삭제 실패' + res.data);
                 }
             })
             .catch(err => {
                 console.log(err);
                 alert('에러!!!');
             });
-        // const updatedMentors = mentors.filter((_, i) => i !== index);
-        // setMentors(updatedMentors);
-        // localStorage.setItem('mentors', JSON.stringify(updatedMentors));
-
     };
 
-    const handleAddComment = (index: number) => {
+    const handleAddComment = (seq: number) => {
         const updatedMentors = [...mentors];
-        updatedMentors[index].comments = [...(updatedMentors[index].comments || []), currentComment];
-        setMentors(updatedMentors);
-        setCurrentComment('');
-        localStorage.setItem('mentors', JSON.stringify(updatedMentors));
+        const mentorIndex = updatedMentors.findIndex(mentor => mentor.seq === seq);
+        if (mentorIndex !== -1) {
+            updatedMentors[mentorIndex].comments = [...(updatedMentors[mentorIndex].comments || []), currentComment];
+            setMentors(updatedMentors);
+            setCurrentComment('');
+            localStorage.setItem('mentors', JSON.stringify(updatedMentors));
+        }
     };
+
+    const handleUpdateMentor = (seq: number) => {
+        router.push(`/UDMentor?seq=${seq}`);
+    }
 
     const handleFirstImageClick = () => {
         router.push('/First');
@@ -147,12 +147,6 @@ const Find = () => {
     const handleProfileClick = () => {
         router.push('/Mypage');
     };
-
-    const handleUpdateMentor = (seq) => {
-        console.log("U가자")
-        router.push(`/UDMentor?seq=${seq}`);
-        console.log("갓다")
-    }
 
     const handleSettingsClick = () => {
         setSidebarOpen(true);
@@ -167,6 +161,22 @@ const Find = () => {
         if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
             setSidebarOpen(false);
         }
+    };
+
+    const handlePageChange = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const renderPageNumbers = (totalComments: number) => {
+        const pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(totalComments / commentsPerPage); i++) {
+            pageNumbers.push(
+                <button key={i} onClick={() => handlePageChange(i)} disabled={i === currentPage}>
+                    {i}
+                </button>
+            );
+        }
+        return pageNumbers;
     };
 
     return (
@@ -187,64 +197,40 @@ const Find = () => {
             </div>
             <div className="container">
                 <h1 className="title">등록된 멘토 정보</h1>
-                {boardDTOList.map((item: any, index) => (
-                    <div key={index} className="info">
-                        <p><strong>제목:</strong>{item.title}</p>
-                        <p><strong>이름:</strong> {item.name}</p>
-                        <p><strong>이메일:</strong> {item.email}</p>
-                        <p className={"mentor-content"} id={`content-${item.seq}`}></p>
-                        <div className="comments">
-                            <h3>댓글:</h3>
-                            {/*{mentor.comments.map((comment, commentIndex) => (*/}
-                            {/*    <div key={commentIndex} className="commentContainer">*/}
-                            {/*        <p>{comment}</p>*/}
-                            {/*    </div>*/}
-                            {/*))}*/}
-                            <input
-                                type="text"
-                                value={currentComment}
-                                onChange={(e) => setCurrentComment(e.target.value)}
-                                placeholder="댓글을 입력하세요"
-                            />
-                            <button onClick={() => handleAddComment(item.seq)}>댓글 달기</button>
-                            <br/>
-                        </div>
-                        {(item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
-                        {(item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
-                    </div>
-                ))}
-                {/*<p>멘토</p>*/}
-                {/*        {mentors.map((mentor, index) => (*/}
-                {/*            <div key={index} className="info">*/}
-                {/*                <p><strong>이름:</strong> {mentor.name}</p>*/}
-                {/*                <p><strong>이메일:</strong> {mentor.email}</p>*/}
-                {/*                <p><strong>소개:</strong> {mentor.bio}</p>*/}
-                {/*                {mentor.photo ? (*/}
-                {/*                    <div className="photo-container">*/}
-                {/*                        <Image src={mentor.photo} alt="Photo" width={100} height={100}/>*/}
-                {/*                    </div>*/}
-                {/*                ) : (*/}
-                {/*                    <p>No Photo Available</p>*/}
-                {/*                )}*/}
-                {/*                <div className="comments">*/}
-                {/*                    <h3>댓글:</h3>*/}
-                {/*                    {mentor.comments.map((comment, commentIndex) => (*/}
-                {/*                        <div key={commentIndex} className="commentContainer">*/}
-                {/*                            <p>{comment}</p>*/}
-                {/*                        </div>*/}
-                {/*                    ))}*/}
-                {/*                    <input*/}
-                {/*                        type="text"*/}
-                {/*                        value={currentComment}*/}
-                {/*                        onChange={(e) => setCurrentComment(e.target.value)}*/}
-                {/*                        placeholder="댓글을 입력하세요"*/}
-                {/*                    />*/}
-                {/*                    <button onClick={() => handleAddComment(index)}>댓글 달기</button>*/}
-                {/*                </div>*/}
-                {/*                <button onClick={() => handleDeleteMentor(index)}>글 삭제</button>*/}
-                {/*            </div>*/}
-                {/*        ))}*/}
+                {boardDTOList.map((item: any, index) => {
+                    const indexOfLastComment = currentPage * commentsPerPage;
+                    const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+                    const currentComments = item.comments.slice(indexOfFirstComment, indexOfLastComment);
 
+                    return (
+                        <div key={index} className="info">
+                            <p><strong>제목:</strong>{item.title}</p>
+                            <p><strong>이름:</strong> {item.name}</p>
+                            <p><strong>이메일:</strong> {item.email}</p>
+                            <p className={"mentor-content"} id={`content-${item.seq}`}></p>
+                            <div className="comments">
+                                <h3>댓글:</h3>
+                                {currentComments.map((comment: string, commentIndex: number) => (
+                                    <div key={commentIndex} className="commentContainer">
+                                        <p>{comment}</p>
+                                    </div>
+                                ))}
+                                <input
+                                    type="text"
+                                    value={currentComment}
+                                    onChange={(e) => setCurrentComment(e.target.value)}
+                                    placeholder="댓글을 입력하세요"
+                                />
+                                <button onClick={() => handleAddComment(item.seq)}>댓글 달기</button>
+                                <div className="pagination">
+                                    {renderPageNumbers(item.comments.length)}
+                                </div>
+                            </div>
+                            {(item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
+                            {(item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
+                        </div>
+                    );
+                })}
             </div>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>
