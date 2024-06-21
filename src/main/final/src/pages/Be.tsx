@@ -206,6 +206,9 @@ const Be = () => {
                 </div>
                 <main className="activitiesContainer">
                     <h1 className="title">멘토 등록</h1>
+                    <div className="buttonContainer">
+                        <button className="button" type="submit">등록하기</button>
+                    </div>
                     <form className="form" onSubmit={onSubmit}>
                         <div className="formGroup">
                             <label className="label" htmlFor="name">제목:</label>
@@ -224,9 +227,6 @@ const Be = () => {
                                     //initialData='<h1>Hello from CKEditor in Next.js!</h1>'
                                 />
                             </Suspense>
-                        </div>
-                        <div className="buttonContainer">
-                            <button className="button" type="submit">등록하기</button>
                         </div>
                     </form>
                 </main>
