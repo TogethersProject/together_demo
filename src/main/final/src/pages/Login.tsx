@@ -71,15 +71,15 @@ const Login: React.FC = () => {
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('username', member_id); // Save username
                 localStorage.setItem('nickname', member_id); // 나중에 아이디 말고 닉네임으로 바꿔주기.
-
+                console.log("넣어-username(login): " + member_id)
+                router.push('/Mypage');
                 //alert('로그인 성공!');
             })
             .catch(error => {
                 //alert("로그인 실패!!");
                 console.log(error);
+                router.push('/Login');
             });
-
-        router.push('/Mypage');
     };
 
     const handleLogout = () => {
@@ -149,7 +149,7 @@ const Login: React.FC = () => {
                     setIsLoggedIn(true);
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('username', username); // Save username
-
+                    console.log("넣어-username(login): " + username)
                     router.push('/First');
                 }).catch(err => console.log(err))
         }

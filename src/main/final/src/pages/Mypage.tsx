@@ -9,13 +9,24 @@ const Mypage: React.FC = () => {
     const [username, setUsername] = useState('');
 
     useEffect(() => {
-        //sns 회원가입 유저의 경우
-
         // 주소에서 id, accessToken, naverAccessToken 추출
-        const { id, accessToken, naverAccessToken, name } = router.query;
-        console.log(id + "\n" + accessToken+ "\n" + naverAccessToken+ "\n" + name)
+        if(localStorage.getItem("temp") == null){
+            localStorage.setItem("temp","true")
+            router.push('/Temp');
+        }
+
+        console.log(router.query);
+        const name = router.query.name as string | string;
+        const accessToken = router.query.accessToken as string | number;
+        const naverAccessToken = router.query.naverAccessToken as string | boolean;
+        const id = router.query.id as string | object;
+        console.log("name: " + name)
+        //const {  accessToken, naverAccessToken, id } = router.query;
+        console.log(name + "\n" + accessToken+ "\n" + naverAccessToken+ "\n" + id)
         // 추출한 값을 로컬 스토리지에 저장
-        if (id && accessToken && naverAccessToken && name) {
+        if (name && accessToken && naverAccessToken && id) {
+            setUsername(name as string);
+
             localStorage.setItem('grantType', "Bearer ");
             localStorage.setItem('username', id as string);
             localStorage.setItem('accessToken', accessToken as string);
@@ -27,9 +38,10 @@ const Mypage: React.FC = () => {
         //localStorage에서 accessKey(header), member_id(body) -> username = member_name
         const storedUsername = localStorage.getItem('nickname');
         if (storedUsername) {
+            console.log("name: " + username)
             setUsername(storedUsername);
         }
-    }, []);
+    }, [username]);
 
     const handleFindVolunteerClick = () => {
         router.push('/FindVolunteer');

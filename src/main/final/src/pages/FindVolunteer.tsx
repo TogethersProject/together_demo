@@ -58,6 +58,8 @@ const FindVolunteer: React.FC = () => {
 
     useEffect(() => {
         console.log("보드 내놔")
+        console.log(router.query);
+
         getBoardList();
 
         const grantType = localStorage.getItem("grantType");

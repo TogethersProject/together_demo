@@ -9,6 +9,7 @@ import com.example.demo.together.member.bean.OauthResponseDTO;
 import com.example.demo.together.member.service.MemberInfoService;
 import com.example.demo.together.member.service.CustomOauth2UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,7 @@ public class MemberController {
 
     //sns 로그인 및 회원가입
     @GetMapping("/snsLogin")
-    public String signup(@RequestParam(name = "code")String code, @RequestParam("state")String state){
+    public String signup(@RequestParam(name = "code") String code, @RequestParam("state") String state, HttpServletResponse response) {
         System.out.println("code: " + code + " / state: " + state);
         OauthResponseDTO oauthResponseDTO = customOauth2UserService.signUp(code, "naver");
         System.out.println("oauthDTO: " + oauthResponseDTO);
@@ -95,21 +96,11 @@ public class MemberController {
         String accessToken = oauthResponseDTO.getAccessToken();
         Optional<MemberDTO> memberDTO = memberDAO.findById(member_id);
         String member_name = memberDTO.get().getMember_name();
-        StringBuilder htmlBuilder = new StringBuilder();
-        htmlBuilder.append("<p style='color:red; name='").append(member_id).append("'>");
-        htmlBuilder.append(member_name+"님 안녕하세요");
-        htmlBuilder.append("</p>");
-        htmlBuilder.append("<script>");
-        htmlBuilder.append("function saveIdAndTokenToLocalStorageAndRedirect(memberId, accessToken, redirectUrl) {");
-        htmlBuilder.append("  localStorage.setItem('member_id', memberId);");
-        htmlBuilder.append("  localStorage.setItem('access_token', accessToken);");
-        htmlBuilder.append("  window.location.href = redirectUrl;");
-        htmlBuilder.append("}");
-        htmlBuilder.append("</script>");
-        htmlBuilder.append("<button onclick=\"window.location.href='http://localhost:3000/Mypage?id="+member_id+"&accessToken="+accessToken+"&naverAccessToken="+snsAccessToken+"&name="+member_name+"'\"> 버튼 </button>");
 
-        //localStorage에 member_id 저장
-        return htmlBuilder.toString();
+        //페이지 이동
+        response.setHeader("Location", "http://localhost:3000/Mypage?name=" + member_name + "&accessToken=" + accessToken + "&naverAccessToken=" + snsAccessToken + "&id=" + member_id);
+        response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+        return null;
     }
 
 
