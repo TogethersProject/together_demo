@@ -84,6 +84,10 @@ const Be = () => {
         setSidebarOpen(true);
     };
 
+    const handleButtonClick = () => {
+        router.push('/Find');
+    }
+
     const handleSidebarLinkClick = (path: string) => {
         setSidebarOpen(false);
         router.push(path);
@@ -152,6 +156,10 @@ const Be = () => {
                 </div>
                 <main className="activitiesContainer">
                     <h1 className="title"> 봉사 등록</h1>
+                    <div className="buttonContainer" onClick={handleButtonClick}
+                         style={{cursor: 'pointer'}}>
+                        <button className="button" type="submit">등록하기</button>
+                    </div>
                     <form className="form" onSubmit={onSubmit}>
                         <div className="formGroup">
                             <label className="label" htmlFor="title">제목:</label>

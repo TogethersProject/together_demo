@@ -49,7 +49,15 @@ const Calendar: React.FC = () => {
 // 일정 작성 모달 표시 여부를 위한 상태. 헷갈리면 나중에 W(write) 붙이자.
     const [showModalState, setShowModalState] = useState(false);
     const [allDay, setAllDay] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
+
+    const handleOutModalClick = (event) => {
+        // 모달 영역 외의 클릭을 감지하여 모달을 닫습니다.
+        if (event.target.classList.contains('modal')) {
+            setShowModal(false);
+        }
+    };
     //맨 처음 로딩에만 토큰 정보 저장
     useEffect(() => {
         const grantType = localStorage.getItem("grantType");
@@ -423,31 +431,30 @@ const Calendar: React.FC = () => {
                     />
                 </div>
                 {showModalState && (
-                    <div className="calendar-modal" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <button onClick={() => setShowUDModalState(false)}>&times;모달닫기</button>
+                    <div className="modal" onClick={handleOutModalClick}>
+                        <div className="modal-content">
+                            <button onClick={() => setShowModal(false)}>닫기</button>
                         </div>
                         <div className="modal-body">
-                            <p>
-                                일정 시작일: {(event.start) && new Date(event.start).toLocaleString()}
+                        <p>
+                                일정 시작일: {event.start && new Date(event.start).toLocaleString()}
                                 시간: <input type='time' onChange={onStartTime} name='eventStartTime'/>
                             </p>
-                            <p>일정 마감일: {(event.end) && new Date(event.end).toLocaleString()} 시간:
+                            <p>
+                                일정 마감일: {event.end && new Date(event.end).toLocaleString()} 시간:
                                 <input type='time' onChange={onEndTime} name='eventEndTime'/>
                             </p>
-
-                            <input type='checkbox' onChange={handleAllDayChange} checked={allDay} name='allDay'/>allDay 체크여부
-                            <input type='text' onChange={onEvent} name='title' value={event.title}
-                                   placeholder='제목'/>
+                            <input type='checkbox' onChange={handleAllDayChange} checked={allDay} name='allDay'/>allDay
+                            체크여부
+                            <input type='text' onChange={onEvent} name='title' value={event.title} placeholder='제목'/>
                             <input type='text' onChange={onEvent} name='content' value={event.content}
                                    placeholder='내용'/>
-
                             <input type='radio' onChange={onEvent} name='backgroundColor' value='skyblue'
                                    checked={event.backgroundColor === 'skyblue'}/>파랑
                             <input type='radio' onChange={onEvent} name='backgroundColor' value='orange'
                                    checked={event.backgroundColor === 'orange'}/>오렌지
-                            <input type='text' onChange={onEvent} name='backgroundColor'
-                                   value={event.backgroundColor} placeholder='색상 알아서 잘 넣어보도록. 나중에는 체크박스나 다른 기능 필요'/>
+                            <input type='text' onChange={onEvent} name='backgroundColor' value={event.backgroundColor}
+                                   placeholder='색상 알아서 잘 넣어보도록. 나중에는 체크박스나 다른 기능 필요'/>
                         </div>
                         <div className="modal-footer">
                             <button type='button' onClick={handleWriteSubmit}>제출하기</button>
@@ -455,12 +462,12 @@ const Calendar: React.FC = () => {
                     </div>
                 )}
                 {showUDModalState && (
-                    <div className="calendar-modal" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <button onClick={() => setShowUDModalState(false)}>&times;모달닫기</button>
+                    <div className="modal" onClick={handleOutModalClick}>
+                        <div className="modal-content">
+                            <button onClick={() => setShowModal(false)}>닫기</button>
                         </div>
                         <div className="modal-body">
-                            <p>
+                        <p>
                                 일정 시작일: {(event.start) && new Date(event.start).toLocaleString()}
                                 시간: <input type='time' onChange={onStartTime} name='eventStartTime'/>
                             </p>
@@ -471,7 +478,8 @@ const Calendar: React.FC = () => {
                             <input type='checkbox' onChange={handleAllDayChange} checked={allDay} name='allDay'/>allDay
                             체크여부
                             <input type='text' onChange={onEvent} name='title' value={event.title} placeholder='제목'/>
-                            <input type='text' onChange={onEvent} name='content' value={event.content} placeholder='내용'/>
+                            <input type='text' onChange={onEvent} name='content' value={event.content}
+                                   placeholder='내용'/>
                             <input type='radio' onChange={onEvent} name='backgroundColor' value='skyblue'
                                    checked={event.backgroundColor === 'skyblue'}/>파랑
                             <input type='radio' onChange={onEvent} name='backgroundColor' value='orange'
