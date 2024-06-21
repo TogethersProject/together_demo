@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import '../styles/Be.css';
 import Image from 'next/image';
-
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import axios from "axios";
