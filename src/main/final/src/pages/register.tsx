@@ -77,7 +77,7 @@ const Be = () => {
     };
 
     const handleProfileClick = () => {
-        router.push('/Profile');
+        router.push('/Mypage');
     };
 
     const handleSettingsClick = () => {
