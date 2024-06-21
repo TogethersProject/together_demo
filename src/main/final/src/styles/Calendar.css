@@ -141,3 +141,10 @@ body {
 .modalContent {
     text-align: center;
 }
+.modal-body {
+    margin: 0 auto; /* This centers the div horizontally */
+    text-align: left; /* Align text content to the left */
+    /* Optional: Adjust width and padding as needed */
+    width: 80%; /* Adjust based on your design */
+    padding: 20px; /* Adjust based on your design */
+}

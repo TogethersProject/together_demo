@@ -54,9 +54,7 @@ const Calendar: React.FC = () => {
 
     const handleOutModalClick = (event) => {
         // 모달 영역 외의 클릭을 감지하여 모달을 닫습니다.
-        if (event.target.classList.contains('modal')) {
             setShowModal(false);
-        }
     };
     //맨 처음 로딩에만 토큰 정보 저장
     useEffect(() => {
@@ -192,6 +190,14 @@ const Calendar: React.FC = () => {
             setSidebarOpen(false);
         }
     };
+    const handleCancel = () => {
+        // Logic to reset the form
+        // For example, if using React with state:
+        // setEvent({ /* initial state or empty values */ });
+        // Or for vanilla JavaScript:
+        // document.getElementById('myForm').reset();
+    };
+
 
     //작성되어있는 이벤트를 드래그를 통해 이동 시키거나 클릭한 경우
     const onDragEvent = (info) => {
@@ -302,20 +308,23 @@ const Calendar: React.FC = () => {
     };
     const calendarWriteSubmitURL ='http://localhost:9000/calendar/writeCalendar';
     const handleWriteSubmit = () => {
-        console.log('제출 전, 정보 확인: ',event)
-        console.log("accessToken: " +bearer+accessToken)
-        axios.post(calendarWriteSubmitURL
-            ,event
-            ,{ headers:{Authorization:bearer+accessToken}
-            }).then(res => {
-            console.log('제출성공'+res)
-            setShowModalState(false);
-            handleCancle();//리셋
-            getCalendar()//갱신된 일정
-        }).catch(err => console.log('제출오류'+err))
+        console.log('제출 전, 정보 확인: ', event);
+        console.log("accessToken: " + bearer + accessToken);
 
-        //setEvent(null)
+        axios.post(calendarWriteSubmitURL, event, {
+            headers: { Authorization: bearer + accessToken }
+        }).then(res => {
+            console.log('제출 성공: ', res);
+            setShowModalState(false); // 모달 숨기기
+            handleCancel(); // 입력 폼 리셋
+            getCalendar(); // 캘린더 갱신
+        }).catch(err => {
+            console.log('제출 오류: ', err);
+        });
+
+        // setEvent(null); // 이 부분은 event를 초기화하는 용도로 사용할 수 있음
     }
+
     const deleteCalendarURL ="http://localhost:9000/calendar/deleteCalendar"
     const handleDelete = () => {
         const memberId = event.id
@@ -433,10 +442,10 @@ const Calendar: React.FC = () => {
                 {showModalState && (
                     <div className="modal" onClick={handleOutModalClick}>
                         <div className="modal-content">
-                            <button onClick={() => setShowModal(false)}>닫기</button>
+                            <button onClick={() => setShowModalState(false)}>닫기</button>
                         </div>
                         <div className="modal-body">
-                        <p>
+                            <p>
                                 일정 시작일: {event.start && new Date(event.start).toLocaleString()}
                                 시간: <input type='time' onChange={onStartTime} name='eventStartTime'/>
                             </p>
@@ -449,22 +458,18 @@ const Calendar: React.FC = () => {
                             <input type='text' onChange={onEvent} name='title' value={event.title} placeholder='제목'/>
                             <input type='text' onChange={onEvent} name='content' value={event.content}
                                    placeholder='내용'/>
-                            <input type='radio' onChange={onEvent} name='backgroundColor' value='skyblue'
-                                   checked={event.backgroundColor === 'skyblue'}/>파랑
-                            <input type='radio' onChange={onEvent} name='backgroundColor' value='orange'
-                                   checked={event.backgroundColor === 'orange'}/>오렌지
                             <input type='text' onChange={onEvent} name='backgroundColor' value={event.backgroundColor}
-                                   placeholder='색상 알아서 잘 넣어보도록. 나중에는 체크박스나 다른 기능 필요'/>
+                                   placeholder='원하는 색상을 적어보세요'/>
                         </div>
                         <div className="modal-footer">
-                            <button type='button' onClick={handleWriteSubmit}>제출하기</button>
+                            <button type="button" onClick={handleWriteSubmit}>제출하기</button>
                         </div>
                     </div>
                 )}
                 {showUDModalState && (
                     <div className="modal" onClick={handleOutModalClick}>
                         <div className="modal-content">
-                            <button onClick={() => setShowModal(false)}>닫기</button>
+                            <button onClick={() => setShowModalState(false)}>닫기</button>
                         </div>
                         <div className="modal-body">
                         <p>
@@ -480,12 +485,8 @@ const Calendar: React.FC = () => {
                             <input type='text' onChange={onEvent} name='title' value={event.title} placeholder='제목'/>
                             <input type='text' onChange={onEvent} name='content' value={event.content}
                                    placeholder='내용'/>
-                            <input type='radio' onChange={onEvent} name='backgroundColor' value='skyblue'
-                                   checked={event.backgroundColor === 'skyblue'}/>파랑
-                            <input type='radio' onChange={onEvent} name='backgroundColor' value='orange'
-                                   checked={event.backgroundColor === 'orange'}/>오렌지
                             <input type='text' onChange={onEvent} name='backgroundColor' value={event.backgroundColor}
-                                   placeholder='색상 알아서 잘 넣어보도록. 나중에는 체크박스나 다른 기능 필요'/>
+                                   placeholder='원하는 색상을 적어보세요'/>
                         </div>
                         <div className="modal-footer">
                             <button type='button' onClick={handleUDSubmit}>제출하기</button>
