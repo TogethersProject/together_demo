@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import '../styles/First.css';
@@ -6,6 +6,15 @@ import '../styles/First.css';
 const First: React.FC = () => {
     const router = useRouter();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+
+    // Check if the user is logged in on component mount
+    useEffect(() => {
+        const storedLoginStatus = localStorage.getItem('isLoggedIn');
+        if (storedLoginStatus === 'true') {
+            setIsLoggedIn(true);
+        }
+    }, []);
 
     const handleFindVolunteerClick = () => {
         router.push('/FindVolunteer');
@@ -22,9 +31,6 @@ const First: React.FC = () => {
     const handleProfileClick = () => {
         router.push('/Mypage');
     };
-    const handleLoginClick =() => {
-        router.push('/Login')
-    }
 
     const handleSettingsClick = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -43,14 +49,11 @@ const First: React.FC = () => {
     };
 
     return (
-        <div
-            className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
-            onClick={isSidebarOpen ? handleOutsideClick : undefined}
-        >
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
             <div className="sidebar">
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
+                {!isLoggedIn && <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>}
+                {isLoggedIn && <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>My</div>}
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
             <header className="header">
@@ -73,9 +76,11 @@ const First: React.FC = () => {
                     <h2>저소득층 학생 대상 멘토링</h2>
                     <p>우리의 희망에게 멘토가 되어주세요.</p>
                 </div>
-                <div className="activity-card" id="Login" onClick={handleLoginClick}>
-                    <h2>로그인 및 회원가입</h2>
-                </div>
+                {!isLoggedIn && (
+                    <div className="activity-card" id="Login" onClick={() => router.push('/Login')}>
+                        <h2>로그인 및 회원가입</h2>
+                    </div>
+                )}
             </div>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>
