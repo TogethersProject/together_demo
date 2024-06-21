@@ -51,6 +51,24 @@ public class BoardVolunteerServiceImpl implements BoardVolunteerService {
         boardDTO.setEmail(memberDTO.getMember_email());
         System.out.println("글작성:"+ boardDTO);
 
+        // content 내 가장 먼저 나오는 img 태그의 src 정보 저장
+        int startIndex = boardDTO.getContent().indexOf("<img");
+        if (startIndex != -1) {
+            int endIndex = boardDTO.getContent().indexOf(">", startIndex);
+            if (endIndex != -1) {
+                String imgTag = boardDTO.getContent().substring(startIndex, endIndex + 1);
+                int srcIndex = imgTag.indexOf("src=");
+                if (srcIndex != -1) {
+                    int srcStartIndex = srcIndex + 5; // "src=" 길이 5
+                    int srcEndIndex = imgTag.indexOf("\"", srcStartIndex);
+                    if (srcEndIndex != -1) {
+                        String thumnail = imgTag.substring(srcStartIndex, srcEndIndex);
+                        boardDTO.setThumnail(thumnail);
+                    }
+                }
+            }
+        }
+
         //변경 내용대로 글작성
         this.boardDAO.save(boardDTO);
     }
@@ -192,7 +210,25 @@ public class BoardVolunteerServiceImpl implements BoardVolunteerService {
         String content = boardDTO.getContent();
         Timestamp boardTimePresent = new Timestamp(System.currentTimeMillis());//글 수정 시간.
 
+        // content 내 가장 먼저 나오는 img 태그의 src 정보 저장
+        String thumnail = "";
+        int startIndex = content.indexOf("<img");
+        if (startIndex != -1) {
+            int endIndex = content.indexOf(">", startIndex);
+            if (endIndex != -1) {
+                String imgTag = content.substring(startIndex, endIndex + 1);
+                int srcIndex = imgTag.indexOf("src=");
+                if (srcIndex != -1) {
+                    int srcStartIndex = srcIndex + 5; // "src=" 길이 5
+                    int srcEndIndex = imgTag.indexOf("\"", srcStartIndex);
+                    if (srcEndIndex != -1) {
+                        thumnail = imgTag.substring(srcStartIndex, srcEndIndex);
+                        boardDTO.setThumnail(thumnail);
+                    }
+                }
+            }
+        }
         System.out.println("수정 보드내용: "+boardDTO+boardTime);
-        boardDAO.updateBySeq(seq, title, content, boardTimePresent);
+        boardDAO.updateBySeq(seq, title, content, boardTimePresent, thumnail);
     }
 }
