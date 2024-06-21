@@ -59,8 +59,8 @@ const Find = () => {
                         iframe.src = embedUrl;
                         iframe.title = "video";
                         iframe.allowFullscreen = true;
-                        iframe.width = "300";
-                        iframe.height = "180";
+                        iframe.width = "310";
+                        iframe.height = "185";
                         oembedTag.replaceWith(iframe);
                     }
                 });
@@ -71,8 +71,8 @@ const Find = () => {
                     const width = img.width;
                     const height = img.height;
 
-                    if (width > 300) {
-                        const min = 300/width;
+                    if (width > 310) {
+                        const min = 310/width;
                         img.width = Math.round(width * min);
                         img.height = Math.round(height * min);
                     }

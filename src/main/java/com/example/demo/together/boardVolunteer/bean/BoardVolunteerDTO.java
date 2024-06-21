@@ -31,8 +31,7 @@ public class BoardVolunteerDTO {
     //글 작성자 아이디이자 member 테이블과 연결하는 fk
     @Column(
             name = "member_id",
-            nullable = false,
-            length = 30
+            nullable = false
     )
     private String id;
 
@@ -80,4 +79,7 @@ public class BoardVolunteerDTO {
     @Column(name="volun_institution"
             ,nullable= false)
     private String volun_institution;
+
+    @Column(name="thumnail")
+    private String thumnail;
 }

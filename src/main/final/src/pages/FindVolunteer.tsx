@@ -1,14 +1,28 @@
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Image from 'next/image';
 import Slider from 'react-slick';
 import { useRouter } from 'next/router';
 import '../styles/Volunteer.css';
+import axios from "axios";
 
 interface Activity {
     id: number;
     title: string;
     description: string;
     image: string;
+}
+interface Volunteer{
+    seq: number;
+    name: string;
+    id: string;
+    email: string;
+    title: string;
+    content: string;
+    board_time: Date;
+    board_lastTime: Date;
+    volun_address: string;
+    volun_institution: string;
+    thumnail: string;
 }
 
 const FindVolunteer: React.FC = () => {
@@ -35,6 +49,76 @@ const FindVolunteer: React.FC = () => {
             image: '/images/disable.png'
         }
     ];
+    const getVolunteerListURL = 'http://localhost:9000/volunteer/getWriteList';
+    const [boardDTOList, setBoardDTOList] = useState<any[]>([]);
+    //const boardDeleteURL = 'http://localhost:9000/volunteer/deleteBoard';
+    const [bearer, setBearer] = useState('')
+    const [accessToken, setAccessToken] = useState('')
+    const [member_id, setMember_id] = useState('')
+
+    useEffect(() => {
+        console.log("보드 내놔")
+        getBoardList();
+
+        const grantType = localStorage.getItem("grantType");
+        const access_token = localStorage.getItem("accessToken");
+        const member_id= localStorage.getItem("username");
+        if (grantType  && access_token && member_id) {
+            setBearer(grantType);
+            setAccessToken(access_token);
+            setMember_id(member_id)
+        }
+    }, []);
+
+    useEffect(() => {
+        boardDTOList.forEach((item:any) => {
+            const contentRef = document.getElementById(`content-${item.seq}`);
+            if (contentRef) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(item.content, 'text/html');
+                const oembedTags = doc.querySelectorAll('oembed');
+                oembedTags.forEach(oembedTag => {
+                    const url:string | null = oembedTag.getAttribute('url');
+                    if (url && url.includes('youtube.com')) {
+                        const urlObj = new URL(url);
+                        const videoId = urlObj.searchParams.get('v');
+                        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                        const iframe = document.createElement('iframe');
+                        iframe.src = embedUrl;
+                        iframe.title = "video";
+                        iframe.allowFullscreen = true;
+                        iframe.width = "300";
+                        iframe.height = "180";
+                        oembedTag.replaceWith(iframe);
+                    }
+                });
+
+                //content 내부 image 태그 제거
+                const images = Array.from(doc.getElementsByTagName('img'));
+                images.forEach(image => {
+                    if (image.parentNode) {
+                        image.parentNode.removeChild(image);
+                    }
+                });
+
+                contentRef.innerHTML = doc.body.innerHTML;
+            }
+        });
+    }, [boardDTOList]);
+
+    const getBoardList = async () => {
+        try {
+            const res = await axios.post(getVolunteerListURL, null, {
+                params: {
+                    page: 0
+                }
+            });
+            setBoardDTOList(res.data.content);
+            console.log(res.data.content)
+        } catch (err) {
+            console.log("에러발생" + err);
+        }
+    }
 
     const handleActivityClick = (activityId: number) => {
         router.push(`/Detail?id=${activityId}`);
@@ -106,17 +190,31 @@ const FindVolunteer: React.FC = () => {
                 </Slider>
             </div>
 
-            <main className="activities-container">
+                <main className="activities-container">
                 <button className="register-button" onClick={() => router.push('/register')}>봉사 등록</button>
-                {activities.map(activity => (
-                    <div className="activity" key={activity.id} onClick={() => handleActivityClick(activity.id)}>
-                        <Image src={activity.image} alt={activity.title} width={100} height={100}/>
-                        <div className="activity-content">
-                            <h3>{activity.title}</h3>
-                            <p>{activity.description}</p>
-                        </div>
-                    </div>
-                ))}
+
+                    {boardDTOList.map((activity:any, index:number) => {
+                        return (
+                            <div className="activity" key={activity.id} onClick={() => handleActivityClick(activity.seq)}>
+                                {activity.thumnail && <Image src={activity.thumnail} alt={activity.title} width={100} height={100}/>}
+                                <div className="activity-content">
+                                    <h3>{activity.title}</h3>
+                                    <p id={`content-${activity.seq}`}></p>
+                                </div>
+                            </div>
+                        );
+                    })}
+
+
+                {/*    {activities.map(activity => (*/}
+                {/*        <div className="activity" key={activity.id} onClick={() => handleActivityClick(activity.id)}>*/}
+                {/*            <Image src={activity.image} alt={activity.title} width={100} height={100}/>*/}
+                {/*            <div className="activity-content">*/}
+                {/*                <h3>{activity.title}</h3>*/}
+                {/*                <p>{activity.description}</p>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*))}*/}
             </main>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>
