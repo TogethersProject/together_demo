@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import '../../../../../../together_demo_1/src/main/final/src/styles/Mypage.css';
+//import '../../../../../../together_demo_1/src/main/final/src/styles/Mypage.css';
+import '../styles/Mypage.css';
 
 const Market: React.FC = () => {
     const router = useRouter();
