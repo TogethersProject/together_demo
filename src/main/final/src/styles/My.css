@@ -116,6 +116,29 @@ body {
     font-size: 1em;
 }
 
+.postcode-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.postcode-button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
 button {
     width: calc(100% - 20px);
     padding: 12px;

@@ -200,13 +200,16 @@ const My: React.FC = () => {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="address">주소</label>
+                    <div className="group">
+                        <label htmlFor="address" className="label">
+                            주소
+                        </label>
                         <input
-                            type="text"
                             id="address"
+                            type="text"
+                            className="input"
                             value={address}
-                            onChange={(e) => setAddress(e.target.value)}
+                            readOnly
                         />
                         <button type="button" className="postcode-button" onClick={togglePostcode}>
                             주소 검색
@@ -217,11 +220,14 @@ const My: React.FC = () => {
                             </div>
                         )}
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="detailAddress">상세 주소</label>
+                    <div className="group">
+                        <label htmlFor="detail-address" className="label">
+                            상세 주소
+                        </label>
                         <input
+                            id="detail-address"
                             type="text"
-                            id="detailAddress"
+                            className="input"
                             value={detailAddress}
                             onChange={(e) => setDetailAddress(e.target.value)}
                         />
@@ -244,7 +250,7 @@ const My: React.FC = () => {
                 </footer>
             </div>
         </div>
-            );
-            };
+    );
+};
 
 export default My;
