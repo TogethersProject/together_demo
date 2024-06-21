@@ -129,6 +129,9 @@ const Be = () => {
         }
     };
 
+    const handleButtonClick = () => {
+        router.push('/Find');
+    }
     const onContent = (editor) => {
         //const data = editor.getData();
         //setBio(editor.getData());
@@ -205,7 +208,8 @@ const Be = () => {
                 </div>
                 <main className="activitiesContainer">
                     <h1 className="title">멘토 등록</h1>
-                    <div className="buttonContainer">
+                    <div className="buttonContainer" onClick={handleButtonClick}
+                    style={{cursor: 'pointer'}}>
                         <button className="button" type="submit">등록하기</button>
                     </div>
                     <form className="form" onSubmit={onSubmit}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import '../styles/My.css';
@@ -16,6 +16,7 @@ const My: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
     const getUserURL = "http://localhost:9000/member/getMemberInfo";
+    const sidebarRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         //http header(accessToken) body(member_id) -> MemberDTO
         //const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -93,6 +94,9 @@ const My: React.FC = () => {
     const handleHomeClick = () => {
         router.push('/First');
     };
+    const handleFirstImageClick = () => {
+        router.push('/First');
+    };
 
     const handleProfileClick = () => {
         router.push('/Mypage');
@@ -149,98 +153,98 @@ const My: React.FC = () => {
         
     }
     return (
-        <div
-            className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
-            onClick={isSidebarOpen ? handleOutsideClick : undefined}
-        >
-            <div className="sidebar">
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
-            </div>
-            <header className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container">
-                    <Image src="/images/first.png" alt="First Image" width={120} height={45} />
+        <div className="container">
+            <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+                 onClick={isSidebarOpen ? handleOutsideClick : undefined}>
+                <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
-            </header>
-            <div className="content">
-                <div className="intro">
-                    <h1>개인정보 수정 및 확인</h1>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="username">이름</label>
-                    <input
-                        type="text"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="username">비밀번호</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="email">이메일</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="address">주소</label>
-                    <input
-                        type="text"
-                        id="address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                    />
-                    <button type="button" className="postcode-button" onClick={togglePostcode}>
-                        주소 검색
-                    </button>
-                    {isPostcodeOpen && (
-                        <div className="postcode-wrapper">
-                            <DaumPostcode onComplete={handleAddressSearch}/>
-                        </div>
-                    )}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="detailAddress">상세 주소</label>
-                    <input
-                        type="text"
-                        id="detailAddress"
-                        value={detailAddress}
-                        onChange={(e) => setDetailAddress(e.target.value)}
-                    />
-                </div>
-                <button onClick={handleSave}>저장</button>
-                <button onClick={handleLogout} className="logout-button">로그아웃</button>
-                <button onClick={handleDelete}>회원탈퇴</button>
-            </div>
-            {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        정보가 저장되었습니다.
+                <div className="header">
+                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                    <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
+                        <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                     </div>
+                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
                 </div>
-            )}
-            <footer className="footer">
-                <div className="footer-icon" onClick={handleSettingsClick}>=</div>
-                <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
-                <div className="footer-icon" onClick={handleProfileClick}>👤</div>
-            </footer>
+                <div className="content">
+                    <div className="intro">
+                        <h1>개인정보 수정 및 확인</h1>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="username">이름</label>
+                        <input
+                            type="text"
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="username">비밀번호</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="email">이메일</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="address">주소</label>
+                        <input
+                            type="text"
+                            id="address"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                        />
+                        <button type="button" className="postcode-button" onClick={togglePostcode}>
+                            주소 검색
+                        </button>
+                        {isPostcodeOpen && (
+                            <div className="postcode-wrapper">
+                                <DaumPostcode onComplete={handleAddressSearch}/>
+                            </div>
+                        )}
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="detailAddress">상세 주소</label>
+                        <input
+                            type="text"
+                            id="detailAddress"
+                            value={detailAddress}
+                            onChange={(e) => setDetailAddress(e.target.value)}
+                        />
+                    </div>
+                    <button onClick={handleSave}>저장</button>
+                    <button onClick={handleLogout} className="logout-button">로그아웃</button>
+                    <button onClick={handleDelete}>회원탈퇴</button>
+                </div>
+                {showModal && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            정보가 저장되었습니다.
+                        </div>
+                    </div>
+                )}
+                <footer className="footer">
+                    <div className="footer-icon" onClick={handleSettingsClick}>=</div>
+                    <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
+                    <div className="footer-icon" onClick={handleProfileClick}>👤</div>
+                </footer>
+            </div>
         </div>
-    );
-};
+            );
+            };
 
 export default My;

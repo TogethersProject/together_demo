@@ -1,111 +1,116 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import Slider from 'react-slick';
-import '../styles/Find.css'; // Assuming you have your own CSS file
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import Image from 'next/image';
+import '../styles/Find.css';
+import axios from 'axios';
 
-interface Volunteer {
-    seq: number;
-    title: string;
+interface Mentor {
     name: string;
     email: string;
-    content: string; // Assuming there's a content field for detailed description
-    thumnail?: string; // Corrected thumbnail spelling
+    bio: string;
+    photo: string | null;
+    comments: string[];
+    seq: number;
 }
 
-const Find: React.FC = () => {
-    const router = useRouter();
+const Find = () => {
+    const [mentors, setMentors] = useState<Mentor[]>([]);
+    const [currentComment, setCurrentComment] = useState<string>('');
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const sidebarRef = useRef<HTMLDivElement>(null);
-    const [boardDTOList, setBoardDTOList] = useState<Volunteer[]>([]);
-    const [page, setPage] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
+    const router = useRouter();
+    const getMentorListURL = 'http://localhost:9000/mentor/getMentorList';
+    const [boardDTOList, setBoardDTOList] = useState<any[]>([]);
+    const boardDeleteURL = 'http://localhost:9000/mentor/deleteBoard';
     const [bearer, setBearer] = useState('');
     const [accessToken, setAccessToken] = useState('');
     const [member_id, setMember_id] = useState('');
+    const [currentPage, setCurrentPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const observerRef = useRef<IntersectionObserver | null>(null);
+    const loadMoreRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        getBoardList(page);
-
-        const grantType = localStorage.getItem("grantType");
-        const access_token = localStorage.getItem("accessToken");
-        const member_id = localStorage.getItem("username");
+        const grantType = localStorage.getItem('grantType');
+        const access_token = localStorage.getItem('accessToken');
+        const member_id = localStorage.getItem('username');
         if (grantType && access_token && member_id) {
             setBearer(grantType);
             setAccessToken(access_token);
             setMember_id(member_id);
         }
-    }, [page]);
+    }, []);
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight - 50 || isLoading) return;
-            setPage(prevPage => prevPage + 1);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isLoading]);
+        getBoardList(currentPage);
+    }, [currentPage]);
 
     useEffect(() => {
-        boardDTOList.forEach((item: Volunteer) => {
-            const contentRef = document.getElementById(`content-${item.seq}`);
-            if (contentRef) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(item.content, 'text/html');
-                const oembedTags = doc.querySelectorAll('oembed');
-                oembedTags.forEach(oembedTag => {
-                    const url: string | null = oembedTag.getAttribute('url');
-                    if (url && url.includes('youtube.com')) {
-                        const urlObj = new URL(url);
-                        const videoId = urlObj.searchParams.get('v');
-                        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                        const iframe = document.createElement('iframe');
-                        iframe.src = embedUrl;
-                        iframe.title = "video";
-                        iframe.allowFullscreen = true;
-                        iframe.width = "300";
-                        iframe.height = "180";
-                        oembedTag.replaceWith(iframe);
-                    }
-                });
+        if (observerRef.current) observerRef.current.disconnect();
 
-                const images = Array.from(doc.getElementsByTagName('img'));
-                images.forEach(image => {
-                    if (image.parentNode) {
-                        image.parentNode.removeChild(image);
-                    }
-                });
-
-                contentRef.innerHTML = doc.body.innerHTML;
+        observerRef.current = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasMore) {
+                setCurrentPage((prevPage) => prevPage + 1);
             }
         });
-    }, [boardDTOList]);
 
-    const getBoardList = async (pageNumber: number) => {
-        if (isLoading || !hasMore) return;
-        setIsLoading(true);
+        if (loadMoreRef.current) observerRef.current.observe(loadMoreRef.current);
+
+        return () => {
+            if (observerRef.current) observerRef.current.disconnect();
+        };
+    }, [hasMore]);
+
+    const getBoardList = async (page: number) => {
         try {
-            const res = await axios.post('http://localhost:9000/volunteer/getWriteList', null, {
-                params: {
-                    page: pageNumber
-                }
+            const res = await axios.post(getMentorListURL, null, {
+                params: { page }
             });
-            const newBoardDTOList: Volunteer[] = res.data.content;
-            setBoardDTOList(prevBoardDTOList => [...prevBoardDTOList, ...newBoardDTOList]);
-            setHasMore(newBoardDTOList.length > 0);
+            setBoardDTOList((prevBoardDTOList) => [...prevBoardDTOList, ...res.data.content]);
+            setHasMore(res.data.content.length > 0);
         } catch (err) {
-            console.error("Error fetching data:", err);
+            console.log('에러발생' + err);
         }
-        setIsLoading(false);
     };
 
-    const handleActivityClick = (seq: number) => {
-        router.push(`/Detail?id=${seq}`);
+    const handleDeleteMentor = (index: number) => {
+        axios.post(boardDeleteURL, null, {
+            headers: {
+                Authorization: bearer + accessToken,
+            },
+            params: {
+                seq: index,
+                member_id: member_id,
+            },
+        })
+            .then((res) => {
+                console.log(res);
+                if (res.data === '글을 삭제하였습니다.') {
+                    alert('삭제 완료!');
+                    setBoardDTOList((prevBoardDTOList) => prevBoardDTOList.filter((item) => item.seq !== index));
+                } else {
+                    alert('삭제 실패' + res.data);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                alert('에러!!!');
+            });
+    };
+
+    const handleAddComment = (seq: number) => {
+        const updatedMentors = [...mentors];
+        const mentorIndex = updatedMentors.findIndex((mentor) => mentor.seq === seq);
+        if (mentorIndex !== -1) {
+            updatedMentors[mentorIndex].comments = [...(updatedMentors[mentorIndex].comments || []), currentComment];
+            setMentors(updatedMentors);
+            setCurrentComment('');
+            localStorage.setItem('mentors', JSON.stringify(updatedMentors));
+        }
+    };
+
+    const handleUpdateMentor = (seq: number) => {
+        router.push(`/UDMentor?seq=${seq}`);
     };
 
     const handleFirstImageClick = () => {
@@ -121,7 +126,7 @@ const Find: React.FC = () => {
     };
 
     const handleSettingsClick = () => {
-        setSidebarOpen(!isSidebarOpen);
+        setSidebarOpen(true);
     };
 
     const handleSidebarLinkClick = (path: string) => {
@@ -135,18 +140,9 @@ const Find: React.FC = () => {
         }
     };
 
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 1500,
-    };
-
     return (
-        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
             <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
@@ -154,40 +150,40 @@ const Find: React.FC = () => {
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
             <div className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container" onClick={handleFirstImageClick} style={{ cursor: 'pointer' }}>
-                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45} />
+                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
+                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </div>
-            <div className="banner-container">
-                <Slider {...settings}>
-                    <div className="banner-slide">
-                        <Image src="/images/volunteer1.png" alt="배너 이미지 1" layout="responsive" width={360} height={200} className="banner-image" />
-                    </div>
-                    <div className="banner-slide">
-                        <Image src="/images/volunteer2.png" alt="배너 이미지 2" layout="responsive" width={360} height={200} className="banner-image" />
-                    </div>
-                    <div className="banner-slide">
-                        <Image src="/images/volunteer3.png" alt="배너 이미지 3" layout="responsive" width={360} height={200} className="banner-image" />
-                    </div>
-                </Slider>
-            </div>
-
-            <main className="activities-container">
-                <button className="register-button" onClick={() => router.push('/register')}>봉사 등록</button>
-
-                {boardDTOList.map((activity: Volunteer) => (
-                    <div className="activity" key={activity.seq} onClick={() => handleActivityClick(activity.seq)}>
-                        {activity.thumnail && <Image src={activity.thumnail} alt={activity.title} width={100} height={100} />}
-                        <div className="activity-content">
-                            <h3>{activity.title}</h3>
-                            <p id={`content-${activity.seq}`}></p>
+            <div className="container">
+                <h1 className="title">등록된 멘토 정보</h1>
+                {boardDTOList.map((item: any, index) => {
+                    return (
+                        <div key={index} className="info">
+                            <p><strong>제목:</strong>{item.title}</p>
+                            <p><strong>이름:</strong> {item.name}</p>
+                            <p><strong>이메일:</strong> {item.email}</p>
+                            <p className={"mentor-content"} id={`content-${item.seq}`}></p>
+                            <div className="comments">
+                                <h3>댓글:</h3>
+                                <input
+                                    type="text"
+                                    value={currentComment}
+                                    onChange={(e) => setCurrentComment(e.target.value)}
+                                    placeholder="댓글을 입력하세요"
+                                />
+                                <button onClick={() => handleAddComment(item.seq)}>댓글 달기</button>
+                            </div>
+                            {(item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
+                            {(item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
                         </div>
-                    </div>
-                ))}
-                {isLoading && <div>Loading...</div>}
-            </main>
+                    );
+                })}
+                <div ref={loadMoreRef} className="load-more">
+                    {hasMore && <p>Loading more...</p>}
+                </div>
+            </div>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>
                 <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
