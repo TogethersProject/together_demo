@@ -142,7 +142,9 @@ body {
 
 
 }
+/* Volunteer.css */
 
+/* 기존 사이드바 스타일 */
 .sidebar {
     position: absolute;
     left: 0;
@@ -155,6 +157,7 @@ body {
     flex-direction: column;
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
+    z-index: 1001; /* 오버레이보다 위에 배치 */
 }
 
 .sidebar.open {
@@ -173,4 +176,50 @@ body {
 
 .main-screen.sidebar-open .sidebar {
     transform: translateX(0);
+}
+
+/* 오버레이 스타일 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정색 배경 */
+    z-index: 1000; /* 사이드바 아래에 배치 */
+    display: none; /* 기본적으로 숨김 */
+}
+
+.overlay.show {
+    display: block;
+}
+
+.alert-container {
+    position: relative;
+    display: inline-block;
+}
+
+.alert-dropdown {
+    display: block;
+    position: absolute;
+    top: 60px; /* Adjust based on your header height */
+    right: 0; /* Align to the right */
+    background-color: white;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.alert-dropdown ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.alert-dropdown li {
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.alert-dropdown li:hover {
+    background-color: #f1f1f1;
 }

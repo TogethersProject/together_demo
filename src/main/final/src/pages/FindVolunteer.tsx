@@ -57,6 +57,8 @@ const FindVolunteer: React.FC = () => {
     const [bearer, setBearer] = useState('');
     const [accessToken, setAccessToken] = useState('');
     const [member_id, setMember_id] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown status
 
     useEffect(() => {
         getBoardList(page);
@@ -164,6 +166,13 @@ const FindVolunteer: React.FC = () => {
             setSidebarOpen(false);
         }
     };
+    const handleSearchClick = () => {
+        router.push('/Search');
+    };
+
+    const handleAlertClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
 
     const settings = {
         dots: true,
@@ -176,30 +185,61 @@ const FindVolunteer: React.FC = () => {
     };
 
     return (
-        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
-            <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
+            {isSidebarOpen && <div className="overlay show" onClick={handleOutsideClick}></div>}
+            <div className="sidebar">
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
+                    <span>🔍 Search</span>
+                </div>
+                {!isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
+                        <span>🔒 Login</span>
+                    </div>
+                )}
+                {isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
+                        <span>👤 My Page</span>
+                    </div>
+                )}
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
+                    <span>🤖 ChatBot</span>
+                </div>
             </div>
             <div className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container" onClick={handleFirstImageClick} style={{ cursor: 'pointer' }}>
-                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45} />
+                <div onClick={handleSearchClick} style={{cursor: 'pointer'}}>
+                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
+                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
+                </div>
+                <div className="alert-container" onClick={handleAlertClick}
+                     style={{cursor: 'pointer', position: 'relative'}}>
+                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                    {isDropdownOpen && (
+                        <div className="alert-dropdown">
+                            <ul>
+                                <li>알림 1</li>
+                                <li>알림 2</li>
+                                <li>알림 3</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>
             <div className="banner-container">
                 <Slider {...settings}>
                     <div className="banner-slide">
-                        <Image src="/images/volunteer1.png" alt="배너 이미지 1" layout="responsive" width={360} height={200} className="banner-image" />
+                        <Image src="/images/volunteer1.png" alt="배너 이미지 1" layout="responsive" width={360} height={200}
+                               className="banner-image"/>
                     </div>
                     <div className="banner-slide">
-                        <Image src="/images/volunteer2.png" alt="배너 이미지 2" layout="responsive" width={360} height={200} className="banner-image" />
+                        <Image src="/images/volunteer2.png" alt="배너 이미지 2" layout="responsive" width={360} height={200}
+                               className="banner-image"/>
                     </div>
                     <div className="banner-slide">
-                        <Image src="/images/volunteer3.png" alt="배너 이미지 3" layout="responsive" width={360} height={200} className="banner-image" />
+                        <Image src="/images/volunteer3.png" alt="배너 이미지 3" layout="responsive" width={360} height={200}
+                               className="banner-image"/>
                     </div>
                 </Slider>
             </div>
@@ -210,7 +250,8 @@ const FindVolunteer: React.FC = () => {
                 {boardDTOList.map((activity: any, index: number) => {
                     return (
                         <div className="activity" key={activity.seq} onClick={() => handleActivityClick(activity.seq)}>
-                            {activity.thumnail && <Image src={activity.thumnail} alt={activity.title} width={100} height={100} />}
+                            {activity.thumnail &&
+                                <Image src={activity.thumnail} alt={activity.title} width={100} height={100}/>}
                             <div className="activity-content">
                                 <h3>{activity.title}</h3>
                                 <p id={`content-${activity.seq}`}></p>
