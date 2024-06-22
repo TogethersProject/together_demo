@@ -135,7 +135,7 @@ const FindVolunteer: React.FC = () => {
     };
 
     const handleActivityClick = (activityId: number) => {
-        router.push(`/Detail?id=${activityId}`);
+        router.push(`/Detail?seq=${activityId}`);
     };
 
     const handleFirstImageClick = () => {

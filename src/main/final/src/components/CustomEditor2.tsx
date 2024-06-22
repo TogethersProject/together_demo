@@ -1,5 +1,5 @@
 // components/custom-editor.js
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 //import Editor from "../../../../../../together_demo_1/src/main/final/ckeditor5";
 import Editor from "ckeditor5-custom-build";
@@ -80,17 +80,33 @@ function MyCustomUploadAdapterPlugin(editor) {
     }
 }
 function CustomEditor( props ) {
-    const {onContent} = props;
+    const { onContent, oldContent } = props;
+    const editorRef: any = useRef(null);
+
+    useEffect(() => {
+        console.log("old: " + oldContent)
+        if (editorRef.current) {
+            const editor = editorRef.current;
+            editor.setData(oldContent);
+            editor.focus();
+        }
+    }, [oldContent]);
+
     return (
         <CKEditor
             editor={ Editor }
             config={{placeholder: "내용입력해",
                 language: 'ko',
+                initialData: oldContent,
                 extraPlugins: [MyCustomUploadAdapterPlugin]}}
             onChange={ (event, editor ) => {
                 onContent(editor);
                 //console.log( { event, editor } );
             } }
+            onReady={(editor) => {
+                editorRef.current = editor;
+                editor.setData(oldContent);
+            }}
         />
     )
 }

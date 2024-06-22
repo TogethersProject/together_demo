@@ -21,7 +21,8 @@ public interface MemberInfoService {
 
     Boolean isEmail(String email, String authMem);
 
-    String findPassword(String email, String code);
+    String findPassword(String email);
+    String findPasswordCheck(String email, String code);
 
     String sendEmailIsMe(String email) throws Exception;
 
@@ -30,4 +31,6 @@ public interface MemberInfoService {
     MemberDTO getMember(String member_id);
 
     void updateMember(MemberDTO memberDTO);
+
+    void changePassword(String password, String email);
 }

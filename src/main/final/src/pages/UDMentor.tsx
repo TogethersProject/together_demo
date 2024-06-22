@@ -74,7 +74,7 @@ const UdMentor = () => {
 
                 setName(res.data.boardDTO.title);
                 setBio(res.data.boardDTO.content);
-                console.log("biod에 넣음:" + res.data.boardDTO.content)
+                console.log("bio에 넣음:" + res.data.boardDTO.content)
                 setImageNamesBefore(res.data.imageList);
             }).catch(err => console.log(err));
         }

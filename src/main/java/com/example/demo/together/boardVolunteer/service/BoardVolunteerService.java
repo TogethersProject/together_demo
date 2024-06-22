@@ -20,7 +20,7 @@ public interface BoardVolunteerService {
 
     void writeImageToTest(String content, String boardTime);
 
-    Map<String, Object> getUpdateBoard(BigInteger seqInt, String member_id);
+    Map<String, Object> getUpdateBoard(BigInteger seqInt);
 
     void updateBoard(List<String> imageNamesBefore, BoardVolunteerDTO boardDTO);
 }

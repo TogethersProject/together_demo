@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
@@ -18,6 +19,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Transactional(readOnly = false)
 @Service
 public class BoardVolunteerServiceImpl implements BoardVolunteerService {
     @Autowired
@@ -144,29 +146,33 @@ public class BoardVolunteerServiceImpl implements BoardVolunteerService {
 
     //글 수정을 위해 글 정보 및 이미지 정보 전달.
     @Override
-    public Map<String, Object> getUpdateBoard(BigInteger seq, String member_id) {
+    public Map<String, Object> getUpdateBoard(BigInteger seq) {
         System.out.println("getBoard(Service)");
         Map<String, Object> map= new HashMap<>();
 
         //필요한 글 정보를 받음
         Optional<BoardVolunteerDTO> boardDTOOptional = boardDAO.findById(seq);
-        
-        if(boardDTOOptional != null){
-            BoardVolunteerDTO boardDTO = boardDTOOptional.get();
-            if(boardDTOOptional.get().getId().equals(member_id)){//글 작성자 = 글 수정자
-                String content =boardDTO.getContent();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-                String boardTime= dateFormat.format(boardDTO.getBoard_time());//Date -> yyyyMMdd의 String
-
-                //content에서 이미지 uuid 탐색하여 리스트에 담음
-                List<String> imageNames = fUtils.extractImageUuids(content,testDir+boardTime);
-
-                //map에 담음.
-                map.put("boardDTO", Optional.of(boardDTO));//BoardDTO -> Optional<BoardDTO>
-                map.put("imageList", imageNames);//처음에 가지고 있는 이미지 목록.
-            }
-            
+        if(boardDTOOptional.isPresent()){
+            System.out.println("board: " + boardDTOOptional.get());
+            map.put("boardDTO", Optional.of(boardDTOOptional.get()));//BoardDTO -> Optional<BoardDTO>
         }
+
+//        if(boardDTOOptional != null){
+//            BoardVolunteerDTO boardDTO = boardDTOOptional.get();
+//            if(boardDTOOptional.get().getId().equals(member_id)){//글 작성자 = 글 수정자
+//                String content =boardDTO.getContent();
+//                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+//                String boardTime= dateFormat.format(boardDTO.getBoard_time());//Date -> yyyyMMdd의 String
+//
+//                //content에서 이미지 uuid 탐색하여 리스트에 담음
+//                List<String> imageNames = fUtils.extractImageUuids(content,testDir+boardTime);
+//
+//                //map에 담음.
+//                map.put("boardDTO", Optional.of(boardDTO));//BoardDTO -> Optional<BoardDTO>
+//                map.put("imageList", imageNames);//처음에 가지고 있는 이미지 목록.
+//            }
+            
+//        }
 
         return map;
     }//getUpdateBoard
@@ -183,15 +189,16 @@ public class BoardVolunteerServiceImpl implements BoardVolunteerService {
         //갱신한 내용에 없는 이미지 uuid 추출
         List<String> imageNamesOld = fUtils.extractImageUuids(boardDTO.getContent(),testDir+boardTime);//수정후에도 남아 있는 이미지
         List<String> imageNamesNew = fUtils.extractImageUuids(boardDTO.getContent(),tempDir+boardTimeNew);//새롭게 추가한 이미지
-        for (String uuid : imageNamesBefore) {
-            //수정하며 사라진 이미지 삭제
-            if (!imageNamesOld.contains(uuid)) {
-                //System.out.println("수정하며 사라진 이미지:"+uuid);
-                //ncp에서 해당 이미지 삭제
-                objectStorageService.deleteObject( uuid,testDir+boardTime);
-            }
-            else{//글에 원래 있던 이미지 이동
-                objectStorageService.moveFile(testDir+boardTime+"/", testDir+boardTimeNew+"/", uuid);
+        if(imageNamesBefore != null) {
+            for (String uuid : imageNamesBefore) {
+                //수정하며 사라진 이미지 삭제
+                if (!imageNamesOld.contains(uuid)) {
+                    //System.out.println("수정하며 사라진 이미지:"+uuid);
+                    //ncp에서 해당 이미지 삭제
+                    objectStorageService.deleteObject(uuid, testDir + boardTime);
+                } else {//글에 원래 있던 이미지 이동
+                    objectStorageService.moveFile(testDir + boardTime + "/", testDir + boardTimeNew + "/", uuid);
+                }
             }
         }
 
@@ -208,6 +215,9 @@ public class BoardVolunteerServiceImpl implements BoardVolunteerService {
         int seq = boardDTO.getSeq();
         String title = boardDTO.getTitle();
         String content = boardDTO.getContent();
+        String volun_date = boardDTO.getVolun_date();
+        String institution = boardDTO.getVolun_institution();
+        String address = boardDTO.getVolun_address();
         Timestamp boardTimePresent = new Timestamp(System.currentTimeMillis());//글 수정 시간.
 
         // content 내 가장 먼저 나오는 img 태그의 src 정보 저장
@@ -229,6 +239,6 @@ public class BoardVolunteerServiceImpl implements BoardVolunteerService {
             }
         }
         System.out.println("수정 보드내용: "+boardDTO+boardTime);
-        boardDAO.updateBySeq(seq, title, content, boardTimePresent, thumnail);
+        boardDAO.updateBySeq(seq, title, content, boardTimePresent, thumnail, volun_date, address, institution);
     }
 }

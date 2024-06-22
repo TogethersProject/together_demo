@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import '../styles/Password.css'; // Password.css 파일을 추가하여 스타일링을 하도록 합니다.
+import '../styles/Password.css';
+import axios from "axios"; // Password.css 파일을 추가하여 스타일링을 하도록 합니다.
 
 const Password: React.FC = () => {
     const router = useRouter();
@@ -11,6 +12,11 @@ const Password: React.FC = () => {
     const [newPassword, setNewPassword] = useState(''); // newPassword 변수 추가
     const [confirmPassword, setConfirmPassword] = useState(''); // confirmPassword 변수 추가
     const [changeSuccess, setChangeSuccess] = useState(false);
+    const sendEmailURL = "http://localhost:9000/member/findPassword"
+    const checkEmailURL = "http://localhost:9000/member/findPasswordCheck"
+    const [isVerified, setIsVerified] = useState(false);
+    const [codeStatus, setCodeStatus] = useState(false); // null, 'correct', or 'incorrect'
+    const [verificationCode, setVerificationCode] = useState('');
 
 
     const handleSettingsClick = () => {
@@ -32,13 +38,24 @@ const Password: React.FC = () => {
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
     };
-
+    const handleCodeChange = (e) => {
+        setVerificationCode(e.target.value);
+    };
     const handleFirstImageClick = () => {
         router.push('/First');
     };
 
     const handleEmailSubmit = () => {
         // 여기서 이메일 인증 API 호출하고 인증 결과를 처리
+        // 이메일로 코드 전송
+        const encodedEmail = encodeURIComponent(email);
+        console.log(email);
+
+        axios.post(sendEmailURL, email)
+            .then(res => console.log(res.data))
+            .catch(err => console.log(err))
+
+        setIsVerified(true);
         // 예시로 간단히 설정
         if (email === 'example@email.com') {
             setIsAuthenticated(true);
@@ -46,23 +63,40 @@ const Password: React.FC = () => {
             setIsAuthenticated(false);
         }
     };
+    const handleCodeSubmit = () => {
+        // 백엔드와 통신하여 입력한 인증 번호가 맞는지 확인
+        const encodedEmail = email;
+        const encodedCode = (document.getElementById('verification-code') as HTMLInputElement).value;
+        console.log("보낸다"+email+ encodedCode)
+        axios.post(checkEmailURL, {
+                encodedEmail,
+                encodedCode
+        })
+            .then(res => {
+                console.log(res.data)
+                res.data && setCodeStatus(true);
+                res.data && setIsAuthenticated(true)
+                res.data || setCodeStatus(false);
+            })
+            .catch(err => console.log(err));
+    };
 
+    const changePassURL = "http://localhost:9000/member/changePassword"
     const handleChangePassword = () => {
         // 여기서 비밀번호 변경 API 호출하고 변경 결과를 처리
-        // 예시로 간단히 설정
-        if (newPassword === confirmPassword) {
-            // 비밀번호 변경 성공
-            setChangeSuccess(true);
-            setTimeout(() => {
-                setChangeSuccess(false);
-                // 여기서 로그인 페이지로 이동하는 코드 추가
-                // 예시로는 window.location.href 사용
-                window.location.href = '/Login';
-            }, 3000); // 3초 후에 자동으로 로그인 페이지로 이동
-        } else {
-            // 비밀번호가 일치하지 않음을 사용자에게 알림
-            alert('비밀번호가 일치하지 않습니다.');
-        }
+        const password = newPassword;
+        axios.post(changePassURL, {
+                password,
+                email
+        })
+            .then(res => {
+                setChangeSuccess(true)
+                setTimeout(() => {
+                    setChangeSuccess(false);
+                }, 2000);
+            })
+            .catch(err => console.log(err));
+
     };
 
 
@@ -92,12 +126,31 @@ const Password: React.FC = () => {
                         <input
                             type="email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={codeStatus ? () => {
+                            } : (e) => setEmail(e.target.value)}
                             required
+                            disabled={codeStatus}
                         />
                         <button onClick={handleEmailSubmit}>인증하기</button>
-                        <br/>
-                        {isAuthenticated ? <span>인증되었습니다. </span> : <span>인증되지 않았습니다. </span>}
+                        {isVerified && (
+                            <div className="verification-group">
+                                <label htmlFor="verification-code" className="label">
+                                    인증번호를 입력하세요
+                                </label>
+                                <input
+                                    id="verification-code"
+                                    type="text"
+                                    className="input"
+                                    value={verificationCode}
+                                    onChange={handleCodeChange}
+                                />
+                                <button type="button" onClick={handleCodeSubmit}>
+                                    확인
+                                </button>
+                                {codeStatus === true && <span>인증되었습니다. </span>}
+                                {codeStatus === false && <span>인증되지 않았습니다. </span>}
+                            </div>
+                        )}
                     </div>
                     {isAuthenticated && (
                         <div>
@@ -115,7 +168,12 @@ const Password: React.FC = () => {
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                             />
-                            <button onClick={handleChangePassword}>변경하기</button>
+                            <button
+                                onClick={handleChangePassword}
+                                disabled={newPassword !== confirmPassword}
+                            >
+                            변경하기
+                            </button>
                         </div>
                     )}
                     {changeSuccess && (

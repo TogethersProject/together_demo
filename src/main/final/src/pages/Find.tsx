@@ -73,6 +73,47 @@ const Find = () => {
         }
     };
 
+    useEffect(() => {
+        boardDTOList.forEach((item: any) => {
+            const contentRef = document.getElementById(`content-${item.seq}`);
+            if (contentRef) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(item.content, 'text/html');
+                const oembedTags = doc.querySelectorAll('oembed');
+                oembedTags.forEach(oembedTag => {
+                    const url: string | null = oembedTag.getAttribute('url');
+                    if (url && url.includes('youtube.com')) {
+                        const urlObj = new URL(url);
+                        const videoId = urlObj.searchParams.get('v');
+                        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                        const iframe = document.createElement('iframe');
+                        iframe.src = embedUrl;
+                        iframe.title = "video";
+                        iframe.allowFullscreen = true;
+                        iframe.width = "300";
+                        iframe.height = "180";
+                        oembedTag.replaceWith(iframe);
+                    }
+                });
+
+                const images = doc.getElementsByTagName('img');
+                for (let i = 0; i < images.length; i++) {
+                    const img = images[i];
+                    const width = img.width;
+                    const height = img.height;
+
+                    if (width > 300) {
+                        const min = 300/width;
+                        img.width = Math.round(width * min);
+                        img.height = Math.round(height * min);
+                    }
+                }
+
+                contentRef.innerHTML = doc.body.innerHTML;
+            }
+        });
+    }, [boardDTOList]);
+
     const handleDeleteMentor = (index: number) => {
         axios.post(boardDeleteURL, null, {
             headers: {
@@ -98,16 +139,6 @@ const Find = () => {
     //         });
     };
 
-    const handleAddComment = (seq: number) => {
-        const updatedMentors = [...mentors];
-        const mentorIndex = updatedMentors.findIndex((mentor) => mentor.seq === seq);
-        if (mentorIndex !== -1) {
-            updatedMentors[mentorIndex].comments = [...(updatedMentors[mentorIndex].comments || []), currentComment];
-            setMentors(updatedMentors);
-            setCurrentComment('');
-            localStorage.setItem('mentors', JSON.stringify(updatedMentors));
-        }
-    };
 
     const handleUpdateMentor = (seq: number) => {
         router.push(`/UDMentor?seq=${seq}`);
@@ -165,16 +196,7 @@ const Find = () => {
                             <p><strong>이름:</strong> {item.name}</p>
                             <p><strong>이메일:</strong> {item.email}</p>
                             <p className={"mentor-content"} id={`content-${item.seq}`}></p>
-                            <div className="comments">
-                                <h3>댓글:</h3>
-                                <input
-                                    type="text"
-                                    value={currentComment}
-                                    onChange={(e) => setCurrentComment(e.target.value)}
-                                    placeholder="댓글을 입력하세요"
-                                />
-                                <button onClick={() => handleAddComment(item.seq)}>댓글 달기</button>
-                            </div>
+
                             {(item.id === member_id) && <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
                             {(item.id === member_id) && <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
                         </div>

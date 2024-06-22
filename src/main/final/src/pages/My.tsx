@@ -13,6 +13,7 @@ const My: React.FC = () => {
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
     const [detailAddress, setDetailAddress] = useState('');
+    const [provider, setProvider] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
     const getUserURL = "http://localhost:9000/member/getMemberInfo";
@@ -37,12 +38,14 @@ const My: React.FC = () => {
                 const storedAddress = res.data.member_address;
                 const storedDetailAddress = res.data.member_addressDetail;
                 const storedPwd = res.data.member_pwd;
+                const storedProvider = res.data.provider;
 
                 if (storedUsername) setUsername(storedUsername);
                 if (storedEmail) setEmail(storedEmail);
                 if (storedAddress) setAddress(storedAddress);
                 if (storedDetailAddress) setDetailAddress(storedDetailAddress);
                 if (storedPwd) setPassword(storedPwd);
+                if (storedProvider)setProvider(storedProvider+"로 가입한 계정입니다.");
             }).catch(err => console.log(err))
 
     }, []);
@@ -64,8 +67,8 @@ const My: React.FC = () => {
         //회원 정보 수정.
         axios.post(updateURL, memberDTO, {headers:headers})
             .then(res => {
-                console.log(res.data)
-                alert("수정 완")
+                //alert("수정 완")
+                setShowModal(true)
             })
             .catch(err => console.log(err))
         // localStorage.setItem('username', username);
@@ -179,17 +182,24 @@ const My: React.FC = () => {
                             type="text"
                             id="username"
                             value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                if (provider === '') {
+                                    setUsername(e.target.value);
+                                }
+                            }}
                         />
+
                     </div>
                     <div className="form-group">
                         <label htmlFor="username">비밀번호</label>
-                        <input
+                        {(provider == '')
+                            && <input
                             type="password"
                             id="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                            onChange={(e) => setPassword(e.target.value)}/>
+                            || <input type="text" value={provider} />
+                        }
                     </div>
                     <div className="form-group">
                         <label htmlFor="email">이메일</label>
@@ -197,7 +207,6 @@ const My: React.FC = () => {
                             type="email"
                             id="email"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div className="group">

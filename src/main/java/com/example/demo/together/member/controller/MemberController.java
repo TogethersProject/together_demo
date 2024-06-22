@@ -18,6 +18,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
+import java.util.Map;
 import java.util.Optional;
 
 //포트 번호가 달라서(front는 3000, back은 8080) 생기는 연결 거부 문제 해결
@@ -140,9 +141,18 @@ public class MemberController {
 
     //비밀번호 찾기 이메일 인증 요청(인증 코드 전송 이메일과 인증 코드 확인 주소 동일. encodedCode의 유무를 통해 구별.)
     @PostMapping(path="findPassword")
-    public String findPassword(@RequestBody String encodedEmail
-            , @RequestBody(required=false) String encodedCode) throws Exception{
+    public String findPassword(@RequestBody String encodedEmail) throws Exception{
+        System.out.println("비번찾기(encoded email/code): " + encodedEmail);
+        String email = URLDecoder.decode(encodedEmail, "UTF-8");
+        email = email.replaceAll("=$", "");
 
+        System.out.println("비밀번호 찾기 이메일 요청: " + email);
+        return memberInfoService.findPassword(email);
+    }
+    @PostMapping(path="findPasswordCheck")
+    public String findPasswordCheck(@RequestBody Map<String, String> requestBody) throws Exception{
+        String encodedEmail = requestBody.get("encodedEmail");
+        String encodedCode = requestBody.get("encodedCode");
         System.out.println("비번찾기(encoded email/code): " + encodedEmail +" / " +encodedCode);
         String code = encodedCode;
         String email = URLDecoder.decode(encodedEmail, "UTF-8");
@@ -152,10 +162,17 @@ public class MemberController {
         }
         code = code.replaceAll("=$", "");
 
-        System.out.println("비밀번호 찾기 이메일 요청: " + email + " / " + code);
-        return memberInfoService.findPassword(email, code);
+        System.out.println("비밀번호 찾기 이메일 확인: " + email + " / " + code);
+        return memberInfoService.findPasswordCheck(email, code);
     }
 
+    @PostMapping("changePassword")
+    public void changePassword(@RequestBody Map<String, String> requestBody){
+        String password = requestBody.get("password");
+        String email = requestBody.get("email");
+        System.out.println("비밀번호 변경합니다. email = " + email + " / password = " + password);
+        memberInfoService.changePassword(password, email);
+    }
 
     @Secured("ROLE_USER")
     @PostMapping(path={"updateMember"})

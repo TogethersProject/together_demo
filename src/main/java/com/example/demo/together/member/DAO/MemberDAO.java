@@ -30,4 +30,8 @@ public interface MemberDAO extends JpaRepository<MemberDTO, String> {
     @Modifying
     @Query("DELETE FROM MemberDTO m WHERE m.member_id = :member_id")
     void deleteById(@Param("member_id")String member_id);
+
+    @Modifying
+    @Query("UPDATE MemberDTO m SET m.member_pwd = :password WHERE m.member_email = :email")
+    void updateByEmail(@Param("password")String password, @Param("email")String email);
 }

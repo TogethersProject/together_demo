@@ -82,4 +82,10 @@ public class BoardVolunteerDTO {
 
     @Column(name="thumnail")
     private String thumnail;
+
+    @Column(name="volun_date"
+        ,nullable=false)
+    private String volun_date;
+
+
 }

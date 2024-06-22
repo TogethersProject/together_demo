@@ -7,6 +7,9 @@ import axios from "axios"; // Import CSS file for styles
 const Login: React.FC = () => {
     const signInMemberURL = "http://localhost:9000/member/loginCheck"
     const signUpURL = "http://localhost:9000/member/writeMember"
+    const sendEmailURL = "http://localhost:9000/member/sendEmail"
+    const mailCodeSubmit = "http://localhost:9000/member/isEmail"
+
 
     const [tab, setTab] = useState<'sign-in' | 'sign-up'>('sign-in');
     const [address, setAddress] = useState('');
@@ -167,7 +170,6 @@ const Login: React.FC = () => {
             }).catch(err => console.log(err))
     }
 
-    const sendEmailURL = "http://localhost:9000/member/sendEmail"
     // Handle email verification
     const handleVerifyClick = () => {
         // Logic to send verification code to the email
@@ -185,7 +187,6 @@ const Login: React.FC = () => {
     const handleCodeChange = (e) => {
         setVerificationCode(e.target.value);
     };
-    const mailCodeSubmit = "http://localhost:9000/member/isEmail"
     const handleCodeSubmit = () => {
         // 백엔드와 통신하여 입력한 인증 번호가 맞는지 확인
         const email = (document.getElementById('email-signup') as HTMLInputElement).value;

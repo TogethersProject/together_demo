@@ -14,6 +14,7 @@ const Be = () => {
     const [activityTitle, setActivityTitle] = useState('');
     const [activityDescription, setActivityDescription] = useState('');
     const [activityLocation, setActivityLocation] = useState('');
+    const [activityTime, setActivityTime] = useState('');
     const [activityOrganization, setActivityOrganization] = useState('');
     const [photo, setPhoto] = useState<File | null>(null);
     const [showModal, setShowModal] = useState(false); // State for showing modal
@@ -29,44 +30,6 @@ const Be = () => {
         };
         loadCustomEditor();
     }, []);
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            const photoUrl = reader.result as string;
-            const newActivity = {
-                title: activityTitle,
-                description: activityDescription,
-                location: activityLocation,
-                organization: activityOrganization,
-                photo: photoUrl,
-            };
-
-            let savedData = JSON.parse(localStorage.getItem('activities') || '[]');
-            if (!Array.isArray(savedData)) {
-                savedData = [];
-            }
-            savedData.push(newActivity);
-            localStorage.setItem('activities', JSON.stringify(savedData));
-
-            setShowModal(true); // Show modal after registration
-            setTimeout(() => {
-                router.push('/FindVolunteer'); // Navigate to FindVolunteer after 1 second
-            }, 1000);
-        };
-
-        if (photo) {
-            reader.readAsDataURL(photo);
-        }
-    };
-
-    const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setPhoto(e.target.files[0]);
-        }
-    };
 
     const handleFirstImageClick = () => {
         router.push('/First');
@@ -85,7 +48,8 @@ const Be = () => {
     };
 
     const handleButtonClick = () => {
-        router.push('/Find');
+        onSubmit()
+        //router.push('/Find');
     }
 
     const handleSidebarLinkClick = (path: string) => {
@@ -104,14 +68,15 @@ const Be = () => {
         setActivityDescription(editor.getData());
     };
     const boardSubmitURL = 'http://localhost:9000/volunteer/writeBoard'
-    const onSubmit = (e) => {
-        e.preventDefault();
+    const onSubmit = () => {
+        //e.preventDefault();
         const content = activityDescription;
         const title = activityTitle;
         const id = localStorage.getItem("username")
         const volun_address = activityLocation;
         const volun_institution = activityOrganization;
-        const board = {title, content, id, volun_institution, volun_address}
+        const volun_date = activityTime;
+        const board = {title, content, id, volun_institution, volun_address, volun_date}
 
         const bearer: string | null = localStorage.getItem('grantType');
         const accessToken: string | null = localStorage.getItem('accessToken');
@@ -123,10 +88,11 @@ const Be = () => {
         }
         //console.log(headers)
 
+        console.log("제출시작할게")
         axios.post(boardSubmitURL, board    ,{headers:headers}
         ).then(res => {
             console.log(res);
-            //alert('등록 완료!');
+            alert('등록 완료!');
             // Show modal and redirect to First.tsx
             setShowModal(true);
             setTimeout(() => {
@@ -179,6 +145,17 @@ const Be = () => {
                                     //initialData='<h1>Hello from CKEditor in Next.js!</h1>'
                                 />
                             </Suspense>
+                        </div>
+                        <div className="formGroup">
+                            <label className="label" htmlFor="location">봉사 시간:</label>
+                            <input
+                                className="input"
+                                type="text"
+                                id="time"
+                                value={activityTime}
+                                onChange={(e) => setActivityTime(e.target.value)}
+                                required
+                            />
                         </div>
                         <div className="formGroup">
                             <label className="label" htmlFor="location">봉사 위치:</label>

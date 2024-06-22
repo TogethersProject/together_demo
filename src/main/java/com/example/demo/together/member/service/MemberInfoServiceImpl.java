@@ -249,9 +249,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
     //비밀번호 찾기
     @Override
-    public String findPassword(String email, String code) {
-        //code가 없는 경우 = 이메일 전송
-        if(code ==null){
+    public String findPassword(String email) {
+        //이메일 전송
             String createCode = String.valueOf(UUID.randomUUID());
 
             //1시간 후 만료, 해시맵 형태의 redis. email - code 관계
@@ -263,20 +262,28 @@ public class MemberInfoServiceImpl implements MemberInfoService {
             String content = "이메일 인증 코드: " + createCode + "을 입력하세요."
                             +"\n 새로운 비밀번호 생성을 도와드리겠습니다." ;
             return sendEmailForm(email, title, content);
-        }else{//code가 있는 경우 = redis 내부에서 코드를 찾아 대조.
-            //인증 코드 DB에서 꺼내기
-            HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
-            String authDB = hashOps.get(EMAIL_PASS_HASH, email);//HGET email_pass_hash "lamp0525@naver.com"
+        }//비번찾기 findPassword
+    @Override
+    public String findPasswordCheck(String email, String code) {
+        //code가 있는 경우 = redis 내부에서 코드를 찾아 대조.
+        //인증 코드 DB에서 꺼내기
+        HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+        String authDB = hashOps.get(EMAIL_PASS_HASH, email);//HGET email_pass_hash "lamp0525@naver.com"
 
-            //유저가 입력한 인증 코드와 DB에서 꺼낸 코드 비교하여 T/F
-            if(authDB.equals(code)){
-                System.out.println("DB: " + authDB + " / Code: " + code);
-                return "true";
-            }
-            return "false";
+        //유저가 입력한 인증 코드와 DB에서 꺼낸 코드 비교하여 T/F
+        if(authDB.equals(code)){
+            System.out.println("DB: " + authDB + " / Code: " + code);
+            return "true";
         }
+        return "false";
     }//비번찾기 findPassword
-    
+
+    @Override
+    public void changePassword(String password, String email) {
+        System.out.println("비번변경 서비스");
+        memberDAO.updateByEmail(password, email);
+    }
+
     //회원 탈퇴
     @Override
     public void deleteMember(String member_id, String accessToken) {

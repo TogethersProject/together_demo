@@ -79,12 +79,12 @@ public class BoardVolunteerController {
     }
 
     //게시글 수정을 위한 게시글 1개의 정보와 이미지 목록을 전달.
-    @Secured("ROLE_USER")
+    //@Secured("ROLE_USER")
     @PostMapping(path = {"getUpdateBoard"})
-    public Map<String, Object> getUpdateBoard(@RequestParam("seq") String seq, @RequestParam("member_id")String member_id){
-        //System.out.println("getBoard(controller):"+seq);
-        BigInteger seqInt = new BigInteger(seq);
-        return boardService.getUpdateBoard(seqInt, member_id);
+    public Map<String, Object> getUpdateBoard(@RequestBody String seq){
+        BigInteger seqInt = new BigInteger(seq.split("=")[0]);
+        System.out.println("getBoard(controller):"+seqInt );
+        return boardService.getUpdateBoard(seqInt);
     }
 
     //게시글 수정. 수정된 이미지 정보를 갱신(필요없어진 이미지 삭제, 필요한 이미지 test 업로드)하고 게시글을 갱신함.
@@ -97,6 +97,7 @@ public class BoardVolunteerController {
         List<String> imageNamesBefore = (List<String>) requestData.get("imageNamesBefore");
         BoardVolunteerDTO boardDTO = new ObjectMapper().convertValue(requestData.get("board"), BoardVolunteerDTO.class);
 
+        System.out.println("boardDTO: " + boardDTO);
         boardService.updateBoard(imageNamesBefore, boardDTO);
     }
 

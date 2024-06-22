@@ -23,7 +23,10 @@ public interface BoardVolunteerDAO extends JpaRepository<BoardVolunteerDTO, BigI
     @Query("UPDATE BoardVolunteerDTO boardDTO SET boardDTO.title = :title, " +
             "                            boardDTO.content = :content, " +
             "                            boardDTO.board_lastTime = :boardTimePresent, " +
-            "                            boardDTO.thumnail = :thumnail"+
+            "                            boardDTO.thumnail = :thumnail,"+
+            "                            boardDTO.volun_date = :volun_date,"+
+            "                            boardDTO.volun_address = :address,"+
+            "                            boardDTO.volun_institution = :institution"+
             "                        WHERE boardDTO.seq = :seq")
-    void updateBySeq(@Param("seq")int seq, @Param("title")String title, @Param("content")String content, @Param("boardTimePresent") Timestamp boardTimePresent, @Param("thumnail")String thumnail);
+    void updateBySeq(@Param("seq")int seq, @Param("title")String title, @Param("content")String content, @Param("boardTimePresent") Timestamp boardTimePresent, @Param("thumnail")String thumnail,@Param("volun_date")String volun_date, @Param("address")String address, @Param("institution")String institution);
 }
