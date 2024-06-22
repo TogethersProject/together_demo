@@ -177,6 +177,7 @@ const FindVolunteer: React.FC = () => {
 
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
+            {isSidebarOpen && <div className="overlay show" onClick={handleOutsideClick}></div>}
             <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
