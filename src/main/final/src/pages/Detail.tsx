@@ -8,9 +8,20 @@ const Detail: React.FC = () => {
     const router = useRouter(); // Next.js의 useRouter 훅을 사용하여 라우터 객체를 얻습니다.
     const { id } = router.query; // 쿼리에서 id를 추출합니다.
     const [activity, setActivity] = useState<any>(null); // 활동 상세 정보를 담을 상태 변수
-    const { isLoggedIn } = useAuth(); // 인증 정보를 다루는 커스텀 훅을 사용하여 로그인 상태를 확인합니다.
+    const [isLoggedIn, setIsLoggedIn] = useState(false);// 인증 정보를 다루는 커스텀 훅을 사용하여 로그인 상태를 확인합니다.
     const [isSidebarOpen, setSidebarOpen] = useState(false); // 사이드바 열림 상태를 관리할 상태 변수
     const sidebarRef = useRef<HTMLDivElement>(null); // 사이드바 요소를 참조할 useRef 객체
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown status
+
+    // Check if the user is logged in on component mount
+    useEffect(() => {
+        const storedLoginStatus = localStorage.getItem('isLoggedIn');
+        if (storedLoginStatus === 'true') {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
     const [showModal, setShowModal] = useState(false);
     // 활동 id에 따라 활동 정보를 가져오는 함수
     useEffect(() => {
@@ -137,23 +148,58 @@ const Detail: React.FC = () => {
             window.location.href = '/FindVolunteer';
         }, 2000);
     };
+    const handleSearchClick = () => {
+        router.push('/Search');
+    };
+
+    const handleAlertClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
 
     // 활동 정보가 있는 경우, 화면에 렌더링
     return (
-        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
-            <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
-            </div>
-            <div className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40} />
-                <div className="center-image-container" onClick={handleFirstImageClick} style={{ cursor: 'pointer' }}>
-                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45} />
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
+            <div className="sidebar">
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
+                    <span>🔍 Search</span>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50} />
+                {!isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
+                        <span>🔒 Login</span>
+                    </div>
+                )}
+                {isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
+                        <span>👤 My Page</span>
+                    </div>
+                )}
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
+                    <span>🤖 ChatBot</span>
+                </div>
             </div>
+
+            <header className="header">
+                <div onClick={handleSearchClick} style={{cursor: 'pointer'}}>
+                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                </div>
+                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
+                </div>
+                <div className="alert-container" onClick={handleAlertClick}
+                     style={{cursor: 'pointer', position: 'relative'}}>
+                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                    {isDropdownOpen && (
+                        <div className="alert-dropdown">
+                            <ul>
+                                <li>알림 1</li>
+                                <li>알림 2</li>
+                                <li>알림 3</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </header>
             <div className="content">
                 <h1>{activity.title}</h1>
                 <Image src={activity.image} alt={activity.title} width={300} height={300}/>

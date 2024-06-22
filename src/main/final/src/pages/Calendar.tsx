@@ -50,7 +50,8 @@ const Calendar: React.FC = () => {
     const [showModalState, setShowModalState] = useState(false);
     const [allDay, setAllDay] = useState(false);
     const [showModal, setShowModal] = useState(false);
-
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // Stat
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
     const handleOutModalClick = (event) => {
         // 모달 영역 외의 클릭을 감지하여 모달을 닫습니다.
@@ -369,24 +370,55 @@ const Calendar: React.FC = () => {
     function handleFirstImageClick() {
         router.push('/First');
     }
+    const handleSearchClick = () => {
+        router.push('/Search');
+    };
+
+    const handleAlertClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
     return (
-        <div
-            className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
-            onClick={isSidebarOpen ? handleOutsideClick : undefined}
-        >
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
             <div className="sidebar">
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
+                    <span>🔍 Search</span>
+                </div>
+                {!isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
+                        <span>🔒 Login</span>
+                    </div>
+                )}
+                {isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
+                        <span>👤 My Page</span>
+                    </div>
+                )}
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
+                    <span>🤖 ChatBot</span>
+                </div>
             </div>
+
             <header className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
-                <div className="center-image-container" onClick={handleFirstImageClick}
-                     style={{cursor: 'pointer'}}>
+                <div onClick={handleSearchClick} style={{cursor: 'pointer'}}>
+                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                </div>
+                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
                     <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                <div className="alert-container" onClick={handleAlertClick}
+                     style={{cursor: 'pointer', position: 'relative'}}>
+                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                    {isDropdownOpen && (
+                        <div className="alert-dropdown">
+                            <ul>
+                                <li>알림 1</li>
+                                <li>알림 2</li>
+                                <li>알림 3</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </header>
             <div className="content">
                 <div className="intro">
@@ -394,7 +426,7 @@ const Calendar: React.FC = () => {
                 </div>
                 <div className="calendar-container">
                     <FullCalendar
-                        plugins={[dayGridPlugin, interactionPlugin,timeGridPlugin]}
+                        plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
                         initialView="dayGridMonth"
                         titleFormat={{
                             year: "2-digit",         //numeric, 2-digit
@@ -402,14 +434,14 @@ const Calendar: React.FC = () => {
                         }}
                         headerToolbar={{
                             center: 'title'
-                            ,start: 'today'
-                            ,end: 'prev,next'
+                            , start: 'today'
+                            , end: 'prev,next'
                         }}
                         footerToolbar={{
-                            center:'dayGridMonth,timeGridDay'
+                            center: 'dayGridMonth,timeGridDay'
                         }}
                         eventTimeFormat={{
-                            meridiem:false,     //am, pm 표시 비활성화
+                            meridiem: false,     //am, pm 표시 비활성화
                             hour: "2-digit"     //시간만 2글자 표시. year, month, day, minute 비활성화
                         }}
                         events={events}
@@ -431,7 +463,7 @@ const Calendar: React.FC = () => {
                         weekends={true} // 주말 표시 여부
                         navLinks={true} // 달력의 날짜 클릭시 일간 스케줄로 이동
                         navLinkHint={"이 날의 일정을 더 자세히 보기"} // 날짜에 호버 시 문구. 필요하면 nn일로 이동합니다. 문구를 출력할 수 있음.
-                        dayMaxEvents= {2}//하루에 너무 많은 일정이 있으면 +more로 표시. 깔끔한 캘린더 디자인을 위함.
+                        dayMaxEvents={2}//하루에 너무 많은 일정이 있으면 +more로 표시. 깔끔한 캘린더 디자인을 위함.
 
                         eventBackgroundColor={'yellowgreen'}//이벤트의 배경색. 디폴트 값.
                         eventBorderColor={'yellowgreen'}// 이벤트의 테두리 색. 달력 배경색과 동일하게 설정.

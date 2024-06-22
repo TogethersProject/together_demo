@@ -14,7 +14,15 @@ const Market: React.FC = () => {
         // Add more entries as needed
     ]);
     const [expandedEntryId, setExpandedEntryId] = useState<number | null>(null);
-
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown status
+    // Check if the user is logged in on component mount
+    useEffect(() => {
+        const storedLoginStatus = localStorage.getItem('isLoggedIn');
+        if (storedLoginStatus === 'true') {
+            setIsLoggedIn(true);
+        }
+    }, []);
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
@@ -77,24 +85,57 @@ const Market: React.FC = () => {
     const handleExpandEntry = (entryId: number) => {
         setExpandedEntryId(entryId === expandedEntryId ? null : entryId);
     };
+    const handleSearchClick = () => {
+        router.push('/Search');
+    };
+
+    const handleAlertClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
 
     return (
-        <div
-            className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
-            onClick={isSidebarOpen ? handleOutsideClick : undefined}
-        >
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
             <div className="sidebar">
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>My</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
+                    <span>🔍 Search</span>
+                </div>
+                {!isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
+                        <span>🔒 Login</span>
+                    </div>
+                )}
+                {isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
+                        <span>👤 My Page</span>
+                    </div>
+                )}
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
+                    <span>🤖 ChatBot</span>
+                </div>
             </div>
+
             <header className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
-                <div className="center-image-container" onClick={handleFirstImageClick} style={{ cursor: 'pointer' }}>
+                <div onClick={handleSearchClick} style={{cursor: 'pointer'}}>
+                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                </div>
+                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
                     <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                <div className="alert-container" onClick={handleAlertClick}
+                     style={{cursor: 'pointer', position: 'relative'}}>
+                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                    {isDropdownOpen && (
+                        <div className="alert-dropdown">
+                            <ul>
+                                <li>알림 1</li>
+                                <li>알림 2</li>
+                                <li>알림 3</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </header>
             <div className="content">
                 <h1>할인 가맹점 리스트</h1>

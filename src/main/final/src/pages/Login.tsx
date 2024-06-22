@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import DaumPostcode from 'react-daum-postcode';
 import { useRouter } from 'next/router';
 import '../styles/Login.css';
-import axios from "axios"; // Import CSS file for styles
+import axios from "axios";
+import Image from "next/image"; // Import CSS file for styles
 
 const Login: React.FC = () => {
     const signInMemberURL = "http://localhost:9000/member/loginCheck"
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
 
     const [username, setUsername] = useState<string>('');
     const [isDuplicate, setIsDuplicate] = useState<boolean | null>(null);
-
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown status
     useEffect(() => {
         const storedLoginStatus = localStorage.getItem('isLoggedIn');
         if (storedLoginStatus === 'true') {
@@ -224,15 +225,61 @@ const Login: React.FC = () => {
             console.error('Naver 로그인 에러:', error);
         }
     }
+    const handleFirstImageClick = () => {
+        router.push('/First');
+    };
+
+    const handleSearchClick = () => {
+        router.push('/Search');
+    };
+
+    const handleAlertClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
 
     return (
-        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
-            <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>My</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
+            <div className="sidebar">
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
+                    <span>🔍 Search</span>
+                </div>
+                {!isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
+                        <span>🔒 Login</span>
+                    </div>
+                )}
+                {isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
+                        <span>👤 My Page</span>
+                    </div>
+                )}
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
+                    <span>🤖 ChatBot</span>
+                </div>
             </div>
+
+            <header className="header">
+                <div onClick={handleSearchClick} style={{cursor: 'pointer'}}>
+                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                </div>
+                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
+                </div>
+                <div className="alert-container" onClick={handleAlertClick}
+                     style={{cursor: 'pointer', position: 'relative'}}>
+                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                    {isDropdownOpen && (
+                        <div className="alert-dropdown">
+                            <ul>
+                                <li>알림 1</li>
+                                <li>알림 2</li>
+                                <li>알림 3</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </header>
             <div className="body-wrapper">
                 <div className="login-wrap">
                     <div className="login-html">
