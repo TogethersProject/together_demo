@@ -85,7 +85,7 @@ const First: React.FC = () => {
                 </div>
                 <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </header>
-
+        <div className="content">
             <form className="search-form" onSubmit={handleSearchSubmit}>
                 <input
                     type="text"
@@ -95,7 +95,7 @@ const First: React.FC = () => {
                 />
                 <button type="submit">Search</button>
             </form>
-
+        </div>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>
                     =
