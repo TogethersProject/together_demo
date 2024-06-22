@@ -136,6 +136,9 @@ const FindVolunteer: React.FC = () => {
         setIsLoading(false);
     };
 
+    useEffect(() => {
+        console.log("page:"+page)
+    }, [page])
     const handleActivityClick = (activityId: number) => {
         router.push(`/Detail?seq=${activityId}`);
     };
