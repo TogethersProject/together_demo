@@ -54,7 +54,7 @@ const Calendar: React.FC = () => {
 
     const handleOutModalClick = (event) => {
         // 모달 영역 외의 클릭을 감지하여 모달을 닫습니다.
-            setShowModal(false);
+        setShowModal(false);
     };
     //맨 처음 로딩에만 토큰 정보 저장
     useEffect(() => {
@@ -472,7 +472,7 @@ const Calendar: React.FC = () => {
                             <button onClick={() => setShowModalState(false)}>닫기</button>
                         </div>
                         <div className="modal-body">
-                        <p>
+                            <p>
                                 일정 시작일: {(event.start) && new Date(event.start).toLocaleString()}
                                 시간: <input type='time' onChange={onStartTime} name='eventStartTime'/>
                             </p>
@@ -496,11 +496,10 @@ const Calendar: React.FC = () => {
                     </div>
                 )};
 
-                    </div>
-                    <footer className="footer">
-                    <div className="footer-icon" onClick={handleSettingsClick}>=
             </div>
-            <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
+            <footer className="footer">
+                <div className="footer-icon" onClick={handleSettingsClick}>=</div>
+                <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
                 <div className="footer-icon" onClick={handleProfileClick}>👤</div>
             </footer>
         </div>
@@ -508,3 +507,4 @@ const Calendar: React.FC = () => {
 };
 
 export default Calendar;
+

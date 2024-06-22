@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/1y9ZV5RS13A-JSmGQztTW/_buildManifest.js",
-    "static/1y9ZV5RS13A-JSmGQztTW/_ssgManifest.js"
+    "static/7JgzYFasktfHvpj317OyU/_buildManifest.js",
+    "static/7JgzYFasktfHvpj317OyU/_ssgManifest.js"
   ],
   "rootMainFiles": [
     "static/chunks/webpack-4b85a2495789b785.js",
@@ -46,7 +46,9 @@
       "static/chunks/webpack-4b85a2495789b785.js",
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
-      "static/chunks/pages/Chat-757bd9c96dab00f1.js"
+      "static/chunks/873-8558bcf58006f33b.js",
+      "static/css/24ab46d472278ddb.css",
+      "static/chunks/pages/Chat-d9cac94d34a8983c.js"
     ],
     "/Detail": [
       "static/chunks/webpack-4b85a2495789b785.js",
@@ -80,8 +82,8 @@
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
       "static/chunks/873-8558bcf58006f33b.js",
-      "static/css/78e6cf6796f287ae.css",
-      "static/chunks/pages/First-aa28aedb4876749e.js"
+      "static/css/24ab46d472278ddb.css",
+      "static/chunks/pages/First-71e8ac3d655c2f20.js"
     ],
     "/Join": [
       "static/chunks/webpack-4b85a2495789b785.js",
@@ -144,15 +146,15 @@
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
       "static/chunks/873-8558bcf58006f33b.js",
-      "static/css/78e6cf6796f287ae.css",
-      "static/chunks/pages/Search-7426d3beacb9e174.js"
+      "static/css/24ab46d472278ddb.css",
+      "static/chunks/pages/Search-90862183e6528ad3.js"
     ],
     "/Temp": [
       "static/chunks/webpack-4b85a2495789b785.js",
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
-      "static/css/78e6cf6796f287ae.css",
-      "static/chunks/pages/Temp-d2a840c26883ebf5.js"
+      "static/css/24ab46d472278ddb.css",
+      "static/chunks/pages/Temp-8efcd84bea5c9490.js"
     ],
     "/UDMentor": [
       "static/chunks/webpack-4b85a2495789b785.js",
@@ -189,8 +191,8 @@
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
       "static/chunks/873-8558bcf58006f33b.js",
-      "static/css/78e6cf6796f287ae.css",
-      "static/chunks/pages/shrimp-c3871bb5e023b695.js"
+      "static/css/24ab46d472278ddb.css",
+      "static/chunks/pages/shrimp-a850d8968d1578de.js"
     ]
   },
   "ampFirstPages": []
