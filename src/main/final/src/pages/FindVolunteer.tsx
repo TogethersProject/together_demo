@@ -165,7 +165,8 @@ const FindVolunteer: React.FC = () => {
     };
 
     const handleOutsideClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar && !sidebar.contains(event.target as Node)) {
             setSidebarOpen(false);
         }
     };
