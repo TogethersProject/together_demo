@@ -22,8 +22,14 @@ public class CommentVolunteerServiceImpl implements CommentVolunteerService{
     private MemberDAO memberDAO;
 
     @Override
-    public void writeComment(CommentVolunteerDTO commentDTO) {
-        commentDAO.save(commentDTO);
+    public String writeComment(CommentVolunteerDTO commentDTO) {
+        Optional<CommentVolunteerDTO> commentVolunteerDTO=commentDAO.findByMember_idANDCommentSeq(commentDTO.getMember_id(), commentDTO.getBoardSeq());
+        if(commentVolunteerDTO.isEmpty()){
+            commentDAO.save(commentDTO);
+            return "댓글을 작성했습니다.";
+        }else{
+            return "이미 댓글을 작성하셨습니다.";
+        }
     }
 
     @Override

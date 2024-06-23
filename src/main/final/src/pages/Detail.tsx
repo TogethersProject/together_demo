@@ -5,6 +5,13 @@ import { useAuth } from '../useAuth'; // useAuth 훅을 불러옵니다.
 import '../styles/Detail.css';
 import axios from "axios"; // Detail 컴포넌트에 사용될 CSS 파일을 불러옵니다.
 
+interface CommentDTO {
+    boardSeq: number;
+    member_id: string;
+    content: string;
+    isGoodVolun: boolean;
+}
+
 const Detail: React.FC = () => {
     const router = useRouter(); // Next.js의 useRouter 훅을 사용하여 라우터 객체를 얻습니다.
     const { seq } = router.query; // 쿼리에서 id를 추출합니다.
@@ -12,7 +19,7 @@ const Detail: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);// 인증 정보를 다루는 커스텀 훅을 사용하여 로그인 상태를 확인합니다.
     const [isSidebarOpen, setSidebarOpen] = useState(false); // 사이드바 열림 상태를 관리할 상태 변수
     const sidebarRef = useRef<HTMLDivElement>(null); // 사이드바 요소를 참조할 useRef 객체
-
+    const [isGood, setIsGood] = useState(true);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown status
 
     // Check if the user is logged in on component mount
@@ -43,6 +50,10 @@ const Detail: React.FC = () => {
             setMember_id(member_id);
         }
 
+        getBoard()
+        getComment()
+        }, [seq]);
+    const getBoard = () => {
         axios.post(getBoardURL, seq)
             .then(res=>{
                 setActivity({
@@ -58,12 +69,22 @@ const Detail: React.FC = () => {
                     volun_institution:res.data.boardDTO.volun_institution,
                     volun_date:res.data.boardDTO.volun_date
                 });
+            }).catch(err => console.log(err));
+    }
+    const [commentList, setCommentList] = useState<CommentDTO[]>([])
+    const getCommentURL = "http://localhost:9000/comment/getCommentList"
+    const getComment = () => {
+        console.log("코멘트 줘")
+        axios.post(getCommentURL,seq)
+            .then(res => {
+                console.log(res.data)
+                setCommentList(res.data.content);
             })
-            .catch(err => console.log(err));
-        }, [seq]);
+            .catch(err => console.log(err))
+    }
 
     useEffect(() => {
-        console.log("렌더링")
+        //console.log("렌더링")
         rendering();
     }, [activity])
     //렌더링
@@ -171,15 +192,38 @@ const Detail: React.FC = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    const writeCommentURL = "http://localhost:9000/comment/writeComment"
     const handleAddComment = (seq: number) => {
-        // const updatedMentors = [...mentors];
-        // const mentorIndex = updatedMentors.findIndex((mentor) => mentor.seq === seq);
-        // if (mentorIndex !== -1) {
-        //     updatedMentors[mentorIndex].comments = [...(updatedMentors[mentorIndex].comments || []), currentComment];
-        //     setMentors(updatedMentors);
-        //     setCurrentComment('');
-        //     localStorage.setItem('mentors', JSON.stringify(updatedMentors));
-        // }
+        if(activity.id === member_id){
+            alert("자신이 작성한 글에는 평가를 남길 수 없습니다.")
+            return null;
+        }
+
+        const bearer: string | null = localStorage.getItem('grantType');
+        const accessToken: string | null = localStorage.getItem('accessToken');
+
+        let headers: { [key: string]: string } = {};
+        if (bearer !== null && accessToken !== null) {
+            headers = { Authorization: `${bearer}${accessToken}` };
+        }
+
+        const boardSeq = seq;
+        const content = currentComment;
+        const isGoodVolun = isGood;
+        const commentDTO: CommentDTO = {
+            boardSeq,
+            member_id,
+            content,
+            isGoodVolun
+        };
+        axios.post(writeCommentURL, commentDTO, { headers: headers })
+            .then(res => {
+                console.log(res.data);//성공 or 실패 문구 출력
+                router.push('/Detail?seq='+seq)
+            })
+            .catch(err => console.log(err))
+        getComment();
+
     };
 
 
@@ -193,12 +237,41 @@ const Detail: React.FC = () => {
                 member_id: member_id,
             },
         })
+        router.push('/FindVolunteer')
     };
 
     const handleUpdateVolun = (seq: number) => {
         router.push(`/UDVolun?seq=${seq}`);
     };
 
+    const deleteCommentURL = "http://localhost:9000/comment/deleteComment"
+    const handleDeleteComment = (comment_seq) => {
+        let headers: { [key: string]: string } = {};
+        if (bearer !== null && accessToken !== null) {
+            headers = { Authorization: `${bearer}${accessToken}` };
+        }
+        console.log("삭제: " +comment_seq)
+        axios.post(deleteCommentURL, comment_seq, {headers: headers})
+            .then(res => console.log(res.data))
+            .catch(err => console.log(err))
+        alert("댓글 삭제 완료")
+        getComment();
+    }
+
+    const updateCommentURL = "http://localhost:9000/comment/updateComment";
+    const handleUpdateComment = (comment_seq) => {
+        let headers: { [key: string]: string } = {};
+        if (bearer !== null && accessToken !== null) {
+            headers = { Authorization: `${bearer}${accessToken}` };
+        }
+        //모달창 띄워서 변경
+
+        const commentDTO = {};
+        axios.post(updateCommentURL, commentDTO, {headers:headers})
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
+        getComment();
+    }
     // 활동 정보가 있는 경우, 화면에 렌더링
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
@@ -261,7 +334,23 @@ const Detail: React.FC = () => {
                         onChange={(e) => setCurrentComment(e.target.value)}
                         placeholder="댓글을 입력하세요"
                     />
+                    <input type="radio"  name="isGood" value="true" defaultChecked onClick={() => setIsGood(true)}/>추천
+                    <input type="radio" name="isGood" value="false" onClick={() => setIsGood(false)}/>비추천
                     <button onClick={() => handleAddComment(activity.seq)}>댓글 달기</button>
+                    {commentList.map((commentDTO: any, index: number) => {
+                        return (
+                            <div className="comment" key={commentDTO.commentSeq}>
+                                <div
+                                    className="comment_createTime">{commentDTO.username}/{commentDTO.comment_time}</div>
+                                <div className="comment_content">{commentDTO.content}</div>
+                                {(commentDTO.member_id === member_id) &&
+                                    <button onClick={() => handleDeleteComment(commentDTO.commentSeq)}>글 삭제</button>}
+                                {(commentDTO.member_id === member_id) &&
+                                    <button onClick={() => handleUpdateComment(commentDTO.commentSeq)}>글 수정</button>}
+                            </div>
+
+                        );
+                    })}
                 </div>
 
                 {activity.auth && <p>{activity.auth}</p>}

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import java.math.BigInteger;
 
 public interface CommentVolunteerService {
-    void writeComment(CommentVolunteerDTO commentDTO);
+    String writeComment(CommentVolunteerDTO commentDTO);
 
     CommentVolunteerDTO getOneComment(BigInteger seqInt);
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 @Transactional(readOnly = false)
 @Repository
@@ -21,4 +22,7 @@ public interface CommentVolunteerDAO extends JpaRepository<CommentVolunteerDTO, 
     void updateById(@Param("content") String content, @Param("isGoodVolun")boolean isGoodVolun, @Param("member_id")String member_id);
 
     Page<CommentVolunteerDTO> findByBoardSeq(Pageable pageable, BigInteger boardSeq);
+
+    @Query("SELECT c from CommentVolunteerDTO c WHERE c.member_id = :member_id AND c.boardSeq = :boardSeq")
+    Optional<CommentVolunteerDTO> findByMember_idANDCommentSeq(@Param("member_id")String member_id, @Param("boardSeq")int boardSeq);
 }

@@ -29,17 +29,18 @@ public class CommentVolunteerController {
     //댓글작성
     @Secured("ROLE_USER")
     @PostMapping(path={"writeComment"})
-    public void writeComment(@RequestBody CommentVolunteerDTO commentDTO){
+    public String writeComment(@RequestBody CommentVolunteerDTO commentDTO){
         log.info("DTO: " + commentDTO);
-        commentService.writeComment(commentDTO);
+        return commentService.writeComment(commentDTO);
     }
 
     //특정 글에 달린 댓글들 출력
-    @GetMapping(path = {"getCommentList"})
-    public Page<CommentVolunteerDTO> getCommentList(@PageableDefault(page=0, size=5, sort={"comment_seq"}, direction = Sort.Direction.DESC)Pageable pageable, @RequestBody String board_seq){
-        BigInteger boardSeq = new BigInteger(board_seq.split("=")[0]);
-        log.info("pageable: " + pageable);
-        log.info("board_seq: " + boardSeq);
+    @PostMapping(path = {"getCommentList"})
+    public Page<CommentVolunteerDTO> getCommentList(@PageableDefault(page=0, size=5, sort={"commentSeq"}, direction = Sort.Direction.DESC)Pageable pageable,  @RequestBody String seq){
+        BigInteger boardSeq = BigInteger.valueOf(Integer.parseInt(seq.split("=")[0]));
+
+        System.out.println("pageable: " + pageable);
+        System.out.println("board_seq: " + boardSeq);
         Page<CommentVolunteerDTO> list = commentService.getCommentList(pageable, boardSeq);
         System.out.println("Comment List: " + list);
         return list;
@@ -66,7 +67,8 @@ public class CommentVolunteerController {
     @Secured("ROLE_USER")
     @PostMapping(path={"deleteComment"})
     public void delete(@RequestBody String comment_seq){
-        BigInteger seqInt = new BigInteger(comment_seq);
+        BigInteger seqInt = new BigInteger(comment_seq.split("=")[0]);
+        System.out.println("delete comment " + seqInt);
         commentService.deleteComment(seqInt);
     }
 

@@ -18,7 +18,7 @@ public class CommentVolunteerDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="comment_id")
-    private int comment_seq;
+    private int commentSeq;
 
     //댓글이 달린 글 번호. board 테이블과 연결 fk
     @Column(name="board_id", nullable=false)
@@ -27,8 +27,7 @@ public class CommentVolunteerDTO {
     //댓글 작성자 아이디이자 member 테이블과 연결하는 fk
     @Column(
             name = "member_id",
-            nullable = false,
-            length = 30
+            nullable = false
     )
     private String member_id;
 
@@ -49,6 +48,6 @@ public class CommentVolunteerDTO {
 
     //해당 봉사 활동 추천 여부
     @Column(nullable = false)
-    private boolean isGoodVolun = true;
+    private boolean isGoodVolun;
 
 }
