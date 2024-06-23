@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import FullCalendar from '@fullcalendar/react'; // Import FullCalendar and DateSelectArg
@@ -14,6 +14,7 @@ import { formatDate } from '@fullcalendar/core'
 const Calendar: React.FC = () => {
     const router = useRouter();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const sidebarRef = useRef<HTMLDivElement>(null);
     const [events, setEvents] = useState([
         { id: '1', title: 'Event 1', start: '2023-06-20' },
         { id: '2', title: 'Event 2', start: '2023-06-21' },
@@ -380,46 +381,20 @@ const Calendar: React.FC = () => {
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
              onClick={isSidebarOpen ? handleOutsideClick : undefined}>
-            <div className="sidebar">
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
-                    <span>🔍 Search</span>
-                </div>
-                {!isLoggedIn && (
-                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
-                        <span>🔒 Login</span>
-                    </div>
-                )}
-                {isLoggedIn && (
-                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
-                        <span>👤 My Page</span>
-                    </div>
-                )}
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
-                    <span>🤖 ChatBot</span>
-                </div>
+            <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
-
-            <header className="header">
-                <div onClick={handleSearchClick} style={{cursor: 'pointer'}}>
-                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
-                </div>
+            <div className="header">
+                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
                 <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
                     <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <div className="alert-container" onClick={handleAlertClick}
-                     style={{cursor: 'pointer', position: 'relative'}}>
-                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
-                    {isDropdownOpen && (
-                        <div className="alert-dropdown">
-                            <ul>
-                                <li>알림 1</li>
-                                <li>알림 2</li>
-                                <li>알림 3</li>
-                            </ul>
-                        </div>
-                    )}
-                </div>
-            </header>
+                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+            </div>
+
             <div className="content">
                 <div className="intro">
                     <h1>봉사 일정을 확인하세요</h1>

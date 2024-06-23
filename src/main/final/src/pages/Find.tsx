@@ -42,6 +42,7 @@ const Find = () => {
     }, []);
 
     useEffect(() => {
+        console.log(`Fetching page: ${currentPage}`);
         getBoardList(currentPage);
     }, [currentPage]);
 
@@ -50,6 +51,7 @@ const Find = () => {
 
         observerRef.current = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && hasMore) {
+                console.log('Load more element is intersecting, incrementing page...');
                 setCurrentPage((prevPage) => prevPage + 1);
             }
         });
@@ -66,10 +68,11 @@ const Find = () => {
             const res = await axios.post(getMentorListURL, null, {
                 params: { page }
             });
+            console.log('Fetched data:', res.data.content);
             setBoardDTOList((prevBoardDTOList) => [...prevBoardDTOList, ...res.data.content]);
             setHasMore(res.data.content.length > 0);
         } catch (err) {
-            console.log('에러발생' + err);
+            console.log('Error occurred:', err);
         }
     };
 
@@ -124,19 +127,19 @@ const Find = () => {
                 member_id: member_id,
             },
         })
-    //         .then((res) => {
-    //             console.log(res);
-    //             if (res.data === '글을 삭제하였습니다.') {
-    //                 alert('삭제 완료!');
-    //                 setBoardDTOList((prevBoardDTOList) => prevBoardDTOList.filter((item) => item.seq !== index));
-    //             } else {
-    //                 alert('삭제 실패' + res.data);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //             alert('에러!!!');
-    //         });
+        //         .then((res) => {
+        //             console.log(res);
+        //             if (res.data === '글을 삭제하였습니다.') {
+        //                 alert('삭제 완료!');
+        //                 setBoardDTOList((prevBoardDTOList) => prevBoardDTOList.filter((item) => item.seq !== index));
+        //             } else {
+        //                 alert('삭제 실패' + res.data);
+        //             }
+        //         })
+        //         .catch((err) => {
+        //             console.log(err);
+        //             alert('에러!!!');
+        //         });
     };
 
 

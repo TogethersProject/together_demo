@@ -61,8 +61,6 @@ const FindVolunteer: React.FC = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown status
 
     useEffect(() => {
-        getBoardList(page);
-
         const grantType = localStorage.getItem("grantType");
         const access_token = localStorage.getItem("accessToken");
         const member_id = localStorage.getItem("username");
@@ -71,17 +69,43 @@ const FindVolunteer: React.FC = () => {
             setAccessToken(access_token);
             setMember_id(member_id);
         }
+    }, []);
+
+    useEffect(() => {
+        const getBoardList = async (pageNumber: number) => {
+            if (isLoading || !hasMore) return;
+            setIsLoading(true);
+            try {
+                const res = await axios.post(getVolunteerListURL, null, {
+                    params: {
+                        page: pageNumber
+                    }
+                });
+                const newBoardDTOList = res.data.content;
+                setBoardDTOList(prevBoardDTOList => [...prevBoardDTOList, ...newBoardDTOList]);
+                setHasMore(newBoardDTOList.length > 0);
+            } catch (err) {
+                console.error("Error fetching data:", err);
+            }
+            setIsLoading(false);
+        };
+
+        getBoardList(page);
     }, [page]);
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight - 50 || isLoading) return;
-            setPage(prevPage => prevPage + 1);
+            if (isLoading || !hasMore) return;
+
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            if (scrollHeight - scrollTop <= clientHeight + 50) {
+                setPage(prevPage => prevPage + 1);
+            }
         };
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [isLoading]);
+    }, [isLoading, hasMore]);
 
     useEffect(() => {
         boardDTOList.forEach((item: any) => {
@@ -118,27 +142,6 @@ const FindVolunteer: React.FC = () => {
         });
     }, [boardDTOList]);
 
-    const getBoardList = async (pageNumber: number) => {
-        if (isLoading || !hasMore) return;
-        setIsLoading(true);
-        try {
-            const res = await axios.post(getVolunteerListURL, null, {
-                params: {
-                    page: pageNumber
-                }
-            });
-            const newBoardDTOList = res.data.content;
-            setBoardDTOList(prevBoardDTOList => [...prevBoardDTOList, ...newBoardDTOList]);
-            setHasMore(newBoardDTOList.length > 0);
-        } catch (err) {
-            console.error("Error fetching data:", err);
-        }
-        setIsLoading(false);
-    };
-
-    useEffect(() => {
-        console.log("page:"+page)
-    }, [page])
     const handleActivityClick = (activityId: number) => {
         router.push(`/Detail?seq=${activityId}`);
     };

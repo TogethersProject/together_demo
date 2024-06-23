@@ -100,20 +100,20 @@ const Login: React.FC = () => {
         router.push('/Mypage');
     };
 
-    const handleSettingsClick = () => {
-        setSidebarOpen(!isSidebarOpen);
-    };
-
-    const handleSidebarLinkClick = (path: string) => {
-        setSidebarOpen(false);
-        router.push(path);
-    };
-
     const handleOutsideClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
             setSidebarOpen(false);
         }
     };
+    const handleSettingsClick = () => {
+        setSidebarOpen(!isSidebarOpen); // Toggle sidebar state
+    };
+
+    const handleSidebarLinkClick = (path: string) => {
+        setSidebarOpen(false); // Close sidebar
+        router.push(path);
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
     };
@@ -230,57 +230,14 @@ const Login: React.FC = () => {
         router.push('/First');
     };
 
-    const handleSearchClick = () => {
-        router.push('/Search');
-    };
-
-    const handleAlertClick = () => {
-        setIsDropdownOpen(!isDropdownOpen);
-    };
-
     return (
-        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
-             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
-            <div className="sidebar">
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
-                    <span>🔍 Search</span>
-                </div>
-                {!isLoggedIn && (
-                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
-                        <span>🔒 Login</span>
-                    </div>
-                )}
-                {isLoggedIn && (
-                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
-                        <span>👤 My Page</span>
-                    </div>
-                )}
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
-                    <span>🤖 ChatBot</span>
-                </div>
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+            <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Board')}>Board</div>
             </div>
-
-            <header className="header">
-                <div onClick={handleSearchClick} style={{cursor: 'pointer'}}>
-                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
-                </div>
-                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
-                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
-                </div>
-                <div className="alert-container" onClick={handleAlertClick}
-                     style={{cursor: 'pointer', position: 'relative'}}>
-                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
-                    {isDropdownOpen && (
-                        <div className="alert-dropdown">
-                            <ul>
-                                <li>알림 1</li>
-                                <li>알림 2</li>
-                                <li>알림 3</li>
-                            </ul>
-                        </div>
-                    )}
-                </div>
-            </header>
             <div className="body-wrapper">
                 <div className="login-wrap">
                     <div className="login-html">
@@ -341,15 +298,11 @@ const Login: React.FC = () => {
 
                                 <div className="social-login">
                                     <a className="social-btn" onClick={handleNaverLogin}>
-                                        <img src="/images/naver-logo.webp" alt="네이버 로그인" className="social-logo"/>
+                                        <img src="/images/btnG_아이콘원형.png" alt="네이버 로그인" className="social-logo"/>
                                     </a>
                                     <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=7c9f68f8d72d792f0afc13c42883c924&redirect_uri=http://localhost:9000/member/kakaoLogin"
                                        className="social-btn">
                                         <img src="/images/kakao-logo.webp" alt="카카오 로그인" className="social-logo"/>
-                                    </a>
-                                    <a href="https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=email profile&client_id=925822216111-cjal510ugpbe80pr759u75kanqgnjhom.apps.googleusercontent.com&redirect_uri=http://localhost:9000/member/googleLogin"
-                                       className="social-btn">
-                                        <img src="/images/google-logo.png" alt="구글 로그인" className="social-logo"/>
                                     </a>
                                 </div>
                             </div>
