@@ -157,7 +157,7 @@ const UDVolun = () => {
     };
 
     const handleProfileClick = () => {
-        router.push('/Profile');
+        router.push('/Mypage');
     };
 
     const handleButtonClick = () => {

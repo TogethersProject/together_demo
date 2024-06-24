@@ -184,7 +184,7 @@ const Detail: React.FC = () => {
 
     // 프로필 아이콘 클릭 시 처리하는 함수
     const handleProfileClick = () => {
-        router.push('/Profile'); // Profile 페이지로 이동
+        router.push('/Mypage'); // Profile 페이지로 이동
     };
 
     // 활동 정보가 없는 경우

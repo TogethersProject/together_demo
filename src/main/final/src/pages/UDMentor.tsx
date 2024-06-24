@@ -178,7 +178,7 @@ const UdMentor = () => {
     };
 
     const handleProfileClick = () => {
-        router.push('/Profile');
+        router.push('/Mypage');
     };
 
     const handleSettingsClick = () => {
