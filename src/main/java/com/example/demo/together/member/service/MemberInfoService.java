@@ -33,4 +33,6 @@ public interface MemberInfoService {
     void updateMember(MemberDTO memberDTO);
 
     void changePassword(String password, String email);
+
+    Boolean idCheck(String memberId);
 }

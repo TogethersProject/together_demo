@@ -200,5 +200,12 @@ public class MemberController {
         System.out.println(memberId);
         return memberInfoService.getMember(memberId);
     }
-    
+
+    @PostMapping(path = "idCheck")
+    public Boolean idCheck(@RequestBody String member_id){
+        System.out.println(member_id);
+        String memberId = member_id.split("=")[0];
+        System.out.println(memberId);
+        return memberInfoService.idCheck(memberId);
+    }
 }

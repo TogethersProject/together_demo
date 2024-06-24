@@ -10,6 +10,7 @@ const Login: React.FC = () => {
     const signUpURL = "http://localhost:9000/member/writeMember"
     const sendEmailURL = "http://localhost:9000/member/sendEmail"
     const mailCodeSubmit = "http://localhost:9000/member/isEmail"
+    const idCheckURL = "http://localhost:9000/member/idCheck";
 
 
     const [tab, setTab] = useState<'sign-in' | 'sign-up'>('sign-in');
@@ -119,11 +120,13 @@ const Login: React.FC = () => {
     };
 
     const checkDuplicate = async () => {
-        // 여기에 중복 확인 로직을 추가하세요.
-        // 예를 들어, API 호출을 통해 중복 여부를 확인할 수 있습니다.
-        // 예시로 랜덤하게 true 또는 false를 반환합니다.
-        const duplicate = Math.random() < 0.5; // 랜덤하게 중복 여부 결정
-        setIsDuplicate(duplicate);
+        try {
+            const response = await axios.post(idCheckURL, username);
+            console.log(response.data);
+            setIsDuplicate(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     //회원가입 제출 - 바로 로그인 되도록
@@ -140,7 +143,7 @@ const Login: React.FC = () => {
 
         const member_pwdChk = (document.getElementById('pass-confirm')as HTMLInputElement).value;
         const member_emailChk = (document.getElementById('verification-code')as HTMLInputElement).value;
-        if(codeStatus && (member_pwd === member_pwdChk)){
+        if(codeStatus && (member_pwd === member_pwdChk) && !isDuplicate){
             console.log(member_email + " = " + member_emailChk +" / " + member_pwd +" = " )
             const member = {member_id, member_pwd, member_name, member_email, member_address, member_addressDetail};
             console.log(member)

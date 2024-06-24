@@ -334,4 +334,15 @@ public class MemberInfoServiceImpl implements MemberInfoService {
                 member_id
         );
     }
+
+    //id중복 체크
+    @Override
+    public Boolean idCheck(String memberId) {
+        Optional<MemberDTO> memberDTO = memberDAO.findById(memberId);
+        if(memberDTO.isPresent()){
+            return true;//중복 아이디임
+        }else{
+            return false;
+        }
+    }
 }
