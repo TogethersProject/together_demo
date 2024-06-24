@@ -463,8 +463,12 @@ const Calendar: React.FC = () => {
                             <input type='text' onChange={onEvent} name='title' value={event.title} placeholder='제목'/>
                             <input type='text' onChange={onEvent} name='content' value={event.content}
                                    placeholder='내용'/>
-                            <input type='text' onChange={onEvent} name='backgroundColor' value={event.backgroundColor}
-                                   placeholder='원하는 색상을 적어보세요'/>
+                            <select onChange={onEvent} name='backgroundColor' value={event.backgroundColor}>
+                                <option value='' disabled>색상을 선택하세요</option>
+                                <option value='green'>Green</option>
+                                <option value='lightpink'>Light Pink</option>
+                                <option value='skyblue'>Sky Blue</option>
+                            </select>
                         </div>
                         <div className="modal-footer">
                             <button type="button" onClick={handleWriteSubmit}>제출하기</button>
@@ -490,8 +494,12 @@ const Calendar: React.FC = () => {
                             <input type='text' onChange={onEvent} name='title' value={event.title} placeholder='제목'/>
                             <input type='text' onChange={onEvent} name='content' value={event.content}
                                    placeholder='내용'/>
-                            <input type='text' onChange={onEvent} name='backgroundColor' value={event.backgroundColor}
-                                   placeholder='원하는 색상을 적어보세요'/>
+                            <select onChange={onEvent} name='backgroundColor' value={event.backgroundColor}>
+                                <option value='' disabled>색상을 선택하세요</option>
+                                <option value='green'>Green</option>
+                                <option value='lightpink'>Light Pink</option>
+                                <option value='skyblue'>Sky Blue</option>
+                            </select>
                         </div>
                         <div className="modal-footer">
                             <button type='button' onClick={handleUDSubmit}>제출하기</button>
