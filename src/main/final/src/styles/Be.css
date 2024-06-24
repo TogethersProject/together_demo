@@ -158,7 +158,8 @@ body {
     font-size: 24px;
     cursor: pointer;
 
-}.sidebar {
+}
+.sidebar {
      position: absolute;
      left: 0;
      top: 0;
