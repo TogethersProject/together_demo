@@ -31,6 +31,7 @@ const Detail: React.FC = () => {
     }, []);
 
     const [showModal, setShowModal] = useState(false);
+    const [showModal_D, setShowModal_D] = useState(false);
     const [currentComment, setCurrentComment] = useState<string>('');
     const [bearer, setBearer] = useState('');
     const [accessToken, setAccessToken] = useState('');
@@ -237,7 +238,11 @@ const Detail: React.FC = () => {
                 member_id: member_id,
             },
         })
-        router.push('/FindVolunteer')
+        setShowModal_D(true);
+        setTimeout(() => {
+            setShowModal_D(false);
+            router.push('/FindVolunteer')
+        }, 2000);
     };
 
     const handleUpdateVolun = (seq: number) => {
@@ -334,20 +339,23 @@ const Detail: React.FC = () => {
                         onChange={(e) => setCurrentComment(e.target.value)}
                         placeholder="댓글을 입력하세요"
                     />
-                    <input type="radio"  name="isGood" value="true" defaultChecked onClick={() => setIsGood(true)}/>추천
-                    <input type="radio" name="isGood" value="false" onClick={() => setIsGood(false)}/>비추천
+                    <input type="radio"  name="isGood" value="true" defaultChecked onClick={() => setIsGood(true)}/>
+                    <Image src="/images/smile.png" alt="true" width={20} height={20}/>
+                    <input type="radio" name="isGood" value="false" onClick={() => setIsGood(false)}/>
+                    <Image src="/images/sad.png" alt="false" width={20} height={20}/>
+
                     <button onClick={() => handleAddComment(activity.seq)}>댓글 달기</button>
                     {commentList.map((commentDTO: any, index: number) => {
+                        const commentTime = new Date(commentDTO.comment_time);
+                        const formattedTime = `${commentTime.getFullYear()}-${(commentTime.getMonth() + 1).toString().padStart(2, '0')}-${commentTime.getDate().toString().padStart(2, '0')}`;
                         return (
-                            <div className="comment" key={commentDTO.commentSeq}>
+                            <p className="commentContainer" key={commentDTO.commentSeq}>
                                 <div
-                                    className="comment_createTime">{commentDTO.username}/{commentDTO.comment_time}</div>
+                                    className="comment_createTime">{formattedTime}</div>
                                 <div className="comment_content">{commentDTO.content}</div>
                                 {(commentDTO.member_id === member_id) &&
                                     <button onClick={() => handleDeleteComment(commentDTO.commentSeq)}>글 삭제</button>}
-                                {(commentDTO.member_id === member_id) &&
-                                    <button onClick={() => handleUpdateComment(commentDTO.commentSeq)}>글 수정</button>}
-                            </div>
+                            </p>
 
                         );
                     })}
@@ -363,6 +371,13 @@ const Detail: React.FC = () => {
                         </div>
                     )}
                 </div>
+                {showModal_D && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            삭제를 완료했습니다.
+                        </div>
+                    </div>
+                )}
             </div>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>

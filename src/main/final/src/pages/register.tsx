@@ -92,7 +92,7 @@ const Be = () => {
         axios.post(boardSubmitURL, board    ,{headers:headers}
         ).then(res => {
             console.log(res);
-            alert('등록 완료!');
+            //alert('등록 완료!');
             // Show modal and redirect to First.tsx
             setShowModal(true);
             setTimeout(() => {

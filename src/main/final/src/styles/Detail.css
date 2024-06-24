@@ -211,3 +211,23 @@ body {
 .alert-dropdown li:hover {
     background-color: #f1f1f1;
 }
+
+.comments {
+    margin-top: 10px;
+}
+
+.comments h3 {
+    margin-bottom: 5px;
+}
+
+.commentContainer {
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.commentContainer p {
+    margin: 0;
+}

@@ -94,6 +94,10 @@ const FindVolunteer: React.FC = () => {
     }, [page]);
 
     useEffect(() => {
+        console.log(page)
+    }, [page])
+
+    useEffect(() => {
         const handleScroll = () => {
             if (isLoading || !hasMore) return;
 
@@ -136,9 +140,9 @@ const FindVolunteer: React.FC = () => {
                         image.parentNode.removeChild(image);
                     }
                 });
-
-                contentRef.innerHTML = doc.body.innerHTML;
-            }
+                const maxLength = 100; // 최대 길이 설정
+                const content = doc.body.innerHTML;
+                contentRef.innerHTML = content.length > maxLength ? `${content.slice(0, maxLength)}...` : content;            }
         });
     }, [boardDTOList]);
 

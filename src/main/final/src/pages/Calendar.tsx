@@ -73,7 +73,7 @@ const Calendar: React.FC = () => {
 
         if (date.start && date.end) {
             getCalendar();
-        }    }, [])
+        }    }, [accessToken])
 
     //날짜 정보가 바뀔 때마다 캘린더 정보 갱신.  date = 달력에서 보여주는 날짜.
     useEffect(()=>{

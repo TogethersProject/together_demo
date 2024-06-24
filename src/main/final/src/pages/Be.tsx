@@ -131,6 +131,7 @@ const Be = () => {
     };
 
     const handleButtonClick = () => {
+        onSubmit();
         router.push('/Find');
     }
     const onContent = (editor) => {
@@ -146,8 +147,8 @@ const Be = () => {
     };
 
     const boardSubmitURL = 'http://localhost:9000/mentor/writeBoard'
-    const onSubmit = (e) => {
-        e.preventDefault();
+    const onSubmit = () => {
+        //e.preventDefault();
         //console.log("보드제출~!")
 
         const bearer: string | null = localStorage.getItem('grantType');
@@ -167,7 +168,7 @@ const Be = () => {
         axios.post(boardSubmitURL, board    ,{headers:headers}
         ).then(res => {
             console.log(res);
-            alert('등록 완료!');
+            //alert('등록 완료!');
             // Show modal and redirect to First.tsx
             setShowModal(true);
             setTimeout(() => {
@@ -250,7 +251,7 @@ const Be = () => {
                     <h1 className="title">멘토 등록</h1>
                     <div className="buttonContainer" onClick={handleButtonClick}
                          style={{cursor: 'pointer'}}>
-                        <button className="button" type="submit">등록하기</button>
+                        <button className="button" type="submit" >등록하기</button>
                     </div>
                     <form className="form" onSubmit={onSubmit}>
                         <div className="formGroup">

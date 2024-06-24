@@ -67,7 +67,6 @@ const My: React.FC = () => {
         //회원 정보 수정.
         axios.post(updateURL, memberDTO, {headers:headers})
             .then(res => {
-                //alert("수정 완")
                 setShowModal(true)
             })
             .catch(err => console.log(err))
