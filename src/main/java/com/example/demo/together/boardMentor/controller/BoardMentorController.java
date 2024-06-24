@@ -34,26 +34,6 @@ public class BoardMentorController {
     @Autowired
     private BoardMentorService boardService;
 
-    @GetMapping(path="test1")
-    public String test1(String str){
-        System.out.println("테스트1 " + str);
-        log.info("테스트1임당 " + str);
-        return "test1 " + str;
-    }
-    @Secured("ROLE_USER")
-    @GetMapping(path="test2")
-    public String test2(String str){
-        System.out.println("테스트2 " + str);
-        log.info("테스트2임당 " + str);
-        return "test2 " + str;
-    }
-    @GetMapping(path="test3")
-    public String test3(String str){
-        System.out.println("테스트3 " + str);
-        log.info("테스트3임당 " + str);
-        return "test3 " + str;
-    }
-
     //게시글 작성. 작성 시 이미지를 temp -> test 폴더로 이동, 글 내용의 img 태그의 src를 갱신한다
     @Secured("ROLE_USER")
     @PostMapping(path = {"writeBoard"})
@@ -123,5 +103,11 @@ public class BoardMentorController {
         boardService.updateBoard(imageNamesBefore, boardDTO);
     }
 
+    @PostMapping(path = {"getOneMentor"})
+    public BoardMentorDTO getOneMentor(@RequestBody String seq){
+        System.out.println("getBoard(controller):"+seq);
+        BigInteger seqInt = new BigInteger(seq.split("=")[0]);
+        return boardService.getOneMentor(seqInt);
+    }
 }
 

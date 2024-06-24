@@ -23,4 +23,6 @@ public interface BoardMentorService {
     Map<String, Object> getUpdateBoard(BigInteger seqInt, String member_id);
 
     void updateBoard(List<String> imageNamesBefore, BoardMentorDTO boardDTO);
+
+    BoardMentorDTO getOneMentor(BigInteger seqInt);
 }

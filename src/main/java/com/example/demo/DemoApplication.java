@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
                         ,"com.example.demo.together.common.conf" // naver.properties set (objectStorage)
                         ,"com.example.demo.together.common.utils.*" // 암호화, 임시 폴더 자동 삭제
                         ,"com.example.demo.together.member.*"
+                        ,"com.example.demo.together.search.*"
         }
 )
 @EnableRedisRepositories("com.example.demo.together.common.utils.jwt.repository")

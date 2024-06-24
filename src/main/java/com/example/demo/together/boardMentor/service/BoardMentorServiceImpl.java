@@ -199,4 +199,10 @@ public class BoardMentorServiceImpl implements BoardMentorService {
         System.out.println("수정 보드내용: "+boardDTO+boardTime);
         boardDAO.updateBySeq(seq, title, content, boardTimePresent);
     }
+
+    @Override
+    public BoardMentorDTO getOneMentor(BigInteger seqInt) {
+        Optional<BoardMentorDTO> boardMentorDTO = boardDAO.findById(seqInt);
+        return boardMentorDTO.orElse(null);
+    }
 }

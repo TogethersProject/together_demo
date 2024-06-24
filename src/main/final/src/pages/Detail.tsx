@@ -350,8 +350,7 @@ const Detail: React.FC = () => {
                         const formattedTime = `${commentTime.getFullYear()}-${(commentTime.getMonth() + 1).toString().padStart(2, '0')}-${commentTime.getDate().toString().padStart(2, '0')}`;
                         return (
                             <p className="commentContainer" key={commentDTO.commentSeq}>
-                                <div
-                                    className="comment_createTime">{formattedTime}</div>
+                                <div className="comment_createTime">{formattedTime}</div>
                                 <div className="comment_content">{commentDTO.content}</div>
                                 {(commentDTO.member_id === member_id) &&
                                     <button onClick={() => handleDeleteComment(commentDTO.commentSeq)}>글 삭제</button>}

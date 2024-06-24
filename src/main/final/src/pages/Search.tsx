@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import '../styles/First.css';
+import axios from "axios";
 
 const First: React.FC = () => {
     const router = useRouter();
@@ -9,7 +10,10 @@ const First: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [searchOption, setSearchOption] = useState('author');
+    const [searchList, setSearchList] = useState([]);
     const sidebarRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         const storedLoginStatus = localStorage.getItem('isLoggedIn');
         if (storedLoginStatus === 'true') {
@@ -62,14 +66,33 @@ const First: React.FC = () => {
         setSearchQuery(event.target.value);
     };
 
+    const searchQueryURL = "http://localhost:9000/search/query"
     const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (searchQuery.trim() !== '') {
+            axios.post(searchQueryURL,{searchOption, searchQuery})
+                .then(res => {
+                    console.log(res.data);
+                    //검색 결과를 searchList에 담음
+                    setSearchList(res.data);
+                }).catch(err => console.log(err));
             // Perform search-related actions, e.g., navigate to search results page
-            router.push(`/SearchResults?query=${encodeURIComponent(searchQuery)}`);
+            //router.push(`/SearchResults?query=${encodeURIComponent(searchQuery)}`);
         }
     };
 
+    const handleSearchOptionChange = (e) => {
+        console.log(e.target.value);
+        setSearchOption(e.target.value);
+    }
+
+    const handleGo = (searchDTO) => {
+        if(searchDTO.table === "mentor"){
+            router.push('/SearchMentor?seq='+searchDTO.seq)
+        }else{//searchDTO.table === "volunteer"
+            router.push('/Detail?seq='+searchDTO.seq);
+        }
+    }
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
              onClick={isSidebarOpen ? handleOutsideClick : undefined}>
@@ -107,6 +130,13 @@ const First: React.FC = () => {
             </header>
             <div className="content">
                 <form className="search-form" onSubmit={handleSearchSubmit}>
+                    <div className="search-options">
+                        <select value={searchOption} onChange={handleSearchOptionChange}>
+                            <option selected value="author">작성자</option>
+                            <option value="content">내용</option>
+                            <option value="title">제목</option>
+                        </select>
+                    </div>
                     <input
                         type="text"
                         placeholder="검색..."
@@ -115,6 +145,21 @@ const First: React.FC = () => {
                     />
                     <button type="submit">Search</button>
                 </form>
+
+
+                {searchList.map((search:any, index:number)=>{
+                    const MAX_CONTENT_LENGTH = 100; // 최대 내용 길이
+                    let displayContent = search.content;
+                    if (search.content.length > MAX_CONTENT_LENGTH) {
+                        displayContent = search.content.slice(0, MAX_CONTENT_LENGTH) + "...";
+                    }
+                    return (
+                        <div className="searchContainer" key={index} onClick={() => handleGo(search)}>
+                            <h4 className="search_title">제목: {search.title}</h4>
+                            <div className="search_content">내용: {displayContent}</div>
+                        </div>
+                    )
+                })}
             </div>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>
