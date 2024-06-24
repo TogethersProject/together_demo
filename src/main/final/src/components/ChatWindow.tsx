@@ -61,34 +61,40 @@ const InteractiveChatBot: React.FC = () => {
             const thankYouMessage: Message = { text: "이용해주셔서 감사합니다.", isUser: false };
             setMessages(messages => [...messages, thankYouMessage]);
             setTimeout(() => {
-                // 사용자가 입력 중이 아닐 때만 초기화
                 if (inputText === '') {
                     const welcomeMessage: Message = { text: "안녕하세요! 무엇을 도와드릴까요?", isUser: false };
                     setMessages([welcomeMessage]);
                     setOptions([]);
                     setInputText('');
                 }
-            }, 1000); // 1초 후에 초기화
-        }, 5000); // 5초 후에 타이머 만료
+            }, 1000);
+        }, 12000);
     };
 
 
     const handleUserMessage = (message: string) => {
         const newUserMessage: Message = { text: message, isUser: true };
-        setMessages(messages => [...messages, newUserMessage]);
 
-        const keywords = Object.keys(predefinedQuestions);
-        const foundKeyword = keywords.find(keyword => message.includes(keyword));
-
-        if (foundKeyword) {
-            setOptions(predefinedQuestions[foundKeyword]);
-        } else {
-            setIsTyping(true);
+        if (specialResponses[message]) {
             setTimeout(() => {
-                const newBotMessage: Message = { text: "죄송합니다, 해당 문의에 대해 답변을 준비 중입니다.", isUser: false };
+                const newBotMessage: Message = { text: specialResponses[message], isUser: false };
                 setMessages(messages => [...messages, newUserMessage, newBotMessage]);
                 setIsTyping(false);
-            }, 1000); // 1초 후에 응답 추가
+            }, 1000);
+        } else {
+            const keywords = Object.keys(predefinedQuestions);
+            const foundKeyword = keywords.find(keyword => message.includes(keyword));
+
+            if (foundKeyword) {
+                setOptions(predefinedQuestions[foundKeyword]);
+            } else {
+                setIsTyping(true);
+                setTimeout(() => {
+                    const newBotMessage: Message = { text: "죄송합니다, 해당 문의에 대해 답변을 준비 중입니다.", isUser: false };
+                    setMessages(messages => [...messages, newUserMessage, newBotMessage]);
+                    setIsTyping(false);
+                }, 1000);
+            }
         }
 
         setInputText('');
@@ -97,7 +103,6 @@ const InteractiveChatBot: React.FC = () => {
 
     const handleOptionClick = (option: string) => {
         const newUserMessage: Message = { text: option, isUser: true };
-        setMessages(messages => [...messages, newUserMessage]);
         setIsTyping(true);
 
         setTimeout(() => {
@@ -124,17 +129,21 @@ const InteractiveChatBot: React.FC = () => {
         }
     }, [messages]);
 
+    const specialResponses: { [key: string]: string } = {
+        "고마워": "즐거웠습니다.",
+        "안녕": "안녕히가십시오."
+    };
     return (
-        <div>
-            <div id="chat-window" style={{ height: '400px', overflowY: 'scroll', border: '1px solid #ccc', padding: '10px' }}>
+        <div className="chatbot-container">
+            <div id="chat-window" className="chat-window">
                 {messages.map((message, index) => (
-                    <div key={index} style={{ marginBottom: '5px' }}>
+                    <div key={index} className={`message ${message.isUser ? 'user' : 'bot'}`}>
                         {message.isUser ? (
-                            <div style={{ textAlign: 'right', fontWeight: 'bold' }}>{message.text}</div>
+                            <div className="message-text user">{message.text}</div>
                         ) : (
-                            <div style={{ textAlign: 'left' }}>
+                            <div className="message-text bot">
                                 {isTyping && !message.isUser ? (
-                                    <span style={{ color: '#ccc', fontStyle: 'italic' }}>상담사가 타이핑 중입니다...</span>
+                                    <span className="typing">상담사가 타이핑 중입니다...</span>
                                 ) : (
                                     <span>{message.text}</span>
                                 )}
@@ -143,19 +152,19 @@ const InteractiveChatBot: React.FC = () => {
                     </div>
                 ))}
             </div>
-            <form onSubmit={handleSubmit} style={{ marginTop: '10px' }}>
+            <form onSubmit={handleSubmit} className="input-form">
                 <input
                     type="text"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     placeholder="메시지를 입력하세요"
-                    style={{ width: '100%', padding: '8px' }}
+                    className="input-text"
                 />
             </form>
             {options.length > 0 && (
-                <div style={{ marginTop: '10px' }}>
+                <div className="options-container">
                     {options.map((option, index) => (
-                        <button key={index} onClick={() => handleOptionClick(option)} style={{ width: '100%', padding: '8px', marginBottom: '5px' }}>
+                        <button key={index} onClick={() => handleOptionClick(option)} className="option-button">
                             {option}
                         </button>
                     ))}

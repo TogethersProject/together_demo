@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/Yw-IHbPhWqf6JEOiom1d4/_buildManifest.js",
-    "static/Yw-IHbPhWqf6JEOiom1d4/_ssgManifest.js"
+    "static/wR8I2GxH58AMd8Kp43AUD/_buildManifest.js",
+    "static/wR8I2GxH58AMd8Kp43AUD/_ssgManifest.js"
   ],
   "rootMainFiles": [
     "static/chunks/webpack-db8b37c22889fb80.js",
@@ -47,8 +47,8 @@
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
       "static/chunks/873-8558bcf58006f33b.js",
-      "static/css/8f508b595335ee0e.css",
-      "static/chunks/pages/Chat-3dad665ec52494b8.js"
+      "static/css/31b4d54eaa98c448.css",
+      "static/chunks/pages/Chat-bda11e3da6142528.js"
     ],
     "/Detail": [
       "static/chunks/webpack-db8b37c22889fb80.js",
@@ -83,8 +83,8 @@
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
       "static/chunks/873-8558bcf58006f33b.js",
-      "static/css/8f508b595335ee0e.css",
-      "static/chunks/pages/First-5c9b3f6b915ecc3a.js"
+      "static/css/31b4d54eaa98c448.css",
+      "static/chunks/pages/First-51097605423a4e0b.js"
     ],
     "/Join": [
       "static/chunks/webpack-db8b37c22889fb80.js",
@@ -149,8 +149,8 @@
       "static/chunks/main-e2280c4c63e9cacc.js",
       "static/chunks/873-8558bcf58006f33b.js",
       "static/chunks/702-fe5c362664711834.js",
-      "static/css/8f508b595335ee0e.css",
-      "static/chunks/pages/Search-a14bd53fb573bc26.js"
+      "static/css/31b4d54eaa98c448.css",
+      "static/chunks/pages/Search-efbc843236cf8bda.js"
     ],
     "/SearchMentor": [
       "static/chunks/webpack-db8b37c22889fb80.js",
@@ -165,8 +165,8 @@
       "static/chunks/webpack-db8b37c22889fb80.js",
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
-      "static/css/8f508b595335ee0e.css",
-      "static/chunks/pages/Temp-cc84fc4ff4fc4aa3.js"
+      "static/css/31b4d54eaa98c448.css",
+      "static/chunks/pages/Temp-64a7abbe9353f12e.js"
     ],
     "/UDMentor": [
       "static/chunks/webpack-db8b37c22889fb80.js",
@@ -212,8 +212,8 @@
       "static/chunks/framework-cd4e278ee5d65e40.js",
       "static/chunks/main-e2280c4c63e9cacc.js",
       "static/chunks/873-8558bcf58006f33b.js",
-      "static/css/8f508b595335ee0e.css",
-      "static/chunks/pages/shrimp-3d2d8efc2a89e571.js"
+      "static/css/31b4d54eaa98c448.css",
+      "static/chunks/pages/shrimp-dc5c9b7892959d88.js"
     ]
   },
   "ampFirstPages": []
