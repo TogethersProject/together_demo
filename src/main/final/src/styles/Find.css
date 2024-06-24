@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Hi+Melody&display=swap');
+
+
 body, html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    font-family: Arial, sans-serif;
+    font-family: 'Hi Melody', sans-serif;
 }
 
 body {
@@ -62,7 +65,7 @@ body {
     overflow-y: auto;
 }
 .title {
-    font-size: 24px;
+    font-size: 30px;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -104,7 +107,7 @@ input[type="text"] {
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 20px;
 }
 
 button {
@@ -115,7 +118,8 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 17px;
+    font-family: "Hi Melody", sans-serif;
 }
 
 button:hover {
@@ -166,6 +170,8 @@ button:hover {
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
     z-index: 1001;
+    font-family: "Hi Melody";
+    font-size: 30px;
 }
 
 .sidebar.open {

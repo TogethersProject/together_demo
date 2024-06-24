@@ -1,10 +1,11 @@
-/* 아이폰 12의 해상도에 맞춘 전체 스타일 */
+@import url('https://fonts.googleapis.com/css2?family=Hi+Melody&display=swap');
+
 body, html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    font-family: Arial, sans-serif;
+    font-family: 'Hi Melody', sans-serif;
 }
 
 body {
@@ -135,7 +136,8 @@ body {
 .postcode-button {
     margin-top: 5px;
     padding: 5px 10px;
-    font-size: 14px;
+    font-size: 20px;
+    font-family: "Hi Melody";
     background-color: #ccc;
     border: none;
     border-radius: 5px;
@@ -152,7 +154,8 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1em;
+    font-size:14px;
+    font-family: "Hi Melody";
 }
 
 button:hover {
@@ -178,6 +181,7 @@ button:hover {
     color: white;
     font-size: 1.5em ;
     z-index: 1000;
+    font-family: "Hi Melody";
 }
 
 .modal-content {

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import '../styles/First.css';
 
+
 const First: React.FC = () => {
     const router = useRouter();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
