@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/brxzV7vfZpZdtpK2jt2SH/_buildManifest.js",
-    "static/brxzV7vfZpZdtpK2jt2SH/_ssgManifest.js"
+    "static/xO52s09yeX5vKQDpLItn2/_buildManifest.js",
+    "static/xO52s09yeX5vKQDpLItn2/_ssgManifest.js"
   ],
   "rootMainFiles": [
     "static/chunks/webpack-db8b37c22889fb80.js",
@@ -40,7 +40,7 @@
       "static/chunks/702-fe5c362664711834.js",
       "static/chunks/548-bdfe9f0c6e3ad398.js",
       "static/css/335d82ad54cefc63.css",
-      "static/chunks/pages/Calendar-ac420f0103f09d79.js"
+      "static/chunks/pages/Calendar-e1a1935026bcbae6.js"
     ],
     "/Chat": [
       "static/chunks/webpack-db8b37c22889fb80.js",

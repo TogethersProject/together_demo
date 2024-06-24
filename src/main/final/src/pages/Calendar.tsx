@@ -53,7 +53,12 @@ const Calendar: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false); // Stat
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
+    useEffect(() => {
+        const storedLoginStatus = localStorage.getItem('isLoggedIn');
+        if (storedLoginStatus === 'true') {
+            setIsLoggedIn(true);
+        }
+    }, []);
     const handleOutModalClick = (event) => {
         // 모달 영역 외의 클릭을 감지하여 모달을 닫습니다.
         setShowModal(false);
@@ -378,20 +383,44 @@ const Calendar: React.FC = () => {
     const handleAlertClick = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
+    const handleNavigation = (path: string) => {
+        router.push(path);
+    };
+
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
              onClick={isSidebarOpen ? handleOutsideClick : undefined}>
             <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
+                <div className="sidebar-link" onClick={() => handleNavigation('/Search')}>🔍 Search</div>
+                {!isLoggedIn ? (
+                    <div className="sidebar-link" onClick={() => handleNavigation('/Login')}>🔒 Login</div>
+                ) : (
+                    <div className="sidebar-link" onClick={() => handleNavigation('/Mypage')}>👤 My Page</div>
+                )}
+                <div className="sidebar-link" onClick={() => handleNavigation('/Chat')}>🤖 ChatBot</div>
             </div>
-            <div className="header">
-                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
+            <header className="header">
+                <div onClick={() => handleNavigation('/Search')} style={{cursor: 'pointer'}}>
+                    <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
+                </div>
+                <div className="center-image-container" onClick={() => handleNavigation('/First')}
+                     style={{cursor: 'pointer'}}>
                     <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-            </div>
+                <div className="alert-container" onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                     style={{cursor: 'pointer', position: 'relative'}}>
+                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                    {isDropdownOpen && (
+                        <div className="alert-dropdown">
+                            <ul>
+                                <li>알림 1</li>
+                                <li>알림 2</li>
+                                <li>알림 3</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </header>
 
             <div className="content">
                 <div className="intro">
