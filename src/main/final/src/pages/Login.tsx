@@ -231,28 +231,12 @@ const Login: React.FC = () => {
     const handleFirstImageClick = () => {
         router.push('/First');
     };
+    const hadleBehindClick = () => {
+        router.push('/First')
+    }
 
     return (
-        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
-             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
-            <div className="sidebar">
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
-                    <span>🔍 Search</span>
-                </div>
-                {!isLoggedIn && (
-                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
-                        <span>🔒 Login</span>
-                    </div>
-                )}
-                {isLoggedIn && (
-                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
-                        <span>👤 My Page</span>
-                    </div>
-                )}
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
-                    <span>🤖 ChatBot</span>
-                </div>
-            </div>
+        <div className="main-screen">
             <div className="body-wrapper">
                 <div className="login-wrap">
                     <div className="login-html">
@@ -446,10 +430,8 @@ const Login: React.FC = () => {
                 </div>
             </div>
             <footer className="footer">
+                <div className="footer-icon" onClick={hadleBehindClick}>🔙</div>
                 <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
-                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
-                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
-                </div>
                 <div className="footer-icon" onClick={handleProfileClick}>👤</div>
             </footer>
         </div>

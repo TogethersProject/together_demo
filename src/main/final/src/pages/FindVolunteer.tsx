@@ -58,6 +58,9 @@ const FindVolunteer: React.FC = () => {
     const [member_id, setMember_id] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown status
+    const observerRef = useRef<IntersectionObserver | null>(null);
+    const loadMoreRef = useRef<HTMLDivElement>(null);
+    const [currentPage, setCurrentPage] = useState(0);
 
     // Check if the user is logged in on component mount
     useEffect(() => {
@@ -76,46 +79,41 @@ const FindVolunteer: React.FC = () => {
             setMember_id(member_id);
         }
     }, []);
+    // 페이지 번호가 변경될 때마다 데이터 가져오기
+    useEffect(() => {
+        console.log(`Fetching page: ${currentPage}`);
+        getVolunteerList(currentPage);
+    }, [currentPage]);
 
     useEffect(() => {
-        const getBoardList = async (pageNumber: number) => {
-            if (isLoading || !hasMore) return;
-            setIsLoading(true);
-            try {
-                const res = await axios.post(getVolunteerListURL, null, {
-                    params: {
-                        page: pageNumber
-                    }
-                });
-                const newBoardDTOList = res.data.content;
-                setBoardDTOList(prevBoardDTOList => [...prevBoardDTOList, ...newBoardDTOList]);
-                setHasMore(newBoardDTOList.length > 0);
-            } catch (err) {
-                console.error("Error fetching data:", err);
+        if (observerRef.current) observerRef.current.disconnect();
+
+        observerRef.current = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasMore) {
+                console.log('Load more element is intersecting, incrementing page...');
+                setCurrentPage((prevPage) => prevPage + 1);
             }
-            setIsLoading(false);
+        });
+
+        if (loadMoreRef.current) observerRef.current.observe(loadMoreRef.current);
+
+        return () => {
+            if (observerRef.current) observerRef.current.disconnect();
         };
+    }, [hasMore]);
 
-        getBoardList(page);
-    }, [page]);
-
-    useEffect(() => {
-        console.log(page)
-    }, [page])
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (isLoading || !hasMore) return;
-
-            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-            if (scrollHeight - scrollTop <= clientHeight + 50) {
-                setPage(prevPage => prevPage + 1);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isLoading, hasMore]);
+    const getVolunteerList = async (page: number) => {
+        try {
+            const res = await axios.post(getVolunteerListURL, null, {
+                params: { page }
+            });
+            console.log('Fetched data:', res.data.content);
+            setBoardDTOList((prevBoardDTOList) => [...prevBoardDTOList, ...res.data.content]);
+            setHasMore(res.data.content.length > 0);
+        } catch (err) {
+            console.log('Error occurred:', err);
+        }
+    };
 
     useEffect(() => {
         boardDTOList.forEach((item: any) => {
