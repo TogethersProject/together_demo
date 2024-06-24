@@ -85,6 +85,24 @@ const Be = () => {
         setActivityDescription(editor.getData());
     };
     const boardSubmitURL = 'http://localhost:9000/volunteer/writeBoard'
+
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (isDropdownOpen) {
+            document.addEventListener('click', handleClickOutside);
+        } else {
+            document.removeEventListener('click', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isDropdownOpen]);
+    const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            setIsDropdownOpen(false);
+        }
+    };
     const onSubmit = () => {
         //e.preventDefault();
         const content = activityDescription;
@@ -151,14 +169,21 @@ const Be = () => {
                     <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
                 <div className="alert-container" onClick={handleAlertClick}
-                     style={{cursor: 'pointer', position: 'relative'}}>
+                     style={{cursor: 'pointer', position: 'relative'}} ref={dropdownRef}>
                     <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
                     {isDropdownOpen && (
-                        <div className="alert-dropdown">
-                            <ul>
-                                <li>알림 1</li>
-                                <li>알림 2</li>
-                                <li>알림 3</li>
+                        <div className="alert-dropdown" style={{
+                            position: 'absolute',
+                            top: '60px',
+                            right: '0',
+                            backgroundColor: 'white',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                            borderRadius: '4px'
+                        }}>
+                            <ul style={{listStyle: 'none', padding: '10px', margin: '0'}}>
+                                <li style={{padding: '8px 0', borderBottom: '1px solid #ddd'}}>알림 1</li>
+                                <li style={{padding: '8px 0', borderBottom: '1px solid #ddd'}}>알림 2</li>
+                                <li style={{padding: '8px 0'}}>알림 3</li>
                             </ul>
                         </div>
                     )}

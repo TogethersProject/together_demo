@@ -38,7 +38,24 @@ const UDVolun = () => {
     const boardSubmitURL = 'http://localhost:9000/volunteer/updateBoard';
     const boardGetURL = 'http://localhost:9000/volunteer/getUpdateBoard';
     const [boardCreateTime, setBoardCreateTime] = useState(Date);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (isDropdownOpen) {
+            document.addEventListener('click', handleClickOutside);
+        } else {
+            document.removeEventListener('click', handleClickOutside);
+        }
 
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isDropdownOpen]);
+    const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            setIsDropdownOpen(false);
+        }
+    };
     useEffect(() => {
         console.log("UDMentor 시작: " + seq)
         // CustomEditor 컴포넌트 가져오기
@@ -162,7 +179,9 @@ const UDVolun = () => {
             setSidebarOpen(false);
         }
     };
-
+    const handleAlertClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
     return (
         <div className="container">
             <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`} onClick={isSidebarOpen ? handleOutsideClick : undefined}>
@@ -177,7 +196,26 @@ const UDVolun = () => {
                     <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
                         <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                     </div>
-                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                    <div className="alert-container" onClick={handleAlertClick}
+                         style={{cursor: 'pointer', position: 'relative'}} ref={dropdownRef}>
+                        <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                        {isDropdownOpen && (
+                            <div className="alert-dropdown" style={{
+                                position: 'absolute',
+                                top: '60px',
+                                right: '0',
+                                backgroundColor: 'white',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                                borderRadius: '4px'
+                            }}>
+                                <ul style={{listStyle: 'none', padding: '10px', margin: '0'}}>
+                                    <li style={{padding: '8px 0', borderBottom: '1px solid #ddd'}}>알림 1</li>
+                                    <li style={{padding: '8px 0', borderBottom: '1px solid #ddd'}}>알림 2</li>
+                                    <li style={{padding: '8px 0'}}>알림 3</li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <main className="activitiesContainer">
                     <h1 className="title"> 봉사 등록</h1>
@@ -200,7 +238,7 @@ const UDVolun = () => {
                         <div className="formGroup">
                             <label className="label" htmlFor="description">글:</label>
                             <Suspense fallback={<div>Loading editor...</div>}>
-                                <CustomEditor onContent={onContent} oldContent={activityDescription}
+                            <CustomEditor onContent={onContent} oldContent={activityDescription}
                                     //initialData='<h1>Hello from CKEditor in Next.js!</h1>'
                                 />
                             </Suspense>

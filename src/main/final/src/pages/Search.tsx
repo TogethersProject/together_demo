@@ -13,7 +13,23 @@ const First: React.FC = () => {
     const [searchOption, setSearchOption] = useState('author');
     const [searchList, setSearchList] = useState([]);
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (isDropdownOpen) {
+            document.addEventListener('click', handleClickOutside);
+        } else {
+            document.removeEventListener('click', handleClickOutside);
+        }
 
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isDropdownOpen]);
+    const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            setIsDropdownOpen(false);
+        }
+    };
     useEffect(() => {
         const storedLoginStatus = localStorage.getItem('isLoggedIn');
         if (storedLoginStatus === 'true') {
@@ -93,6 +109,10 @@ const First: React.FC = () => {
             router.push('/Detail?seq='+searchDTO.seq);
         }
     }
+    const handleAlertClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
              onClick={isSidebarOpen ? handleOutsideClick : undefined}>
@@ -114,15 +134,22 @@ const First: React.FC = () => {
                      style={{cursor: 'pointer'}}>
                     <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <div className="alert-container" onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                     style={{cursor: 'pointer', position: 'relative'}}>
+                <div className="alert-container" onClick={handleAlertClick}
+                     style={{cursor: 'pointer', position: 'relative'}} ref={dropdownRef}>
                     <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
                     {isDropdownOpen && (
-                        <div className="alert-dropdown">
-                            <ul>
-                                <li>알림 1</li>
-                                <li>알림 2</li>
-                                <li>알림 3</li>
+                        <div className="alert-dropdown" style={{
+                            position: 'absolute',
+                            top: '60px',
+                            right: '0',
+                            backgroundColor: 'white',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                            borderRadius: '4px'
+                        }}>
+                            <ul style={{listStyle: 'none', padding: '10px', margin: '0'}}>
+                                <li style={{padding: '8px 0', borderBottom: '1px solid #ddd'}}>알림 1</li>
+                                <li style={{padding: '8px 0', borderBottom: '1px solid #ddd'}}>알림 2</li>
+                                <li style={{padding: '8px 0'}}>알림 3</li>
                             </ul>
                         </div>
                     )}
@@ -147,7 +174,7 @@ const First: React.FC = () => {
                 </form>
 
 
-                {searchList.map((search:any, index:number)=>{
+                {searchList.map((search: any, index: number) => {
                     const MAX_CONTENT_LENGTH = 100; // 최대 내용 길이
                     let displayContent = search.content;
                     if (search.content.length > MAX_CONTENT_LENGTH) {

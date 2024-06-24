@@ -126,6 +126,28 @@ const My: React.FC = () => {
     const togglePostcode = () => {
         setIsPostcodeOpen(!isPostcodeOpen);
     };
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const handleAlertClick = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    useEffect(() => {
+        if (isDropdownOpen) {
+            document.addEventListener('click', handleClickOutside);
+        } else {
+            document.removeEventListener('click', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isDropdownOpen]);
+    const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            setIsDropdownOpen(false);
+        }
+    };
 
     const deleteURL = "http://localhost:9000/member/deleteMember";
     const handleDelete = (e) => {
@@ -169,7 +191,26 @@ const My: React.FC = () => {
                     <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
                         <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                     </div>
-                    <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                    <div className="alert-container" onClick={handleAlertClick}
+                         style={{cursor: 'pointer', position: 'relative'}} ref={dropdownRef}>
+                        <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
+                        {isDropdownOpen && (
+                            <div className="alert-dropdown" style={{
+                                position: 'absolute',
+                                top: '60px',
+                                right: '0',
+                                backgroundColor: 'white',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                                borderRadius: '4px'
+                            }}>
+                                <ul style={{listStyle: 'none', padding: '10px', margin: '0'}}>
+                                    <li style={{padding: '8px 0', borderBottom: '1px solid #ddd'}}>알림 1</li>
+                                    <li style={{padding: '8px 0', borderBottom: '1px solid #ddd'}}>알림 2</li>
+                                    <li style={{padding: '8px 0'}}>알림 3</li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div className="content">
                     <div className="intro">
@@ -193,10 +234,10 @@ const My: React.FC = () => {
                         <label htmlFor="username">비밀번호</label>
                         {(provider == '')
                             && <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}/>
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}/>
                             || <input type="text" value={provider} />
                         }
                     </div>
