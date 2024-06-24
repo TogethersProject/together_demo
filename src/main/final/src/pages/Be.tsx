@@ -116,16 +116,17 @@ const Be = () => {
     };
 
     const handleSettingsClick = () => {
-        setSidebarOpen(true); // = 버튼 클릭 시 사이드바 열기
+        setSidebarOpen(!isSidebarOpen);
     };
 
     const handleSidebarLinkClick = (path: string) => {
-        setSidebarOpen(false); // 사이드바 링크 클릭 시 닫기
+        setSidebarOpen(false);
         router.push(path);
     };
 
     const handleOutsideClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar && !sidebar.contains(event.target as Node)) {
             setSidebarOpen(false);
         }
     };
@@ -204,7 +205,6 @@ const Be = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
     return (
-        <div className="container">
             <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
                  onClick={isSidebarOpen ? handleOutsideClick : undefined}>
                 <div className="sidebar">
@@ -280,7 +280,6 @@ const Be = () => {
                     <div className="footer-icon" onClick={handleProfileClick}>👤</div>
                 </footer>
             </div>
-        </div>
     );
 };
 

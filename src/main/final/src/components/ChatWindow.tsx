@@ -56,17 +56,22 @@ const InteractiveChatBot: React.FC = () => {
         if (timerRef.current) {
             clearTimeout(timerRef.current);
         }
+
         timerRef.current = setTimeout(() => {
             const thankYouMessage: Message = { text: "이용해주셔서 감사합니다.", isUser: false };
             setMessages(messages => [...messages, thankYouMessage]);
             setTimeout(() => {
-                const welcomeMessage: Message = { text: "안녕하세요! 무엇을 도와드릴까요?", isUser: false };
-                setMessages([welcomeMessage]);
-                setOptions([]);
-                setInputText('');
+                // 사용자가 입력 중이 아닐 때만 초기화
+                if (inputText === '') {
+                    const welcomeMessage: Message = { text: "안녕하세요! 무엇을 도와드릴까요?", isUser: false };
+                    setMessages([welcomeMessage]);
+                    setOptions([]);
+                    setInputText('');
+                }
             }, 1000); // 1초 후에 초기화
         }, 5000); // 5초 후에 타이머 만료
     };
+
 
     const handleUserMessage = (message: string) => {
         const newUserMessage: Message = { text: message, isUser: true };
