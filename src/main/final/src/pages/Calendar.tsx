@@ -477,9 +477,6 @@ const Calendar: React.FC = () => {
                 )}
                 {showUDModalState && (
                     <div className="modal" onClick={handleOutModalClick}>
-                        <div className="modal-content">
-                            <button onClick={() => setShowModalState(false)}>닫기</button>
-                        </div>
                         <div className="modal-body">
                             <p>
                                 일정 시작일: {(event.start) && new Date(event.start).toLocaleString()}
