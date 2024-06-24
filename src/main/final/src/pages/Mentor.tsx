@@ -67,6 +67,7 @@ const First: React.FC = () => {
     function handleFirstImageClick() {
         router.push('/First');
     }
+
     return (
         <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
              onClick={isSidebarOpen ? handleOutsideClick : undefined}>

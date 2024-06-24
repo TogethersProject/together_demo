@@ -100,21 +100,20 @@ const Login: React.FC = () => {
     const handleProfileClick = () => {
         router.push('/Mypage');
     };
+    const handleSettingsClick = () => {
+        setSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleSidebarLinkClick = (path: string) => {
+        setSidebarOpen(false);
+        router.push(path);
+    };
 
     const handleOutsideClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
             setSidebarOpen(false);
         }
     };
-    const handleSettingsClick = () => {
-        setSidebarOpen(!isSidebarOpen); // Toggle sidebar state
-    };
-
-    const handleSidebarLinkClick = (path: string) => {
-        setSidebarOpen(false); // Close sidebar
-        router.push(path);
-    };
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
     };
@@ -234,12 +233,25 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-            <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`} ref={sidebarRef}>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>Search</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>Login</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/My')}>My</div>
-                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Board')}>Board</div>
+        <div className={`main-screen ${isSidebarOpen ? 'sidebar-open' : ''}`}
+             onClick={isSidebarOpen ? handleOutsideClick : undefined}>
+            <div className="sidebar">
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Search')}>
+                    <span>🔍 Search</span>
+                </div>
+                {!isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Login')}>
+                        <span>🔒 Login</span>
+                    </div>
+                )}
+                {isLoggedIn && (
+                    <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Mypage')}>
+                        <span>👤 My Page</span>
+                    </div>
+                )}
+                <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>
+                    <span>🤖 ChatBot</span>
+                </div>
             </div>
             <div className="body-wrapper">
                 <div className="login-wrap">
@@ -432,18 +444,14 @@ const Login: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <footer className="footer">
-                    <div className="footer-icon" onClick={handleSettingsClick}>
-                        =
-                    </div>
-                    <div className="footer-icon" onClick={handleHomeClick}>
-                        🏠
-                    </div>
-                    <div className="footer-icon" onClick={handleProfileClick}>
-                        👤
-                    </div>
-                </footer>
             </div>
+            <footer className="footer">
+                <div className="footer-icon" onClick={handleHomeClick}>🏠</div>
+                <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
+                    <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
+                </div>
+                <div className="footer-icon" onClick={handleProfileClick}>👤</div>
+            </footer>
         </div>
     );
 };
