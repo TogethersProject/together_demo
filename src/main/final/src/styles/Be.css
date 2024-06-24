@@ -5,6 +5,7 @@ body, html {
     height: 100%;
     font-family: Arial, sans-serif;
     overflow-x: hidden; /* 수평 스크롤 제거 */
+    overflow-y: scroll;
 }
 
 body {
@@ -28,7 +29,7 @@ body {
     justify-content: flex-end;
     align-items: center;
     position: relative;
-    overflow-y: auto; /* 세로 스크롤 활성화 */
+    overflow-y: scroll; /* 세로 스크롤 활성화 */
 }
 
 .header {
@@ -68,7 +69,16 @@ body {
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
-    margin-top: 20px;
+    margin-top: 15px;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
 }
 
 .title {
@@ -119,7 +129,7 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 20px;
+    margin-top: 10px;
     margin: auto;
     text-align: center;
 }
@@ -161,7 +171,6 @@ body {
 .footer-icon {
     font-size: 24px;
     cursor: pointer;
-
 
 }
 
@@ -227,4 +236,3 @@ body {
 .alert-dropdown li:hover {
     background-color: #f1f1f1;
 }
-

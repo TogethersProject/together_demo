@@ -388,11 +388,9 @@ const Calendar: React.FC = () => {
                 <div className="sidebar-link" onClick={() => handleSidebarLinkClick('/Chat')}>ChatBot</div>
             </div>
             <div className="header">
-                <Image src="/images/image-23.png" alt="search" width={40} height={40}/>
                 <div className="center-image-container" onClick={handleFirstImageClick} style={{cursor: 'pointer'}}>
                     <Image className="center-image" src="/images/first.png" alt="투게더!" width={120} height={45}/>
                 </div>
-                <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
             </div>
 
             <div className="content">

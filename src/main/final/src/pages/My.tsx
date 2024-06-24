@@ -208,7 +208,7 @@ const My: React.FC = () => {
                             value={email}
                         />
                     </div>
-                    <div className="group">
+                    <div className="form-group">
                         <label htmlFor="address" className="label">
                             주소
                         </label>
@@ -228,7 +228,7 @@ const My: React.FC = () => {
                             </div>
                         )}
                     </div>
-                    <div className="group">
+                    <div className="form-group">
                         <label htmlFor="detail-address" className="label">
                             상세 주소
                         </label>

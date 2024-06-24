@@ -120,6 +120,7 @@ const Be = () => {
                     </div>
                     <Image src="/images/alert.png" alt="alert" className="alert-icon" width={50} height={50}/>
                 </div>
+                <div className="content">
                 <main className="activitiesContainer">
                     <h1 className="title"> 봉사 등록</h1>
                     <div className="buttonContainer" onClick={handleButtonClick}
@@ -187,6 +188,7 @@ const Be = () => {
                     <div className="footer-icon" onClick={handleProfileClick}>👤</div>
                 </footer>
             </div>
+        </div>
 
             {/* Modal for Registration Success */}
             {showModal && (
