@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/wR8I2GxH58AMd8Kp43AUD/_buildManifest.js",
-    "static/wR8I2GxH58AMd8Kp43AUD/_ssgManifest.js"
+    "static/ymV5YJj14V9f-JTcgjMES/_buildManifest.js",
+    "static/ymV5YJj14V9f-JTcgjMES/_ssgManifest.js"
   ],
   "rootMainFiles": [
     "static/chunks/webpack-db8b37c22889fb80.js",
@@ -48,7 +48,7 @@
       "static/chunks/main-e2280c4c63e9cacc.js",
       "static/chunks/873-8558bcf58006f33b.js",
       "static/css/31b4d54eaa98c448.css",
-      "static/chunks/pages/Chat-bda11e3da6142528.js"
+      "static/chunks/pages/Chat-9a424f14eb148702.js"
     ],
     "/Detail": [
       "static/chunks/webpack-db8b37c22889fb80.js",

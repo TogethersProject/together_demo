@@ -75,9 +75,15 @@ const InteractiveChatBot: React.FC = () => {
     const handleUserMessage = (message: string) => {
         const newUserMessage: Message = { text: message, isUser: true };
 
-        if (specialResponses[message]) {
+        if (message.includes("고마워")) {
             setTimeout(() => {
-                const newBotMessage: Message = { text: specialResponses[message], isUser: false };
+                const newBotMessage: Message = { text: "즐거웠습니다.", isUser: false };
+                setMessages(messages => [...messages, newUserMessage, newBotMessage]);
+                setIsTyping(false);
+            }, 1000);
+        } else if (message.includes("안녕")) {
+            setTimeout(() => {
+                const newBotMessage: Message = { text: "안녕히가십시오.", isUser: false };
                 setMessages(messages => [...messages, newUserMessage, newBotMessage]);
                 setIsTyping(false);
             }, 1000);
@@ -98,8 +104,9 @@ const InteractiveChatBot: React.FC = () => {
         }
 
         setInputText('');
-        resetTimer(); // 타이머 재설정
+        resetTimer();
     };
+
 
     const handleOptionClick = (option: string) => {
         const newUserMessage: Message = { text: option, isUser: true };
