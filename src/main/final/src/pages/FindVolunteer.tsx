@@ -273,7 +273,9 @@ const FindVolunteer: React.FC = () => {
                         </div>
                     );
                 })}
-                {isLoading && <div>Loading...</div>}
+                <div ref={loadMoreRef} className="load-more">
+                    {hasMore && <p>Loading more...</p>}
+                </div>
             </main>
             <footer className="footer">
                 <div className="footer-icon" onClick={handleSettingsClick}>=</div>
