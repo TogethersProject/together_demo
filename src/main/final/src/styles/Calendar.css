@@ -94,6 +94,9 @@ body {
     font-size: 24px;
     cursor: pointer;
 }
+.container {
+    position: relative;
+}
 
 .sidebar {
     position: absolute;
@@ -121,6 +124,19 @@ body {
 
 .sidebar-link:hover {
     background-color: #495057;
+}
+.main-screen {
+    position: relative;
+    z-index: 500; /* lower than the sidebar */
+}
+
+.header, .activitiesContainer {
+    position: relative;
+    z-index: 500; /* ensure these are below the sidebar */
+}
+
+.alert-icon, .center-image-container {
+    z-index: 600; /* ensure these are above other content if needed */
 }
 
 .modal {

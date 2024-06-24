@@ -60,6 +60,13 @@ const FindVolunteer: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to track dropdown status
 
+    // Check if the user is logged in on component mount
+    useEffect(() => {
+        const storedLoginStatus = localStorage.getItem('isLoggedIn');
+        if (storedLoginStatus === 'true') {
+            setIsLoggedIn(true);
+        }
+    }, []);
     useEffect(() => {
         const grantType = localStorage.getItem("grantType");
         const access_token = localStorage.getItem("accessToken");
