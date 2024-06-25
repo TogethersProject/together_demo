@@ -242,3 +242,25 @@ body {
 .commentContainer p {
     margin: 0;
 }
+
+.rightSide {
+    text-align: right;
+}
+
+.btn {
+    background-color: darkseagreen; /* 파란색 버튼 */
+    border-radius: 30px;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin: 1px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: "Hi Melody", sans-serif;
+    transition: background-color 0.3s ease; /* 호버 효과 */
+}
+
+.btn :hover {
+    background-color: green; /* 호버 시 더 진한 파란색 */
+}

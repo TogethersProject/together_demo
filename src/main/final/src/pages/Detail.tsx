@@ -352,11 +352,13 @@ const Detail: React.FC = () => {
                 <p>{activity.volun_address}</p>
 
                 <p>작성자 메일 주소: {activity.email}</p>
-                {(activity.id === member_id) && <button onClick={() => handleDeleteVolun(activity.seq)}>글 삭제</button>}
-                {(activity.id === member_id) && <button onClick={() => handleUpdateVolun(activity.seq)}>글 수정</button>}
+                <div className="rightSide">
+                    {(activity.id === member_id) && <button className="btn" onClick={() => handleDeleteVolun(activity.seq)}>글 삭제</button>}
+                    {(activity.id === member_id) && <button className="btn" onClick={() => handleUpdateVolun(activity.seq)}>글 수정</button>}
+                </div>
 
                 <div className="comments">
-                    <h3>댓글:</h3>
+                    <h3 style={{textAlign: 'left'}}>댓글</h3>
                     <input
                         type="text"
                         value={currentComment}
@@ -364,11 +366,11 @@ const Detail: React.FC = () => {
                         placeholder="댓글을 입력하세요"
                     />
                     <input type="radio" name="isGood" value="true" defaultChecked onClick={() => setIsGood(true)}/>
-                    <Image src="/images/smile.png" alt="true" width={20} height={20}/>
+                    <Image src="/images/smile2.png" alt="true" width={20} height={20}/>
                     <input type="radio" name="isGood" value="false" onClick={() => setIsGood(false)}/>
                     <Image src="/images/sad.png" alt="false" width={20} height={20}/>
 
-                    <button onClick={() => handleAddComment(activity.seq)}>댓글 달기</button>
+                    <button className="btn" onClick={() => handleAddComment(activity.seq)}>댓글 달기</button>
                     {commentList.map((commentDTO: any, index: number) => {
                         const commentTime = new Date(commentDTO.comment_time);
                         const formattedTime = `${commentTime.getFullYear()}-${(commentTime.getMonth() + 1).toString().padStart(2, '0')}-${commentTime.getDate().toString().padStart(2, '0')}`;
@@ -377,7 +379,7 @@ const Detail: React.FC = () => {
                                 <div className="comment_createTime">{formattedTime}</div>
                                 <div className="comment_content">{commentDTO.content}</div>
                                 {(commentDTO.member_id === member_id) &&
-                                    <button onClick={() => handleDeleteComment(commentDTO.commentSeq)}>글 삭제</button>}
+                                    <button className="btn" onClick={() => handleDeleteComment(commentDTO.commentSeq)}>글 삭제</button>}
                             </p>
 
                         );

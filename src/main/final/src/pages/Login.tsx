@@ -220,9 +220,9 @@ const Login: React.FC = () => {
             const authUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&state=${state}&redirect_uri=${redirectUri}`;
 
             // Axios를 사용하여 Naver 인증 페이지로 리디렉션
-            console.log('이동합니다')
+            //console.log('이동합니다')
             window.location.href = authUrl;
-            console.log('이동했습니다')
+            //console.log('이동했습니다')
 
         } catch (error) {
             console.error('Naver 로그인 에러:', error);

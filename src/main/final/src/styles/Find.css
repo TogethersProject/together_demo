@@ -75,6 +75,8 @@ body {
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 10px;
+    width: 300px;
+    border-color: lightgray;
 }
 
 .info p {
@@ -227,3 +229,24 @@ figure, .media{
     background-color: #f1f1f1;
 }
 
+.hrMentor {
+    width: 80%;
+}
+
+.btn button{
+    background-color: darkseagreen; /* 파란색 버튼 */
+    border-radius: 30px;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: "Hi Melody", sans-serif;
+    margin-top: 20px;
+    transition: background-color 0.3s ease; /* 호버 효과 */
+}
+
+.btn button:hover{
+    background-color: green; /* 호버 시 더 진한 파란색 */
+}

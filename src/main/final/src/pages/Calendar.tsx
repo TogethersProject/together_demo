@@ -508,7 +508,7 @@ const Calendar: React.FC = () => {
                                 시간: <input type='time' onChange={onStartTime} name='eventStartTime'/>
                             </p>
                             <p>
-                                일정 마감일: {event.end && new Date(event.end).toLocaleString()} 시간:
+                                일정 마감일: {(event.end) && new Date(event.end).toLocaleString() || (event.start && new Date(new Date(event.start).getTime() + (24 * 60 * 60 * 1000)).toLocaleString())} 시간:
                                 <input type='time' onChange={onEndTime} name='eventEndTime'/>
                             </p>
                             <input type='checkbox' onChange={handleAllDayChange} checked={allDay} name='allDay'/>allDay
@@ -557,7 +557,7 @@ const Calendar: React.FC = () => {
                             <button type='button' onClick={handleDelete}>삭제하기</button>
                         </div>
                     </div>
-                )};
+                )}
 
             </div>
             <footer className="footer">

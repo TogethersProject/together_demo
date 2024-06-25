@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,12 @@ public class CalendarServiceImpl implements CalendarService{
             calendarDTO.setBackgroundColor("pink");
         }
         calendarDTO.setBorderColor(calendarDTO.getBackgroundColor());
+        if(calendarDTO.getEnd() == null){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(calendarDTO.getStart());
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+            calendarDTO.setEnd(new Timestamp(calendar.getTimeInMillis()));
+        }
         System.out.println("캘린더 저장합니다: "+calendarDTO);
         System.out.println("startTime: " + calendarDTO.getStart());
         System.out.println("endTime: " + calendarDTO.getEnd());

@@ -261,22 +261,25 @@ const Find = () => {
             </header>
             <div className="container">
                 <h1 className="title">등록된 멘토 정보</h1>
-                {boardDTOList.map((item: any, index) => {
+                { boardDTOList.map((item: any, index) => {
                     return (
                         <div key={index} className="info">
+                            {/*<hr className="hrMentor"/>*/}
                             <p><strong>제목:</strong>{item.title}</p>
                             <p><strong>이름:</strong> {item.name}</p>
                             <p><strong>이메일:</strong> {item.email}</p>
                             <p className={"mentor-content"} id={`content-${item.seq}`}></p>
 
-                            {(item.id === member_id) &&
-                                <button onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
-                            {(item.id === member_id) &&
-                                <button onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
+                            <div style={{textAlign: 'right'}}>
+                                {(item.id === member_id) &&
+                                    <button className="btn" onClick={() => handleDeleteMentor(item.seq)}>글 삭제</button>}
+                                {(item.id === member_id) &&
+                                    <button className="btn" onClick={() => handleUpdateMentor(item.seq)}>글 수정</button>}
+                            </div>
                         </div>
                     );
                 })}
-                <div ref={loadMoreRef} className="load-more">
+<div ref={loadMoreRef} className="load-more">
                     {hasMore && <p>Loading more...</p>}
                 </div>
             </div>

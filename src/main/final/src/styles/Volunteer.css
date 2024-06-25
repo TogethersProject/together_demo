@@ -228,3 +228,22 @@ body {
 .alert-dropdown li:hover {
     background-color: #f1f1f1;
 }
+
+
+.activities-container .register-button {
+    background-color: darkseagreen; /* 파란색 버튼 */
+    border-radius: 30px;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    margin: 2px;
+    font-family: "Hi Melody", sans-serif;
+    transition: background-color 0.3s ease; /* 호버 효과 */
+}
+
+.activities-container .register-button button:hover {
+    background-color: green; /* 호버 시 더 진한 파란색 */
+}

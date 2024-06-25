@@ -12,9 +12,11 @@ const Mypage: React.FC = () => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     // Check if the user is logged in on component mount
     useEffect(() => {
-        const storedLoginStatus = localStorage.getItem('isLoggedIn');
-        if (storedLoginStatus === 'true') {
+        //const storedLoginStatus = localStorage.getItem('isLoggedIn');
+        const storedLoginStatus = localStorage.getItem('accessToken');
+        if (storedLoginStatus) {
             setIsLoggedIn(true);
+            localStorage.setItem('isLoggedIn', 'true');
         }
     }, []);
     useEffect(() => {
