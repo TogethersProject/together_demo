@@ -231,7 +231,7 @@ body {
 }
 
 
-.activities-container .register-button {
+.register-button {
     background-color: darkseagreen; /* 파란색 버튼 */
     border-radius: 30px;
     color: white;
@@ -245,6 +245,6 @@ body {
     transition: background-color 0.3s ease; /* 호버 효과 */
 }
 
-.activities-container .register-button button:hover {
+.register-button:hover {
     background-color: green; /* 호버 시 더 진한 파란색 */
 }
