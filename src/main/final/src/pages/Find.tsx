@@ -278,8 +278,8 @@ const Find = () => {
                             </div>
                         </div>
                     );
-                })}
-<div ref={loadMoreRef} className="load-more">
+                    })}
+                    <div ref={loadMoreRef} className="load-more">
                     {hasMore && <p>Loading more...</p>}
                 </div>
             </div>

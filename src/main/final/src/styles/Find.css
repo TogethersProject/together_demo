@@ -70,14 +70,6 @@ body {
     margin-bottom: 20px;
 }
 
-.info {
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    width: 300px;
-    border-color: lightgray;
-}
 
 .info p {
     margin: 5px 0;
@@ -250,4 +242,26 @@ figure, .media{
 
 .btn button:hover{
     background-color: green; /* 호버 시 더 진한 파란색 */
+}
+/* 각 글의 정보 스타일 */
+.info {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    width: 320px;
+}
+
+/* 개별 정보 항목 스타일 */
+.info p {
+    margin: 5px 0;
+    font-size: 1em;
+}
+
+/* 멘토 내용 스타일 */
+.mentor-content {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #333;
 }
