@@ -286,10 +286,13 @@ const FindVolunteer: React.FC = () => {
                 <button className="register-button" onClick={() => router.push('/register')}>봉사 등록</button>
 
                 {boardDTOList.map((activity: any, index: number) => {
+                    const thumnailSrc:string =activity.thumnail;
+                    console.log(thumnailSrc);
                     return (
                         <div className="activity" key={activity.seq} onClick={() => handleActivityClick(activity.seq)}>
                             {activity.thumnail &&
-                                <Image src={activity.thumnail} alt={activity.title} width={100} height={100}/>}
+                                <Image src={thumnailSrc} alt={activity.title} width={100} height={100}/>
+                            }
                             <div className="activity-content">
                                 <h3>{activity.title}</h3>
                                 <p id={`content-${activity.seq}`}></p>
