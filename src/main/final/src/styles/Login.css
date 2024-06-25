@@ -152,6 +152,7 @@ body {
 .footer {
     width: 360px;
     height: 60px;
+    min-height: 60px;
     background-color: #ffffff;
     display: flex;
     justify-content: space-between;

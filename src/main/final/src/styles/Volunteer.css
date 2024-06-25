@@ -131,6 +131,7 @@ body {
 .footer {
     width: 320px;
     height: 60px;
+    min-height: 60px;
     background-color: #ffffff;
     display: flex;
     justify-content: space-between;
