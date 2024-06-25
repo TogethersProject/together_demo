@@ -74,6 +74,8 @@ const Find = () => {
             setAccessToken(access_token);
             setMember_id(member_id);
         }
+        getBoardList(0)
+        setTimeout(() => getBoardList(0), 2000);
     }, []);
 
     useEffect(() => {

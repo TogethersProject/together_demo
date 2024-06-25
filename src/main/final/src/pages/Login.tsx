@@ -142,7 +142,11 @@ const Login: React.FC = () => {
 
         const member_pwdChk = (document.getElementById('pass-confirm')as HTMLInputElement).value;
         const member_emailChk = (document.getElementById('verification-code')as HTMLInputElement).value;
-        if(codeStatus && (member_pwd === member_pwdChk) && !isDuplicate){
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,15}$/;
+        if (!passwordRegex.test(member_pwd)) {
+            // 비밀번호가 8~15자의 영문 및 숫자가 아닌 경우
+            return null;
+        }else if(codeStatus && (member_pwd === member_pwdChk) && !isDuplicate){
             console.log(member_email + " = " + member_emailChk +" / " + member_pwd +" = " )
             const member = {member_id, member_pwd, member_name, member_email, member_address, member_addressDetail};
             console.log(member)
@@ -365,6 +369,7 @@ const Login: React.FC = () => {
                                         type="password"
                                         className="input"
                                         data-type="password"
+                                        placeholder="영문 및 숫자를 포함한 8~15자로 작성해주세요."
                                     />
                                 </div>
                                 <div className="group">
