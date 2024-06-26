@@ -155,11 +155,6 @@ const Login: React.FC = () => {
                 .then( (res) => {
                     console.log(res.data)
 
-                    const username = (document.getElementById('name') as HTMLInputElement).value;
-                    setIsLoggedIn(true);
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('username', username); // Save username
-                    console.log("넣어-username(login): " + username)
                     router.push('/First');
                 }).catch(err => console.log(err))
         }

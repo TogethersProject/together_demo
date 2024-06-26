@@ -166,12 +166,13 @@ const My: React.FC = () => {
         axios.post(deleteURL, null, {params: {member_id, naverAccessToken},headers:headers})
             .then(res => {
                 console.log(res.data)
-                alert("탈퇴 완")
-
+                // alert("탈퇴 완")
+                //
                 //localStorage 내부 정보 제거.
                 localStorage.clear();
                 
                 // 페이지 이동
+                router.push('/First');
             })
             .catch(err => console.log(err))
         
