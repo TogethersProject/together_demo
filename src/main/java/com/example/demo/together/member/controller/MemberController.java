@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Optional;
 
@@ -98,9 +100,25 @@ public class MemberController {
         Optional<MemberDTO> memberDTO = memberDAO.findById(member_id);
         String member_name = memberDTO.get().getMember_name();
 
+        try {
+            // URL 생성
+            StringBuilder urlBuilder = new StringBuilder("http://localhost:3000/Mypage?");
+            urlBuilder.append("name=").append(URLEncoder.encode(member_name, "UTF-8"));
+            urlBuilder.append("&accessToken=").append(accessToken);
+            urlBuilder.append("&naverAccessToken=").append(snsAccessToken);
+            urlBuilder.append("&id=").append(member_id);
+            String url = urlBuilder.toString();
+
+            // Location 헤더 설정
+            response.setHeader("Location", url);
+            response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+        }catch (UnsupportedEncodingException e) {
+            // 예외 처리 코드 작성
+            e.printStackTrace();
+            // 적절한 에러 처리 로직 추가
+            return "error";
+        }
         //페이지 이동
-        response.setHeader("Location", "http://localhost:3000/Mypage?name=" + member_name + "&accessToken=" + accessToken + "&naverAccessToken=" + snsAccessToken + "&id=" + member_id);
-        response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
         return null;
     }
 
