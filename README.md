@@ -21,7 +21,9 @@
 투게더는 봉사모임 활성화를 지원하는 웹앱입니다. 
 <br>직관적인 디자인과 최적화된 로딩 시간을 지원합니다.
 <br>pc와 모바일 환경에서 비슷한 경험을 제공하여 사용법을 쉽게 익힐 수 있도록 합니다.
-<a href = "https://www.youtube.com/watch?v=VhMTDkDKaz0" target = "_blank">시연영상 보러가기</a>
+
+<br>
+<br><a href = "https://www.youtube.com/watch?v=VhMTDkDKaz0" target = "_blank">시연영상 보러가기</a>
 
 
 #### 팀원
