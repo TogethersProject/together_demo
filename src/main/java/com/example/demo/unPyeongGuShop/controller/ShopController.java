@@ -23,3 +23,4 @@ public class ShopController {
         return "안녕하새우";
 }
 }
+// Mapping

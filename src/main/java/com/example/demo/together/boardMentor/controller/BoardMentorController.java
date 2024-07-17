@@ -110,5 +110,5 @@ public class BoardMentorController {
         return boardService.getOneMentor(seqInt);
     }
 }
-
+//api 확인 수연
 
