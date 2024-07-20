@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Hi+Melody&display=swap');
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Hi Melody', sans-serif;
+}
+
+body {
+    overflow: hidden;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-screen {
+    width: 360px;
+    height: 800px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.header {
+    width: 100%;
+    height: 60px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.center-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.alert-icon {
+    width: 50px;
+    height: 50px;
+}
+
+.content {
+    flex-grow: 1;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+}
+
+.intro {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.intro h1 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 3px;
+}
+
+.intro p {
+    font-size: 20px;
+    color: #666666;
+}
+
+.footer {
+    width: 100%;
+    height: 60px;
+    min-height: 60px; /* Ensure the footer can't be smaller than this */
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    position: relative; /* Ensure positioning is relative */
+}
+
+.footer-icon {
+    font-size: 24px;
+    cursor: pointer;
+}
+.container {
+    position: relative;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정색 배경 */
+    z-index: 1000; /* 사이드바 아래에 배치 */
+    display: none; /* 기본적으로 숨김 */
+}
+.sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: rgba(52, 58, 64, 0.8); /* Set to a slightly transparent dark color */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1001;
+    font-family: "Hi Melody";
+    font-size: 30px;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-link {
+    padding: 15px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.sidebar-link:hover {
+    background-color: #495057;
+}
+.main-screen {
+    position: relative;
+    z-index: 500; /* lower than the sidebar */
+}
+
+.header, .activitiesContainer {
+    position: relative;
+    z-index: 500; /* ensure these are below the sidebar */
+}
+
+.alert-icon, .center-image-container {
+    z-index: 600; /* ensure these are above other content if needed */
+}
+/* 모달 창 스타일 */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9; /* 좀 더 부드러운 배경색 */
+    padding: 20px;
+    border-radius: 12px; /* 더 둥근 모서리 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* 더 강한 그림자 효과 */
+    z-index: 1000;
+    width: 280px; /* 약간 더 넓게 */
+    height: 450px; /* 약간 더 높게 */
+    font-family: 'Hi Melody', sans-serif; /* 기본 폰트 변경 */
+}
+
+/* 모달 내용 중앙 정렬 */
+.modalContent {
+    text-align: center;
+}
+
+/* 모달 본문 스타일 */
+.modal-body {
+    margin: 0 auto; /* 가로로 중앙 정렬 */
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+    width: 90%; /* 좀 더 넓게 */
+    padding: 20px;
+    color: #333; /* 텍스트 색상 변경 */
+    line-height: 1.6; /* 행간 조절 */
+    font-size: 18px; /* 폰트 크기 조절 */
+}
+
+/* 버튼 스타일 */
+.modal button {
+    background-color: darkseagreen; /* 파란색 버튼 */
+    border-radius: 30px;
+    color: white;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    font-family: "Hi Melody", sans-serif;
+    margin-top: 20px;
+    transition: background-color 0.3s ease; /* 호버 효과 */
+}
+
+.modal button:hover {
+    background-color: green; /* 호버 시 더 진한 파란색 */
+}
+
+/* 닫기 버튼 스타일 */
+.modal .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    font-family: "Hi Melody", sans-serif;
+    cursor: pointer;
+}
+
+
+.alert-container {
+    position: relative;
+    display: inline-block;
+}
+
+.alert-dropdown {
+    display: block;
+    position: absolute;
+    top: 60px; /* Adjust based on your header height */
+    right: 0; /* Align to the right */
+    background-color: white;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.alert-dropdown ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.alert-dropdown li {
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.alert-dropdown li:hover {
+    background-color: #f1f1f1;
+}
